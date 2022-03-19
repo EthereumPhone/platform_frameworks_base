@@ -2166,6 +2166,15 @@ public class NotificationManagerService extends SystemService {
                             SystemNotificationChannels.OTHER_USERS, 0, 0, userId,
                             REASON_APP_CANCEL_ALL);
                 }
+            } else if (action.equals(Intent.ACTION_USER_BACKGROUND)) {
+                // This is the user/profile that is going into the background.
+                final int userId = intent.getIntExtra(Intent.EXTRA_USER_HANDLE, -1);
+                if (userId >= 0) {
+                    // Clear censored notifications on switch.
+                    cancelAllNotificationsInt(MY_UID, MY_PID, getContext().getPackageName(),
+                            SystemNotificationChannels.OTHER_USERS, 0, 0, userId,
+                            REASON_APP_CANCEL_ALL);
+                }
             }
         }
     };
