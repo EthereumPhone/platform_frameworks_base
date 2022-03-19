@@ -2157,6 +2157,36 @@ public class NotificationManagerService extends SystemService {
                             SystemNotificationChannels.OTHER_USERS, 0, 0, userId,
                             REASON_APP_CANCEL_ALL);
                 }
+            } else if (action.equals(Intent.ACTION_USER_BACKGROUND)) {
+                // This is the user/profile that is going into the background.
+                final int userId = intent.getIntExtra(Intent.EXTRA_USER_HANDLE, -1);
+                if (userId >= 0) {
+                    // Clear censored notifications on switch.
+                    cancelAllNotificationsInt(MY_UID, MY_PID, getContext().getPackageName(),
+                            SystemNotificationChannels.OTHER_USERS, 0, 0, true, userId,
+                            REASON_APP_CANCEL_ALL, null);
+                }
+            }
+        }
+    };
+
+    private final BroadcastReceiver mSwitchUserReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (!ACTION_SWITCH_USER.equals(intent.getAction())) {
+                return;
+            }
+
+            final boolean canSwitch = mUm.isUserSwitcherEnabled()
+                    && mUm.getUserSwitchability() == UserManager.SWITCHABILITY_STATUS_OK;
+
+            final int userIdToSwitchTo = intent.getIntExtra(EXTRA_SWITCH_USER_USERID, -1);
+            if (userIdToSwitchTo >= 0 && canSwitch) {
+                try {
+                    ActivityManager.getService().switchUser(userIdToSwitchTo);
+                } catch (RemoteException re) {
+                    // Do nothing
+                }
             }
         }
     };
