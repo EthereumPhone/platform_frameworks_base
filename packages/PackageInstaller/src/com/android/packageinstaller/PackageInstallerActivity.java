@@ -386,6 +386,7 @@ public class PackageInstallerActivity extends Activity {
     protected void onCreate(Bundle icicle) {
         if (mLocalLOGV) Log.i(TAG, "creating for user " + UserHandle.myUserId());
         getWindow().addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS);
+        getWindow().setCloseOnTouchOutside(false);
 
         super.onCreate(null);
 
