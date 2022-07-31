@@ -222,6 +222,8 @@ public final class SharedUserSetting extends SettingBase implements SharedUserAp
     }
 
     boolean removePackage(PackageSetting packageSetting) {
+        clearGosPackageStateCachedDerivedFlags();
+
         if (!mPackages.remove(packageSetting)) {
             return false;
         }
