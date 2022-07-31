@@ -27,6 +27,8 @@ import com.android.internal.gmscompat.GmsHooks;
 import com.android.internal.app.StorageScopesAppHooks;
 import com.android.internal.gmscompat.GmsHooks;
 
+import com.android.internal.app.StorageScopesAppHooks;
+
 /** @hide */
 @SystemApi
 public class AppPermissionUtils {
