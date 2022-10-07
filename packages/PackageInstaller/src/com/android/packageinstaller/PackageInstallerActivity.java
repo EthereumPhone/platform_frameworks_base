@@ -176,6 +176,7 @@ public class PackageInstallerActivity extends Activity {
             } else {
                 mOk.setText(R.string.update);
             }
+            viewToEnable.setVisibility(View.VISIBLE);
         } else {
             // This is a new application with no permissions.
             LinearLayout layout = mDialog.requireViewById(R.id.install_confirm_question);
