@@ -159,7 +159,7 @@ public class PackageInstallerActivity extends Activity {
     private void startInstallConfirm() {
         TextView viewToEnable;
         if (mAppInfo != null) {
-            viewToEnable = mDialog.requireViewById(R.id.install_confirm_question_update);
+            TextView viewToEnable = mDialog.requireViewById(R.id.install_confirm_question_update);
 
             final CharSequence existingUpdateOwnerLabel = getExistingUpdateOwnerLabel();
             final CharSequence requestedUpdateOwnerLabel =
