@@ -109,6 +109,22 @@ prebuilt_etc {
 }
 
 prebuilt_etc {
+    name: "privapp_whitelist_org.ethosmobile.contacts",
+    product_specific: true,
+    sub_dir: "permissions",
+    src: "org.ethosmobile.contacts.xml",
+    filename_from_src: true,
+}
+
+prebuilt_etc {
+    name: "privapp_whitelist_org.ethosmobile.claimnft",
+    product_specific: true,
+    sub_dir: "permissions",
+    src: "org.ethosmobile.claimnft.xml",
+    filename_from_src: true,
+}
+
+prebuilt_etc {
     name: "privapp_whitelist_com.android.dialer",
     product_specific: true,
     sub_dir: "permissions",

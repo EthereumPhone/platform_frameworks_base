@@ -255,6 +255,11 @@ import java.util.Timer;
 import java.util.TreeSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
+import com.android.server.GethService;
+import com.android.server.WalletService;
+import com.android.server.PrivateWalletService;
+import com.android.server.SharedState;
+import com.android.server.LocalLLMService;
 
 /**
  * Entry point to {@code system_server}.
@@ -1369,6 +1374,51 @@ public final class SystemServer implements Dumpable {
         t.traceBegin("StartSensorPrivacyService");
         mSystemServiceManager.startService(new SensorPrivacyService(mSystemContext));
         t.traceEnd();
+
+	    try {
+            t.traceBegin("GethService");
+            GethService gethService = new GethService(mSystemContext);
+            ServiceManager.addService("geth", gethService);
+            t.traceEnd();
+        } catch (Throwable e) {
+            Slog.e("System", "Failed starting GethNode", e);
+        }
+
+        // Creating shared state for WalletService and PrivateWalletService
+        SharedState sharedState = new SharedState();
+
+        try {
+            t.traceBegin("WalletService");
+            WalletService walletService = new WalletService(mSystemContext, sharedState);
+            ServiceManager.addService("wallet", walletService);
+            t.traceEnd();
+        } catch (Throwable e) {
+            Slog.e("System", "Failed starting WalletService", e);
+        }
+
+        // Private WalletService
+        try {
+            t.traceBegin("PrivateWalletService");
+            PrivateWalletService privateWalletService = new PrivateWalletService(sharedState, mSystemContext);
+            ServiceManager.addService("privatewallet", privateWalletService);
+            t.traceEnd();
+        } catch (Throwable e) {
+            Slog.e("System", "Failed starting PrivateWalletService", e);
+            e.printStackTrace();
+        }
+
+
+
+	// Starting LocalLLMService
+	try {
+            t.traceBegin("LocalLLMService");
+            LocalLLMService localLLMService = new LocalLLMService(mSystemContext);
+            ServiceManager.addService("localllm", localLLMService);
+            t.traceEnd();
+        } catch (Throwable e) {
+            Slog.e("System", "Failed starting LocalLLMService", e);
+            e.printStackTrace();
+        }
 
         if (SystemProperties.getInt("persist.sys.displayinset.top", 0) > 0) {
             // DisplayManager needs the overlay immediately.
@@ -2998,9 +3048,9 @@ public final class SystemServer implements Dumpable {
         mSystemServiceManager.startService(APP_COMPAT_OVERRIDES_SERVICE_CLASS);
         t.traceEnd();
 
-        t.traceBegin("HealthConnectManagerService");
-        mSystemServiceManager.startService(HEALTHCONNECT_MANAGER_SERVICE_CLASS);
-        t.traceEnd();
+        //t.traceBegin("HealthConnectManagerService");
+        //mSystemServiceManager.startService(HEALTHCONNECT_MANAGER_SERVICE_CLASS);
+        //t.traceEnd();
 
         if (mPackageManager.hasSystemFeature(PackageManager.FEATURE_DEVICE_LOCK)) {
             t.traceBegin("DeviceLockService");

@@ -48,6 +48,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import android.content.pm.PackageManager;
 
 /**
  * Controller to handle communication between SystemUI and Quick Access Wallet Client.
@@ -245,18 +246,8 @@ public class QuickAccessWalletController {
             boolean hasCard) {
         mQuickAccessWalletClient.getWalletPendingIntent(mExecutor,
                 walletPendingIntent -> {
-                    if (walletPendingIntent != null) {
-                        startQuickAccessViaPendingIntent(walletPendingIntent, activityStarter,
-                                animationController);
-                        return;
-                    }
-                    Intent intent = null;
-                    if (!hasCard) {
-                        intent = mQuickAccessWalletClient.createWalletIntent();
-                    }
-                    if (intent == null) {
-                        intent = getSysUiWalletIntent();
-                    }
+                    PackageManager manager = mContext.getPackageManager();
+                    Intent intent = manager.getLaunchIntentForPackage("org.ethereumphone.walletmanager");
                     startQuickAccessViaIntent(intent, hasCard, activityStarter,
                             animationController);
 

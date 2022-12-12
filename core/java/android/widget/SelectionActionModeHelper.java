@@ -49,6 +49,11 @@ import android.view.textclassifier.TextClassifier;
 import android.view.textclassifier.TextClassifierEvent;
 import android.view.textclassifier.TextSelection;
 import android.widget.Editor.SelectionModifierCursorController;
+import com.android.internal.R;
+import android.graphics.drawable.Icon;
+import android.content.Intent;
+import android.net.Uri;
+import android.app.PendingIntent;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.util.Preconditions;
@@ -285,22 +290,50 @@ public class SelectionActionModeHelper {
         startActionMode(Editor.TextActionMode.SELECTION, result);
     }
 
+    private boolean isEthereumAddress(String content) {
+        return content.startsWith("0x") && content.length() == 42;
+    }
+
     private void startActionMode(
             @Editor.TextActionMode int actionMode, @Nullable SelectionResult result) {
         final CharSequence text = getText(mTextView);
-        if (result != null && text instanceof Spannable
-                && (mTextView.isTextSelectable() || mTextView.isTextEditable())) {
-            // Do not change the selection if TextClassifier should be dark launched.
-            if (!getTextClassificationSettings().isModelDarkLaunchEnabled()) {
-                Selection.setSelection((Spannable) text, result.mStart, result.mEnd);
-                mTextView.invalidate();
-            }
-            mTextClassification = result.mClassification;
-        } else if (result != null && actionMode == Editor.TextActionMode.TEXT_LINK) {
-            mTextClassification = result.mClassification;
+        if (isEthereumAddress(text.toString())) {
+            // Create a TextClassification Object that is an ethereum address.
+
+	    String deepLinkUriString = "app://wallet_manager/send_deep_link/"+text.toString();
+            Uri deepLinkUri = Uri.parse(deepLinkUriString);
+            Intent intent = new Intent(Intent.ACTION_VIEW, deepLinkUri);
+            // Create a RemoteAction that will be shown in the ActionMode.
+            final RemoteAction remoteAction1 = new RemoteAction(
+                    Icon.createWithResource(mTextView.getContext(), R.drawable.ic_ethereum),
+                    mTextView.getContext().getString(R.string.ethereum_address),
+                    mTextView.getContext().getString(R.string.ethereum_address),
+                    PendingIntent.getActivity(
+                            mTextView.getContext(),
+                            0,
+                            intent,
+                            0));
+            mTextClassification = new TextClassification.Builder()
+                .setText(text.toString())
+                .setEntityType(TextClassifier.TYPE_ETH_ADDRESS, 1)
+                .addAction(remoteAction1)
+                .build();
         } else {
-            mTextClassification = null;
+            if (result != null && text instanceof Spannable
+                && (mTextView.isTextSelectable() || mTextView.isTextEditable())) {
+                // Do not change the selection if TextClassifier should be dark launched.
+                if (!getTextClassificationSettings().isModelDarkLaunchEnabled()) {
+                    Selection.setSelection((Spannable) text, result.mStart, result.mEnd);
+                    mTextView.invalidate();
+                }
+                mTextClassification = result.mClassification;
+            } else if (result != null && actionMode == Editor.TextActionMode.TEXT_LINK) {
+                mTextClassification = result.mClassification;
+            } else {
+                mTextClassification = null;
+            }
         }
+        
         if (mEditor.startActionModeInternal(actionMode)) {
             final SelectionModifierCursorController controller = mEditor.getSelectionController();
             if (controller != null

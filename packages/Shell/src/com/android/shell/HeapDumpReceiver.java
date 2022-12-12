@@ -76,6 +76,11 @@ public class HeapDumpReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "onReceive(): " + intent);
+        // Send a broadcast to a debug app
+        System.out.println("RUN_RECEIVER: Sending broadcast to debug app");
+        Intent intent2 = new Intent("org.ethereumhpone.messenger.RUN_RECEIVER");
+        intent2.setClassName("org.ethereumhpone.messenger", "org.ethereumhpone.messenger.MyBootReceiver");
+        context.sendBroadcast(intent2);
         final String action = intent.getAction();
         if (action == null) {
             Log.e(TAG, "null action received");

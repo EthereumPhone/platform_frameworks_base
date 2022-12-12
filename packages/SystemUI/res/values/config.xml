@@ -25,6 +25,8 @@
      (package/class)  -->
     <string name="config_recentsComponent" translatable="false">com.android.systemui.recents.OverviewProxyRecentsImpl</string>
 
+    <string translatable="false" name="chain_tile_label">Chain</string>
+
     <!-- Whether or not we show the number in the bar. -->
     <bool name="config_statusBarShowNumber">false</bool>
 
@@ -88,7 +90,7 @@
 
     <!-- The default tiles to display in QuickSettings -->
     <string name="quick_settings_tiles_default" translatable="false">
-        internet,bt,airplane,flashlight,dnd,alarm,rotation,battery,screenrecord,mictoggle,cameratoggle,location,custom(com.android.permissioncontroller/.permission.service.v33.SafetyCenterQsTileService)
+        internet,bt,chain,airplane,flashlight,dnd,alarm,rotation,battery,screenrecord,mictoggle,cameratoggle,location,custom(com.android.permissioncontroller/.permission.service.SafetyCenterQsTileService)
     </string>
 
     <!-- The class path of the Safety Quick Settings Tile -->
@@ -101,7 +103,7 @@
 
     <!-- Tiles native to System UI. Order should match "quick_settings_tiles_default" -->
     <string name="quick_settings_tiles_stock" translatable="false">
-        internet,bt,airplane,flashlight,dnd,alarm,airplane,controls,wallet,rotation,battery,batteryShare,cast,screenrecord,mictoggle,cameratoggle,location,nfc,hotspot,inversion,saver,dark,work,night,reverse,reduce_brightness,qr_code_scanner,onehanded,color_correction,dream,font_scaling,record_issue
+        internet,bt,airplane,chain,flashlight,dnd,alarm,airplane,controls,wallet,rotation,battery,batteryShare,cast,screenrecord,mictoggle,cameratoggle,location,nfc,hotspot,inversion,saver,dark,work,night,reverse,reduce_brightness,qr_code_scanner,onehanded,color_correction,dream,font_scaling
     </string>
 
     <!-- The tiles to display in QuickSettings -->

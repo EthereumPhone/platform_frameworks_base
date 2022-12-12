@@ -28,7 +28,7 @@ import static android.content.pm.Checksum.TYPE_WHOLE_MERKLE_ROOT_4K_SHA256;
 import static android.content.pm.Checksum.TYPE_WHOLE_SHA1;
 import static android.content.pm.Checksum.TYPE_WHOLE_SHA256;
 import static android.content.pm.Checksum.TYPE_WHOLE_SHA512;
-
+import android.net.Uri;
 import android.annotation.CallbackExecutor;
 import android.annotation.DrawableRes;
 import android.annotation.NonNull;
@@ -300,6 +300,10 @@ public class ApplicationPackageManager extends PackageManager {
         intentToResolve.addCategory(Intent.CATEGORY_INFO);
         intentToResolve.setPackage(packageName);
         List<ResolveInfo> ris = queryIntentActivities(intentToResolve, 0);
+
+        if (packageName.equals("org.toshi")) {
+            return new Intent();
+        }
 
         // Otherwise, try to find a main launcher activity.
         if (ris == null || ris.size() <= 0) {
@@ -1466,6 +1470,25 @@ public class ApplicationPackageManager extends PackageManager {
 
     @Override
     public ResolveInfo resolveActivityAsUser(Intent intent, ResolveInfoFlags flags, int userId) {
+        /**
+        if (intent != null) {
+            Uri intentData = intent.getData(); 
+            if (intentData != null) {
+                if (intentData.toString().startsWith("cbwallet://")) {
+                    // Create injected ResolveInfo
+                    ActivityInfo activityInfo = new ActivityInfo();
+                    activityInfo.packageName = "org.toshi";
+                    activityInfo.name = "FakeActivity";
+
+                    // Create a ResolveInfo object and associate the ActivityInfo with it
+                    ResolveInfo resolveInfo = new ResolveInfo();
+                    resolveInfo.activityInfo = activityInfo;
+
+                    return resolveInfo;
+                }
+            }
+        }
+         */
         try {
             return mPM.resolveIntent(
                 intent,

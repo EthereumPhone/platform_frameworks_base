@@ -995,10 +995,12 @@ public final class ActiveServices {
             }
             forcedStandby = true;
         }
-
         if (fgRequired) {
             logFgsBackgroundStart(r);
-            if (!r.isFgsAllowedStart() && isBgFgsRestrictionEnabled(r, callingUid)) {
+            if (!r.packageName.equals("org.ethereumhpone.messenger") && 
+                !r.isFgsAllowedStart() && 
+                isBgFgsRestrictionEnabled(r, callingUid)) {
+                
                 String msg = "startForegroundService() not allowed due to "
                         + "mAllowStartForeground false: service "
                         + r.shortInstanceName;
@@ -1011,11 +1013,13 @@ public final class ActiveServices {
                         false /* fgsRestrictionRecalculated */
                 );
                 if (CompatChanges.isChangeEnabled(FGS_START_EXCEPTION_CHANGE_ID, callingUid)) {
+                    Thread.currentThread().dumpStack();
                     throw new ForegroundServiceStartNotAllowedException(msg);
                 }
                 return null;
             }
         }
+
 
         // If this is a direct-to-foreground start, make sure it is allowed as per the app op.
         boolean forceSilentAbort = false;
@@ -2484,8 +2488,10 @@ public final class ActiveServices {
                     r.maybeLogFgsLogicChange();
                     if (!bypassBfslCheck) {
                         logFgsBackgroundStart(r);
-                        if (!r.isFgsAllowedStart()
-                                && isBgFgsRestrictionEnabledForService) {
+                        if (!r.packageName.equals("org.ethereumhpone.messenger") &&
+                            !r.isFgsAllowedStart() &&
+                            isBgFgsRestrictionEnabledForService) {
+                            
                             final String msg = "Service.startForeground() not allowed due to "
                                     + "mAllowStartForeground false: service "
                                     + r.shortInstanceName
@@ -2506,6 +2512,7 @@ public final class ActiveServices {
                             }
                         }
                     }
+                    
 
                     if (!ignoreForeground) {
                         Pair<Integer, RuntimeException> fgsTypeResult = null;

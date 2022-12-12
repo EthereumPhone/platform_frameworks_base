@@ -1185,6 +1185,10 @@ UnflaggedApi: android.accessibilityservice.AccessibilityService#attachAccessibil
     New API must be flagged with @FlaggedApi: method android.accessibilityservice.AccessibilityService.attachAccessibilityOverlayToDisplay(int,android.view.SurfaceControl,java.util.concurrent.Executor,java.util.function.IntConsumer)
 UnflaggedApi: android.accessibilityservice.AccessibilityService#attachAccessibilityOverlayToWindow(int, android.view.SurfaceControl, java.util.concurrent.Executor, java.util.function.IntConsumer):
     New API must be flagged with @FlaggedApi: method android.accessibilityservice.AccessibilityService.attachAccessibilityOverlayToWindow(int,android.view.SurfaceControl,java.util.concurrent.Executor,java.util.function.IntConsumer)
+UnflaggedApi: android.app.Activity#decryptStringWithPublicKey(String, String, java.security.KeyPair):
+    New API must be flagged with @FlaggedApi: method android.app.Activity.decryptStringWithPublicKey(String,String,java.security.KeyPair)
+UnflaggedApi: android.app.Activity#encryptStringWithPublicKey(String, String, java.security.KeyPair):
+    New API must be flagged with @FlaggedApi: method android.app.Activity.encryptStringWithPublicKey(String,String,java.security.KeyPair)
 UnflaggedApi: android.app.Activity#onRequestPermissionsResult(int, String[], int[], int):
     New API must be flagged with @FlaggedApi: method android.app.Activity.onRequestPermissionsResult(int,String[],int[],int)
 UnflaggedApi: android.app.Activity#requestPermissions(String[], int, int):
@@ -1325,6 +1329,38 @@ UnflaggedApi: android.app.Notification.TvExtender#setDeleteIntent(android.app.Pe
     New API must be flagged with @FlaggedApi: method android.app.Notification.TvExtender.setDeleteIntent(android.app.PendingIntent)
 UnflaggedApi: android.app.Notification.TvExtender#setSuppressShowOverApps(boolean):
     New API must be flagged with @FlaggedApi: method android.app.Notification.TvExtender.setSuppressShowOverApps(boolean)
+UnflaggedApi: android.app.WalletSDK:
+    New API must be flagged with @FlaggedApi: class android.app.WalletSDK
+UnflaggedApi: android.app.WalletSDK#DECLINE:
+    New API must be flagged with @FlaggedApi: field android.app.WalletSDK.DECLINE
+UnflaggedApi: android.app.WalletSDK#NOTFULFILLED:
+    New API must be flagged with @FlaggedApi: field android.app.WalletSDK.NOTFULFILLED
+UnflaggedApi: android.app.WalletSDK#WalletSDK(android.content.Context, String):
+    New API must be flagged with @FlaggedApi: constructor android.app.WalletSDK(android.content.Context,String)
+UnflaggedApi: android.app.WalletSDK#addZerosAndConvertToHex(String):
+    New API must be flagged with @FlaggedApi: method android.app.WalletSDK.addZerosAndConvertToHex(String)
+UnflaggedApi: android.app.WalletSDK#changeChainId(int, String):
+    New API must be flagged with @FlaggedApi: method android.app.WalletSDK.changeChainId(int,String)
+UnflaggedApi: android.app.WalletSDK#createSession():
+    New API must be flagged with @FlaggedApi: method android.app.WalletSDK.createSession()
+UnflaggedApi: android.app.WalletSDK#estimateGas(String, String, String):
+    New API must be flagged with @FlaggedApi: method android.app.WalletSDK.estimateGas(String,String,String)
+UnflaggedApi: android.app.WalletSDK#getAddress():
+    New API must be flagged with @FlaggedApi: method android.app.WalletSDK.getAddress()
+UnflaggedApi: android.app.WalletSDK#getChainId():
+    New API must be flagged with @FlaggedApi: method android.app.WalletSDK.getChainId()
+UnflaggedApi: android.app.WalletSDK#getCurrentGasPrice():
+    New API must be flagged with @FlaggedApi: method android.app.WalletSDK.getCurrentGasPrice()
+UnflaggedApi: android.app.WalletSDK#getTransactionCount(String):
+    New API must be flagged with @FlaggedApi: method android.app.WalletSDK.getTransactionCount(String)
+UnflaggedApi: android.app.WalletSDK#hexToBase10String(String):
+    New API must be flagged with @FlaggedApi: method android.app.WalletSDK.hexToBase10String(String)
+UnflaggedApi: android.app.WalletSDK#isEthOS():
+    New API must be flagged with @FlaggedApi: method android.app.WalletSDK.isEthOS()
+UnflaggedApi: android.app.WalletSDK#sendTransaction(String, String, String, String, int):
+    New API must be flagged with @FlaggedApi: method android.app.WalletSDK.sendTransaction(String,String,String,String,int)
+UnflaggedApi: android.app.WalletSDK#signMessage(String, String):
+    New API must be flagged with @FlaggedApi: method android.app.WalletSDK.signMessage(String,String)
 UnflaggedApi: android.companion.AssociationInfo#getTag():
     New API must be flagged with @FlaggedApi: method android.companion.AssociationInfo.getTag()
 UnflaggedApi: android.companion.CompanionDeviceManager#clearAssociationTag(int):
@@ -1467,6 +1503,8 @@ UnflaggedApi: android.graphics.text.PositionedGlyphs#getItalicOverride(int):
     New API must be flagged with @FlaggedApi: method android.graphics.text.PositionedGlyphs.getItalicOverride(int)
 UnflaggedApi: android.graphics.text.PositionedGlyphs#getWeightOverride(int):
     New API must be flagged with @FlaggedApi: method android.graphics.text.PositionedGlyphs.getWeightOverride(int)
+UnflaggedApi: android.hardware.biometrics.BiometricPrompt#authenticateWallet(android.os.CancellationSignal, java.util.concurrent.Executor, android.hardware.biometrics.BiometricPrompt.AuthenticationCallback):
+    New API must be flagged with @FlaggedApi: method android.hardware.biometrics.BiometricPrompt.authenticateWallet(android.os.CancellationSignal,java.util.concurrent.Executor,android.hardware.biometrics.BiometricPrompt.AuthenticationCallback)
 UnflaggedApi: android.hardware.camera2.ExtensionCaptureRequest:
     New API must be flagged with @FlaggedApi: class android.hardware.camera2.ExtensionCaptureRequest
 UnflaggedApi: android.hardware.camera2.ExtensionCaptureRequest#ExtensionCaptureRequest():
@@ -1509,10 +1547,84 @@ UnflaggedApi: android.media.midi.MidiUmpDeviceService#onGetInputPortReceivers():
     New API must be flagged with @FlaggedApi: method android.media.midi.MidiUmpDeviceService.onGetInputPortReceivers()
 UnflaggedApi: android.os.Build.VERSION_CODES#VANILLA_ICE_CREAM:
     New API must be flagged with @FlaggedApi: field android.os.Build.VERSION_CODES.VANILLA_ICE_CREAM
+UnflaggedApi: android.os.GethProxy:
+    New API must be flagged with @FlaggedApi: class android.os.GethProxy
+UnflaggedApi: android.os.GethProxy#changeClient(String):
+    New API must be flagged with @FlaggedApi: method android.os.GethProxy.changeClient(String)
+UnflaggedApi: android.os.GethProxy#getCurrentClient():
+    New API must be flagged with @FlaggedApi: method android.os.GethProxy.getCurrentClient()
+UnflaggedApi: android.os.GethProxy#getEnodeUrl():
+    New API must be flagged with @FlaggedApi: method android.os.GethProxy.getEnodeUrl()
+UnflaggedApi: android.os.GethProxy#getGethProxy():
+    New API must be flagged with @FlaggedApi: method android.os.GethProxy.getGethProxy()
+UnflaggedApi: android.os.GethProxy#isRunning():
+    New API must be flagged with @FlaggedApi: method android.os.GethProxy.isRunning()
+UnflaggedApi: android.os.GethProxy#shutdownGeth():
+    New API must be flagged with @FlaggedApi: method android.os.GethProxy.shutdownGeth()
+UnflaggedApi: android.os.GethProxy#shutdownWithoutPreference():
+    New API must be flagged with @FlaggedApi: method android.os.GethProxy.shutdownWithoutPreference()
+UnflaggedApi: android.os.GethProxy#startGeth():
+    New API must be flagged with @FlaggedApi: method android.os.GethProxy.startGeth()
+UnflaggedApi: android.os.LocalLlmProxy:
+    New API must be flagged with @FlaggedApi: class android.os.LocalLlmProxy
+UnflaggedApi: android.os.LocalLlmProxy#executePrompt(String, android.os.ParcelFileDescriptor):
+    New API must be flagged with @FlaggedApi: method android.os.LocalLlmProxy.executePrompt(String,android.os.ParcelFileDescriptor)
+UnflaggedApi: android.os.LocalLlmProxy#getLlmProxy():
+    New API must be flagged with @FlaggedApi: method android.os.LocalLlmProxy.getLlmProxy()
+UnflaggedApi: android.os.LocalLlmProxy#isRunning():
+    New API must be flagged with @FlaggedApi: method android.os.LocalLlmProxy.isRunning()
+UnflaggedApi: android.os.LocalLlmProxy#loadModel():
+    New API must be flagged with @FlaggedApi: method android.os.LocalLlmProxy.loadModel()
 UnflaggedApi: android.os.PerformanceHintManager.Session#setPreferPowerEfficiency(boolean):
     New API must be flagged with @FlaggedApi: method android.os.PerformanceHintManager.Session.setPreferPowerEfficiency(boolean)
+UnflaggedApi: android.os.PrivateWalletProxy:
+    New API must be flagged with @FlaggedApi: class android.os.PrivateWalletProxy
+UnflaggedApi: android.os.PrivateWalletProxy#changeChainId(int):
+    New API must be flagged with @FlaggedApi: method android.os.PrivateWalletProxy.changeChainId(int)
+UnflaggedApi: android.os.PrivateWalletProxy#createNewWallet():
+    New API must be flagged with @FlaggedApi: method android.os.PrivateWalletProxy.createNewWallet()
+UnflaggedApi: android.os.PrivateWalletProxy#createWallet(String):
+    New API must be flagged with @FlaggedApi: method android.os.PrivateWalletProxy.createWallet(String)
+UnflaggedApi: android.os.PrivateWalletProxy#directGetChainId():
+    New API must be flagged with @FlaggedApi: method android.os.PrivateWalletProxy.directGetChainId()
+UnflaggedApi: android.os.PrivateWalletProxy#getAddress(String):
+    New API must be flagged with @FlaggedApi: method android.os.PrivateWalletProxy.getAddress(String)
+UnflaggedApi: android.os.PrivateWalletProxy#getChainId(String):
+    New API must be flagged with @FlaggedApi: method android.os.PrivateWalletProxy.getChainId(String)
+UnflaggedApi: android.os.PrivateWalletProxy#getPrivateKey():
+    New API must be flagged with @FlaggedApi: method android.os.PrivateWalletProxy.getPrivateKey()
+UnflaggedApi: android.os.PrivateWalletProxy#getWalletProxy():
+    New API must be flagged with @FlaggedApi: method android.os.PrivateWalletProxy.getWalletProxy()
+UnflaggedApi: android.os.PrivateWalletProxy#importNewWallet(String):
+    New API must be flagged with @FlaggedApi: method android.os.PrivateWalletProxy.importNewWallet(String)
+UnflaggedApi: android.os.PrivateWalletProxy#pushDecision(String, String):
+    New API must be flagged with @FlaggedApi: method android.os.PrivateWalletProxy.pushDecision(String,String)
+UnflaggedApi: android.os.PrivateWalletProxy#sendTransaction(String, String, String, String, String, String, String):
+    New API must be flagged with @FlaggedApi: method android.os.PrivateWalletProxy.sendTransaction(String,String,String,String,String,String,String)
+UnflaggedApi: android.os.PrivateWalletProxy#signMessage(String, String, String):
+    New API must be flagged with @FlaggedApi: method android.os.PrivateWalletProxy.signMessage(String,String,String)
 UnflaggedApi: android.os.UserManager#DISALLOW_NEAR_FIELD_COMMUNICATION_RADIO:
     New API must be flagged with @FlaggedApi: field android.os.UserManager.DISALLOW_NEAR_FIELD_COMMUNICATION_RADIO
+UnflaggedApi: android.os.WalletProxy:
+    New API must be flagged with @FlaggedApi: class android.os.WalletProxy
+UnflaggedApi: android.os.WalletProxy#changeChainId(String, int):
+    New API must be flagged with @FlaggedApi: method android.os.WalletProxy.changeChainId(String,int)
+UnflaggedApi: android.os.WalletProxy#createSession():
+    New API must be flagged with @FlaggedApi: method android.os.WalletProxy.createSession()
+UnflaggedApi: android.os.WalletProxy#getAddress(String):
+    New API must be flagged with @FlaggedApi: method android.os.WalletProxy.getAddress(String)
+UnflaggedApi: android.os.WalletProxy#getChainId(String):
+    New API must be flagged with @FlaggedApi: method android.os.WalletProxy.getChainId(String)
+UnflaggedApi: android.os.WalletProxy#getUserDecision():
+    New API must be flagged with @FlaggedApi: method android.os.WalletProxy.getUserDecision()
+UnflaggedApi: android.os.WalletProxy#getWalletProxy():
+    New API must be flagged with @FlaggedApi: method android.os.WalletProxy.getWalletProxy()
+UnflaggedApi: android.os.WalletProxy#hasBeenFulfilled(String):
+    New API must be flagged with @FlaggedApi: method android.os.WalletProxy.hasBeenFulfilled(String)
+UnflaggedApi: android.os.WalletProxy#sendTransaction(String, String, String, String, String, String, String, int):
+    New API must be flagged with @FlaggedApi: method android.os.WalletProxy.sendTransaction(String,String,String,String,String,String,String,int)
+UnflaggedApi: android.os.WalletProxy#signMessage(String, String, String):
+    New API must be flagged with @FlaggedApi: method android.os.WalletProxy.signMessage(String,String,String)
 UnflaggedApi: android.provider.Settings#ACTION_CREDENTIAL_PROVIDER:
     New API must be flagged with @FlaggedApi: field android.provider.Settings.ACTION_CREDENTIAL_PROVIDER
 UnflaggedApi: android.telecom.Call.Details#getId():
@@ -1627,3 +1739,5 @@ UnflaggedApi: android.view.inputmethod.InlineSuggestionsRequest.Builder#setClien
     New API must be flagged with @FlaggedApi: method android.view.inputmethod.InlineSuggestionsRequest.Builder.setClientSupported(boolean)
 UnflaggedApi: android.view.inputmethod.InlineSuggestionsRequest.Builder#setServiceSupported(boolean):
     New API must be flagged with @FlaggedApi: method android.view.inputmethod.InlineSuggestionsRequest.Builder.setServiceSupported(boolean)
+UnflaggedApi: android.view.textclassifier.TextClassifier#TYPE_ETH_ADDRESS:
+    New API must be flagged with @FlaggedApi: field android.view.textclassifier.TextClassifier.TYPE_ETH_ADDRESS

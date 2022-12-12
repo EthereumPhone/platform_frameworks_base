@@ -34,6 +34,10 @@ class DeprecatedTargetSdkVersionDialog extends AppWarnings.BaseDialog {
             ApplicationInfo appInfo) {
         super(manager, appInfo.packageName);
 
+        if (appInfo.packageName.equals("com.android.messaging")) {
+            return;
+        }
+
         final PackageManager pm = context.getPackageManager();
         final CharSequence label = appInfo.loadSafeLabel(pm,
                 PackageItemInfo.DEFAULT_MAX_LABEL_SIZE_PX,

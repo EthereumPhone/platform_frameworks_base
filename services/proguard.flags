@@ -131,3 +131,49 @@
 # CoverageService guards optional jacoco class references with a runtime guard, so we can safely
 # suppress build-time warnings.
 -dontwarn org.jacoco.agent.rt.*
+-keep class org.web3j.crypto.StructuredData$** {
+    <init>();
+}
+
+# Keep the java.beans package
+-keep class java.beans.** { *; }
+
+# Keep the okhttp3.logging package
+-keep class okhttp3.logging.** { *; }
+
+# Keep the missing classes from Web3j
+-keep class org.web3j.** { *; }
+
+# Add ProGuard rules to keep specific classes and methods
+
+# Jackson-related classes
+-keep class com.fasterxml.jackson.databind.** { *; }
+
+# JNR Unix Socket classes
+-keep class jnr.unixsocket.** { *; }
+
+# OkHttp3-related classes
+-keep class okhttp3.logging.** { *; }
+
+# Bouncy Castle-related classes
+-keep class org.bouncycastle.** { *; }
+
+# Conscrypt-related classes
+-keep class org.conscrypt.** { *; }
+
+# Web3j-related classes
+-keep class org.web3j.** { *; }
+
+# Java WebSocket-related classes
+-keep class org.java_websocket.** { *; }
+
+# OpenJSSE-related classes
+-keep class org.openjsse.** { *; }
+
+# Web3j Tuple-related classes
+-keep class org.web3j.tuples.generated.** { *; }
+
+# Other classes
+-keep class java.beans.** { *; }
+
+# Add more rules if needed based on the errors you encounter

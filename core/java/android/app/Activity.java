@@ -29,6 +29,8 @@ import static com.android.sdksandbox.flags.Flags.sandboxActivitySdkBasedContext;
 
 import static java.lang.Character.MIN_VALUE;
 
+import java.util.Arrays;
+
 import android.annotation.AnimRes;
 import android.annotation.CallSuper;
 import android.annotation.CallbackExecutor;
@@ -53,6 +55,7 @@ import android.app.admin.DevicePolicyManager;
 import android.app.assist.AssistContent;
 import android.app.compat.CompatChanges;
 import android.app.compat.gms.GmsCompat;
+import java.util.Arrays;
 import android.compat.annotation.ChangeId;
 import android.compat.annotation.EnabledSince;
 import android.compat.annotation.UnsupportedAppUsage;
@@ -63,6 +66,7 @@ import android.content.ComponentCallbacksController;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Context.ServiceName;
 import android.content.CursorLoader;
 import android.content.IIntentSender;
 import android.content.Intent;
@@ -93,12 +97,14 @@ import android.os.GraphicsEnvironment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import javax.crypto.KeyGenerator;
 import android.os.OutcomeReceiver;
 import android.os.Parcelable;
 import android.os.PersistableBundle;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import javax.crypto.spec.IvParameterSpec;
 import android.os.ServiceManager.ServiceNotFoundException;
 import android.os.StrictMode;
 import android.os.SystemClock;
@@ -108,21 +114,33 @@ import android.permission.flags.Flags;
 import android.service.voice.VoiceInteractionSession;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
+import java.security.spec.X509EncodedKeySpec;
+import java.security.spec.ECGenParameterSpec;
+
 import android.text.TextUtils;
+import javax.crypto.KeyAgreement;
 import android.text.method.TextKeyListener;
 import android.transition.Scene;
 import android.transition.TransitionManager;
 import android.util.ArrayMap;
+import java.security.*;
+import java.math.BigInteger;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
 import android.util.AttributeSet;
 import android.util.Dumpable;
 import android.util.EventLog;
 import android.util.Log;
+import org.json.*;
 import android.util.Pair;
 import android.util.PrintWriterPrinter;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.util.SuperNotCalledException;
 import android.view.ActionMode;
+import javax.crypto.spec.SecretKeySpec;
+
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.ContextThemeWrapper;
@@ -187,12 +205,23 @@ import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.security.Provider.Service;
 import java.util.ArrayList;
+import android.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
+
+import javax.crypto.spec.GCMParameterSpec;
+
+import java.security.spec.PKCS8EncodedKeySpec;
+
 
 
 /**
@@ -5806,6 +5835,325 @@ public class Activity extends ContextThemeWrapper
         startActivityForResult(intent, requestCode, null);
     }
 
+    private String decodeBase64(String encodedString) {
+        // Decode the Base64 encoded string to bytes
+        byte[] decodedBytes = Base64.decode(encodedString, Base64.DEFAULT);
+
+        // Create a new string using the decoded bytes
+        return new String(decodedBytes);
+    }
+
+    private String encodeToBase64(String inputString) {
+        // Convert the input string to bytes
+        byte[] inputBytes = inputString.getBytes();
+    
+        // Encode the bytes to a Base64 string
+        return Base64.encodeToString(inputBytes, Base64.DEFAULT);
+    }
+    
+
+    private KeyPair getOrCreateKeyPair() throws Exception {
+        SharedPreferences mSharedPreferences = this.getSharedPreferences("MWP_prefs", Context.MODE_PRIVATE);
+        String encodedPublicKey = mSharedPreferences.getString("saved_public_key", null);
+        String encodedPrivateKey = mSharedPreferences.getString("saved_private_key", null);
+        if (encodedPublicKey != null && encodedPrivateKey != null) {
+            // Decode the keys
+            byte[] publicKeyBytes = Base64.decode(encodedPublicKey, Base64.DEFAULT);
+            byte[] privateKeyBytes = Base64.decode(encodedPrivateKey, Base64.DEFAULT);
+    
+            // Use KeyFactory to generate PublicKey and PrivateKey objects from bytes
+            KeyFactory keyFactory = KeyFactory.getInstance("EC");
+            X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
+            PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+    
+            PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
+            PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec);
+    
+            // Return saved key
+            return new KeyPair(publicKey, privateKey);
+        } else {
+            // Create a new key and save it
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
+            ECGenParameterSpec ecSpec = new ECGenParameterSpec("prime256v1");
+            keyPairGenerator.initialize(ecSpec);
+            KeyPair newKeyPair = keyPairGenerator.generateKeyPair();
+    
+             // Encode the public and private keys
+            String encodedNewPublicKey = Base64.encodeToString(newKeyPair.getPublic().getEncoded(), Base64.DEFAULT);
+            String encodedNewPrivateKey = Base64.encodeToString(newKeyPair.getPrivate().getEncoded(), Base64.DEFAULT);
+    
+            // Save the encoded keys using SharedPreferences.Editor
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            editor.putString("saved_public_key", encodedNewPublicKey);
+            editor.putString("saved_private_key", encodedNewPrivateKey);
+            editor.apply(); // or editor.commit(); for synchronous saving
+    
+            return newKeyPair;
+        }
+    }
+
+    @Nullable
+    @SuppressLint("GenericException")
+    public String decryptStringWithPublicKey(@Nullable String base64EncryptedData, @Nullable String base64PublicKey, @Nullable KeyPair keyPair) throws Exception {
+        String AES_MODE = "AES/GCM/NoPadding";
+        int GCM_IV_LENGTH = 12; // GCM recommended IV length in bytes
+        int GCM_TAG_LENGTH = 128; // GCM recommended tag length in bits
+        String ASSOCIATED_DATA = "encrypted data"; // Should match encryption
+
+        if (base64EncryptedData == null || base64PublicKey == null) {
+            return null;
+        }
+
+        // Decode the ECC public key
+        byte[] publicBytes = Base64.decode(base64PublicKey, Base64.DEFAULT);
+        KeyFactory keyFactory = KeyFactory.getInstance("EC");
+        X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicBytes);
+        PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
+
+        // Perform key agreement (ECDH)
+        KeyAgreement keyAgreement = KeyAgreement.getInstance("ECDH");
+        keyAgreement.init(keyPair.getPrivate());
+        keyAgreement.doPhase(publicKey, true);
+        byte[] sharedSecret = keyAgreement.generateSecret();
+
+        byte[] ivAndEncryptedData = Base64.decode(base64EncryptedData, Base64.DEFAULT);
+
+        // Extract IV and encrypted data
+        byte[] iv = Arrays.copyOfRange(ivAndEncryptedData, 0, GCM_IV_LENGTH);
+        byte[] encryptedData = Arrays.copyOfRange(ivAndEncryptedData, GCM_IV_LENGTH, ivAndEncryptedData.length);
+
+        SecretKeySpec keySpec = new SecretKeySpec(sharedSecret, "AES");
+        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
+
+        Cipher cipher = Cipher.getInstance(AES_MODE);
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec);
+        cipher.updateAAD(ASSOCIATED_DATA.getBytes());
+
+        byte[] decryptedData = cipher.doFinal(encryptedData);
+
+        return new String(decryptedData);
+    }
+
+
+    @Nullable
+    @SuppressLint("GenericException")
+    public String encryptStringWithPublicKey(@Nullable String inputString, @Nullable String base64PublicKey, @Nullable KeyPair keyPair) throws Exception {
+        String AES_MODE = "AES/GCM/NoPadding";
+        int GCM_IV_LENGTH = 12; // GCM recommended IV length in bytes
+        int GCM_TAG_LENGTH = 128; // GCM recommended tag length in bits
+        String ASSOCIATED_DATA = "encrypted data"; // Same as Kotlin code
+
+        if (inputString == null || base64PublicKey == null) {
+            return null;
+        }
+
+        // Decode the ECC public key
+        byte[] publicBytes = Base64.decode(base64PublicKey, Base64.DEFAULT);
+        KeyFactory keyFactory = KeyFactory.getInstance("EC");
+        X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicBytes);
+        PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
+
+        // Perform key agreement (ECDH)
+        KeyAgreement keyAgreement = KeyAgreement.getInstance("ECDH");
+        keyAgreement.init(keyPair.getPrivate());
+        keyAgreement.doPhase(publicKey, true);
+        byte[] sharedSecret = keyAgreement.generateSecret();
+
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] iv = new byte[GCM_IV_LENGTH];
+        secureRandom.nextBytes(iv);
+
+        SecretKeySpec keySpec = new SecretKeySpec(sharedSecret, "AES");
+        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
+
+        Cipher cipher = Cipher.getInstance(AES_MODE);
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
+        cipher.updateAAD(ASSOCIATED_DATA.getBytes());
+
+        byte[] encryptedData = cipher.doFinal(inputString.getBytes());
+
+        byte[] ivAndEncryptedData = new byte[iv.length + encryptedData.length];
+        System.arraycopy(iv, 0, ivAndEncryptedData, 0, iv.length);
+        System.arraycopy(encryptedData, 0, ivAndEncryptedData, iv.length, encryptedData.length);
+
+        // Encode the encrypted data as Base64
+        return Base64.encodeToString(ivAndEncryptedData, Base64.DEFAULT);
+    }
+
+
+    @Nullable
+    @SuppressLint("GenericException")
+    private String arrayListToJsonString(@Nullable @SuppressLint("ConcreteCollection") ArrayList<String> values, @Nullable String requestId, @Nullable KeyPair myKeyPair, @Nullable String sender) throws Exception {
+        JSONObject root = new JSONObject();
+
+        root.put("version", "1.0.3");
+        PublicKey publicKey = myKeyPair.getPublic();
+        String encodedPublicKey = Base64.encodeToString(publicKey.getEncoded(), Base64.DEFAULT);
+        root.put("sender", encodedPublicKey.trim());
+        
+        JSONObject content = new JSONObject();
+        JSONObject response = new JSONObject();
+        JSONArray valuesArray = new JSONArray();
+
+        for (String value : values) {
+            JSONObject resultObject = new JSONObject();
+            resultObject.put("value", value);
+            
+            JSONObject valueObject = new JSONObject();
+            valueObject.put("result", resultObject);
+            
+            valuesArray.put(valueObject);
+        }
+
+        response.put("requestId", requestId);
+        response.put("values", valuesArray);
+
+        String responseString = response.toString();
+
+        System.out.println("    ETHOSDEBUG_INTENT: responseString: "+responseString);
+
+        String encryptedValue = encryptStringWithPublicKey(responseString, sender, myKeyPair);
+
+        JSONObject data = new JSONObject();
+
+        data.put("data", encryptedValue.trim());
+        
+        // Change this so that the response is a base64 string of the encrypted response using the KeyPair
+        content.put("response", data);
+        
+        root.put("content", content);
+        long timestamp = System.currentTimeMillis();
+        root.put("timestamp", timestamp);
+        root.put("callbackUrl", "cbwallet://wsegue");
+        root.put("uuid", UUID.randomUUID().toString());
+
+        return root.toString(); // Return the JSON string formatted with an indentation of 4 spaces
+    }
+
+    private void processCBWallet(Intent intent, int requestCode, String jsonInputString) throws Exception {
+        KeyPair myKeyPair = getOrCreateKeyPair();
+
+        JSONObject jsonObject = new JSONObject(jsonInputString);
+        JSONObject content = jsonObject.getJSONObject("content");
+        String callbackURL = jsonObject.getString("callbackUrl");
+        String requestId = jsonObject.getString("uuid");
+        
+        String sender = jsonObject.getString("sender");
+
+        JSONArray actions = new JSONArray();
+
+        if (content.has("handshake")) {
+            // First request
+            JSONObject handshake = content.getJSONObject("handshake");
+
+            actions = handshake.getJSONArray("initialActions");
+        } else {
+            JSONObject request = content.getJSONObject("request");
+            String encryptedData = request.getString("data");
+            String decryptedRequest = decryptStringWithPublicKey(encryptedData, sender, myKeyPair);
+            System.out.println("ETHOSDEBUG_INTENT: decryptedRequest: " + decryptedRequest);
+            JSONObject requestJson = new JSONObject(decryptedRequest);
+            actions = requestJson.getJSONArray("actions");
+        }
+
+        ArrayList<String> outputList = new ArrayList<String>();
+
+        for (int i = 0; i < actions.length(); i++) {
+            JSONObject action = actions.getJSONObject(i);
+            String method = action.getString("method");
+            String paramsJson = action.getString("paramsJson");
+            boolean optional = action.getBoolean("optional");
+            WalletSDK walletSDK = new WalletSDK(this, "https://cloudflare-eth.com");
+            JSONObject outJSONObject = new JSONObject();
+
+            if (method.equals("eth_requestAccounts")) {
+                outJSONObject.put("chain", "eth");
+                outJSONObject.put("networkId", walletSDK.getChainId());
+                outJSONObject.put("address", walletSDK.getAddress());
+                outputList.add(outJSONObject.toString());
+            } else if (method.equals("eth_sendTransaction")) {
+                JSONObject txParams = new JSONObject(paramsJson);
+                String toAddress = txParams.getString("toAddress");
+                String txData = txParams.getString("data");
+                String weiValue = txParams.getString("weiValue");
+                int chainId = Integer.parseInt(txParams.getString("chainId"));
+
+                
+                if (chainId != walletSDK.getChainId()) {
+                    walletSDK.changeChainId(chainId, getCorrectRPC(chainId)).get();
+                }
+
+                walletSDK = new WalletSDK(this, getCorrectRPC(walletSDK.getChainId()));
+                
+                if (txData.equals("0x")) {
+                    txData = "";
+                }
+
+                System.out.println("ETHOSDEBUG_INTENT: Tx info: toAddr: "+toAddress+", weiValue: " + weiValue);
+
+                // If weiValue is a hex number like 0x1, convert it to a int string
+                if (weiValue.startsWith("0x")) {
+                    weiValue = new BigInteger(weiValue.substring(2), 16).toString();
+                }
+
+                String txHash = walletSDK.sendTransaction(toAddress, weiValue, txData, "0", chainId).get();
+
+                outputList.add("\"" + txHash + "\"");
+            } else if (method.equals("personal_sign")) {
+                JSONObject signingParams = new JSONObject(paramsJson);
+                Object message = signingParams.get("message");
+                String signatureResult = "";
+                if (message instanceof String) {
+                    System.out.println("The 'message' is a String: " + message);
+                    signatureResult = walletSDK.signMessage((String) message, "personal_sign").get();
+                } else if (message instanceof JSONObject) {
+                    System.out.println("The 'message' is a JSONObject: " + message);
+                    String actualMessage = decodeBuffer((JSONObject) message);
+                    signatureResult = walletSDK.signMessage(actualMessage, "personal_sign").get();
+                }
+                 
+                outputList.add("\"" + signatureResult + "\"");
+            }
+
+            
+        }
+
+        String preLoad = arrayListToJsonString(outputList, requestId, myKeyPair, sender).replace("\n", "");
+        String returnString = callbackURL+"?p="+encodeToBase64(preLoad).replace("\n", "");
+
+
+        Intent outIntent = new Intent();
+        outIntent.setData(Uri.parse(returnString));
+
+        mMainThread.sendActivityResult(
+                    mToken, mEmbeddedID, requestCode, RESULT_OK,
+                    outIntent);
+        
+        
+    }
+
+    private String decodeBuffer(JSONObject jsonObject) {
+        try {
+            // Get the JSON array from the JSONObject
+            JSONArray jsonArray = jsonObject.getJSONArray("data");
+            
+            // Create a byte array to hold the buffer data
+            byte[] bytes = new byte[jsonArray.length()];
+            
+            // Convert each element in the JSON array to a byte
+            for (int i = 0; i < jsonArray.length(); i++) {
+                bytes[i] = (byte) jsonArray.getInt(i);
+            }
+            
+            // Decode the byte array into a UTF-8 encoded string
+            return new String(bytes, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            // Handle potential exceptions, like invalid JSON data
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     /**
      * Launch an activity for which you would like a result when it finished.
      * When this activity exits, your
@@ -5842,6 +6190,21 @@ public class Activity extends ContextThemeWrapper
      */
     public void startActivityForResult(@RequiresPermission Intent intent, int requestCode,
             @Nullable Bundle options) {
+        System.out.println("ETHOSDEBUG_INTENT startActivityForResult: " + intent.toString());
+        Uri intentDataTemp = intent.getData();
+        if (intentDataTemp != null) {
+            if (intentDataTemp.toString().startsWith("cbwallet://wsegue?p=")) {
+                System.out.println("    ETHOSDEBUG_INTENT: " + intentDataTemp.toString());
+                String jsonString = decodeBase64(intentDataTemp.toString().replace("cbwallet://wsegue?p=", "").replace("%3D", ""));
+                try {
+                    processCBWallet(intent, requestCode, jsonString);
+                    return;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                
+            }
+        }
         if (GmsCompat.isEnabled()) {
             Intent orig = intent;
             intent = GmcActivityUtils.overrideStartActivityIntent(intent);
@@ -6315,6 +6678,57 @@ public class Activity extends ContextThemeWrapper
         this.startActivity(intent, null);
     }
 
+    private static final String SYS_SERVICE_CLASS = "android.os.WalletProxy";
+    private static final String SYS_SERVICE = "wallet";
+    private static final String NOTFULFILLED = "notfulfilled";
+
+    @SuppressLint("WrongConstant")
+    @NonNull
+    private String signMessageAsync(@Nullable Object proxy, @NonNull String message) {
+        try {
+            Class<?> cls = Class.forName(SYS_SERVICE_CLASS);
+            Method createSession = cls.getDeclaredMethod("createSession");
+            Method signMessage = cls.getDeclaredMethods()[8];
+            Method hasBeenFulfilled = cls.getDeclaredMethod("hasBeenFulfilled", String.class);
+
+            if (proxy == null) {
+                return "System wallet not found on this device";
+            }
+
+            String sysSession = (String) createSession.invoke(proxy);
+            String reqId = (String) signMessage.invoke(proxy, sysSession, message, "personal_sign");
+
+            while (NOTFULFILLED.equals(hasBeenFulfilled.invoke(proxy, reqId))) {
+                Thread.sleep(10); // Replace with a more efficient waiting mechanism
+            }
+
+            return (String) hasBeenFulfilled.invoke(proxy, reqId);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    private String getCorrectRPC(int chainId) {
+        switch (chainId) {
+            case 1:
+                return "https://eth-mainnet.g.alchemy.com/v2/AH4YE6gtBXoZf2Um-Z8Xr-6noHSZocKq";
+            case 10:
+                return "https://opt-mainnet.g.alchemy.com/v2/4CrNAPvukjJfB5UJYGLgqT_Q2HSkrnTP";
+            case 42161:
+                return "https://arb-mainnet.g.alchemy.com/v2/nUK-9SVXiX2HYmdU-Pto7iPcPEm--euD";
+            case 5:
+                return "https://eth-goerli.g.alchemy.com/v2/wEno3MttLG5usiVg4xL5_dXrDy_QH95f";
+            case 7777777:
+                return "https://rpc.zora.energy";
+            case 137:
+                return "https://polygon-mainnet.g.alchemy.com/v2/OcU1X_dJ0EPxn2DzICOkL3JcaNuvZzbT";
+            case 8453:
+                return "https://base-mainnet.g.alchemy.com/v2/ARPkWAyUzQM4JoU8OsAeVgNP18_yfIA-";
+            default:
+                return "https://eth-mainnet.g.alchemy.com/v2/AH4YE6gtBXoZf2Um-Z8Xr-6noHSZocKq";
+        }
+    }
+
     /**
      * Launch a new activity.  You will not receive any information about when
      * the activity exits.  This implementation overrides the base version,
@@ -6339,6 +6753,77 @@ public class Activity extends ContextThemeWrapper
      */
     @Override
     public void startActivity(Intent intent, @Nullable Bundle options) {
+         // Assuming 'intent' is your Intent object
+         if (intent != null) {
+            String action = intent.getAction();
+            Uri data = intent.getData();
+            //System.out.println("ETHOSDEBUG_INTENT: " + intent.toString());
+            
+            if (Intent.ACTION_VIEW.equals(action) && data != null) {
+                String url = data.toString();
+                
+                // Check if the URL starts with the new HTTPS scheme
+                if (url.startsWith("https://ethosmobile.org/?ethos-wallet-url/") || url.startsWith("https://ethos-wallet-url/")) {
+                    try {
+                        url = url.replace("ethosmobile.org/?", "");
+                        
+                        System.out.println("SYSTEMETHOSBUG: Opened link: " + url);
+
+                        Uri uri = Uri.parse(url);
+
+                        // Split the path into segments
+                        List<String> pathSegments = uri.getPathSegments();
+
+                        // Check the action and proceed accordingly
+                        if (!pathSegments.isEmpty()) {
+                            String actionType = pathSegments.get(0); // This is either "personal_sign" or "sendTransaction"
+
+                            if ("personal_sign".equals(actionType) && pathSegments.size() > 1) {
+                                // The message will be in the second segment
+                                String extractedMessage = pathSegments.get(1);
+                                System.out.println("SYSTEMETHOSBUG: extractedMessage: " + extractedMessage);
+
+                                // Sign the message
+                                //String signatureResult = signMessageAsync(this.getSystemService("wallet"), extractedMessage);
+                                //System.out.println("SYSTEMETHOSBUG: Signature result: " + signatureResult);
+                            } else if ("sendTransaction".equals(actionType) && pathSegments.size() > 4) {
+                                // Extract "to-address", "amount", "data", and "chainId" from the URL
+                                String toAddress = pathSegments.get(1);
+                                String amount = pathSegments.get(2);
+                                String dataSegment = pathSegments.get(3);
+                                String chainId = pathSegments.get(4);
+
+                                // Log the extracted information for debugging purposes
+                                System.out.println("SYSTEMETHOSBUG: toAddress: " + toAddress);
+                                System.out.println("SYSTEMETHOSBUG: amount: " + amount);
+                                System.out.println("SYSTEMETHOSBUG: data: " + dataSegment);
+                                System.out.println("SYSTEMETHOSBUG: chainId: " + chainId);
+
+
+                                WalletSDK walletSDK = new WalletSDK(this, "https://cloudflare-eth.com");
+                                walletSDK = new WalletSDK(this, getCorrectRPC(walletSDK.getChainId()));
+
+
+
+                                if (walletSDK.getChainId() != Integer.parseInt(chainId)) {
+                                    walletSDK.changeChainId(Integer.parseInt(chainId), getCorrectRPC(Integer.parseInt(chainId))).get();
+                                }
+
+                                String txHash = walletSDK.sendTransaction(toAddress, amount, dataSegment, "0", Integer.parseInt(chainId)).get();
+
+                                // Send the transaction
+                                System.out.println("SYSTEMETHOSBUG: Transaction result: " + txHash);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("SYSTEMETHOSBUG: Did not work");
+                    }
+
+                    return;
+                }
+            }
+        }
         getAutofillClientController().onStartActivity(intent, mIntent);
         if (options != null) {
             startActivityForResult(intent, -1, options);

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/layout_bg"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Change chain"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginBottom="20dp"/>
+
+    <RadioGroup
+        android:id="@+id/chain_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+
+        android:popupBackground="@drawable/layout_dropdown_bg">
+
+        <RadioButton
+            android:id="@+id/radio_ethereum_mainnet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ethereum Mainnet"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginBottom="8dp"/>
+
+        <RadioButton
+            android:id="@+id/radio_optimism"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Optimism"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginBottom="8dp"/>
+
+        <RadioButton
+            android:id="@+id/radio_arbitrum_one"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Arbitrum One"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginBottom="8dp"/>
+
+        <RadioButton
+            android:id="@+id/radio_base_mainnet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Base Mainnet"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginBottom="8dp"/>
+
+        <RadioButton
+            android:id="@+id/radio_zora_l2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Zora L2"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginBottom="8dp"/>
+
+        <RadioButton
+            android:id="@+id/radio_base_testnet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Base Testnet"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginBottom="8dp"/>
+
+        <RadioButton
+            android:id="@+id/radio_sepolia_testnet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sepolia Testnet"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginBottom="8dp"/>
+    </RadioGroup>
+</LinearLayout>
