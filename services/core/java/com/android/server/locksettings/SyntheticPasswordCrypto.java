@@ -38,6 +38,7 @@ import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidParameterSpecException;
+import java.security.InvalidAlgorithmParameterException;
 import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
@@ -48,6 +49,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.spec.IvParameterSpec;
 
 class SyntheticPasswordCrypto {
     private static final String TAG = "SyntheticPasswordCrypto";
@@ -77,14 +79,12 @@ class SyntheticPasswordCrypto {
     private static byte[] encrypt(SecretKey key, byte[] blob)
             throws IOException, NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
-            InvalidParameterSpecException {
+            InvalidParameterSpecException, InvalidAlgorithmParameterException {
         if (blob == null) {
             return null;
         }
-        Cipher cipher = Cipher.getInstance(
-                KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_GCM + "/"
-                        + KeyProperties.ENCRYPTION_PADDING_NONE);
-        cipher.init(Cipher.ENCRYPT_MODE, key);
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, getIVSecureRandom());
         byte[] ciphertext = cipher.doFinal(blob);
         byte[] iv = cipher.getIV();
         if (iv.length != AES_GCM_IV_SIZE) {
@@ -106,7 +106,7 @@ class SyntheticPasswordCrypto {
             return encrypt(key, message);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
                 | IllegalBlockSizeException | BadPaddingException | IOException
-                | InvalidParameterSpecException e) {
+                | InvalidParameterSpecException | InvalidAlgorithmParameterException e) {
             Slog.e(TAG, "Failed to encrypt", e);
             return null;
         }
@@ -233,7 +233,7 @@ class SyntheticPasswordCrypto {
                 | IllegalBlockSizeException
                 | KeyStoreException | NoSuchPaddingException | NoSuchAlgorithmException
                 | InvalidKeyException
-                | InvalidParameterSpecException e) {
+                | InvalidParameterSpecException | InvalidAlgorithmParameterException e) {
             Slog.e(TAG, "Failed to create blob", e);
             throw new IllegalStateException("Failed to encrypt blob", e);
         }
