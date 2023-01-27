@@ -1314,6 +1314,35 @@ public final class SystemServer implements Dumpable {
         mSystemServiceManager.startService(new SensorPrivacyService(mSystemContext));
         t.traceEnd();
 
+	    try {
+            t.traceBegin("GethService");
+            GethService gethService = new GethService();
+            ServiceManager.addService("geth", gethService);
+            t.traceEnd();
+        } catch (Throwable e) {
+            Slog.e("System", "Failed starting GethNode", e);
+        }
+
+        try {
+            t.traceBegin("WalletService");
+            WalletService walletService = new WalletService(mSystemContext);
+            ServiceManager.addService("wallet", walletService);
+            t.traceEnd();
+        } catch (Throwable e) {
+            Slog.e("System", "Failed starting WalletService", e);
+        }
+
+        // Private WalletService
+        try {
+            t.traceBegin("PrivateWalletService");
+            PrivateWalletService privateWalletService = new PrivateWalletService();
+            ServiceManager.addService("privatewallet", privateWalletService);
+            t.traceEnd();
+        } catch (Throwable e) {
+            Slog.e("System", "Failed starting PrivateWalletService", e);
+            e.printStackTrace();
+        }
+
         if (SystemProperties.getInt("persist.sys.displayinset.top", 0) > 0) {
             // DisplayManager needs the overlay immediately.
             mActivityManagerService.updateSystemUiContext();
