@@ -173,6 +173,9 @@ public class ExtSettings {
             WV_STANDARD_SERVER, WV_GRAPHENEOS_PROXY // valid values
     );
 
+    public static final BoolSetting SCREENSHOT_TIMESTAMP_EXIF = new BoolSetting(
+            Setting.Scope.PER_USER, "screenshot_timestamp_exif", false);
+
     private ExtSettings() {}
 
     // used for making settings defined in this class unreadable by third-party apps
