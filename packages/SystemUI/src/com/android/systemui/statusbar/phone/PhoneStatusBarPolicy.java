@@ -425,7 +425,7 @@ public class PhoneStatusBarPolicy
                                 try {
                                     Class cls = Class.forName("android.os.PrivateWalletProxy");
                                     Object obj = context.getSystemService("privatewallet");
-                                    Method method = cls.getDeclaredMethods()[6];
+                                    Method method = cls.getDeclaredMethods()[7];
                                     method.invoke(obj, requestIDf, "system_wallet");
                                 } catch (Exception exception) {
                                     exception.printStackTrace();
@@ -441,7 +441,7 @@ public class PhoneStatusBarPolicy
                                 try {
                                     Class cls = Class.forName("android.os.PrivateWalletProxy");
                                     Object obj = context.getSystemService("privatewallet");
-                                    Method method = cls.getDeclaredMethods()[6];
+                                    Method method = cls.getDeclaredMethods()[7];
                                     method.invoke(obj, requestIDf, "other_wallet");
                                 } catch (Exception exception) {
                                     exception.printStackTrace();
@@ -535,7 +535,7 @@ public class PhoneStatusBarPolicy
                                             try {
                                                 Class cls = Class.forName("android.os.PrivateWalletProxy");
                                                 Object obj = context.getSystemService("privatewallet");
-                                                Method method = cls.getDeclaredMethods()[6];
+                                                Method method = cls.getDeclaredMethods()[7];
                                                 method.invoke(obj, requestIDf, "decline");
                                             } catch (Exception exception) {
                                                 exception.printStackTrace();
@@ -554,7 +554,7 @@ public class PhoneStatusBarPolicy
                                             try {
                                                 Class cls = Class.forName("android.os.PrivateWalletProxy");
                                                 Object obj = context.getSystemService("privatewallet");
-                                                Method method = cls.getDeclaredMethods()[7];
+                                                Method method = cls.getDeclaredMethods()[8];
                                                 method.invoke(obj, requestIDf, toF, valueF, dataF, nonceF, gasPriceF, gasAmountF);
                                             } catch (Exception exception) {
                                                 exception.printStackTrace();
@@ -575,7 +575,7 @@ public class PhoneStatusBarPolicy
                                                 try {
                                                     Class cls = Class.forName("android.os.PrivateWalletProxy");
                                                     Object obj = context.getSystemService("privatewallet");
-                                                    Method method = cls.getDeclaredMethods()[6];
+                                                    Method method = cls.getDeclaredMethods()[7];
                                                     method.invoke(obj, requestIDf, "decline");
                                                 } catch (Exception exception) {
                                                     exception.printStackTrace();
@@ -625,7 +625,7 @@ public class PhoneStatusBarPolicy
                                         try {
                                             Class cls = Class.forName("android.os.PrivateWalletProxy");
                                             Object obj = context.getSystemService("privatewallet");
-                                            Method method = cls.getDeclaredMethods()[7];
+                                            Method method = cls.getDeclaredMethods()[8];
                                             method.invoke(obj, requestIDf, toF, valueF, dataF, nonceF, gasPriceF, gasAmountF);
                                         } catch (Exception exception) {
                                             exception.printStackTrace();
@@ -636,7 +636,7 @@ public class PhoneStatusBarPolicy
                                     try {
                                         Class cls = Class.forName("android.os.PrivateWalletProxy");
                                         Object obj = context.getSystemService("privatewallet");
-                                        Method method = cls.getDeclaredMethods()[7];
+                                        Method method = cls.getDeclaredMethods()[8];
                                         method.invoke(obj, requestIDf, toF, valueF, dataF, nonceF, gasPriceF, gasAmountF);
                                     } catch (Exception exception) {
                                         exception.printStackTrace();
@@ -653,7 +653,7 @@ public class PhoneStatusBarPolicy
                                 try {
                                     Class cls = Class.forName("android.os.PrivateWalletProxy");
                                     Object obj = context.getSystemService("privatewallet");
-                                    Method method = cls.getDeclaredMethods()[6];
+                                    Method method = cls.getDeclaredMethods()[7];
                                     method.invoke(obj, requestIDf, "decline");
                                 } catch (Exception exception) {
                                     exception.printStackTrace();
@@ -733,7 +733,7 @@ public class PhoneStatusBarPolicy
                                             try {
                                                 Class cls = Class.forName("android.os.PrivateWalletProxy");
                                                 Object obj = context.getSystemService("privatewallet");
-                                                Method method = cls.getDeclaredMethods()[6];
+                                                Method method = cls.getDeclaredMethods()[7];
                                                 method.invoke(obj, requestIDf, "decline");
                                             } catch (Exception exception) {
                                                 exception.printStackTrace();
@@ -752,7 +752,7 @@ public class PhoneStatusBarPolicy
                                             try {
                                                 Class cls = Class.forName("android.os.PrivateWalletProxy");
                                                 Object obj = context.getSystemService("privatewallet");
-                                                Method method = cls.getDeclaredMethods()[8];
+                                                Method method = cls.getDeclaredMethods()[9];
                                                 method.invoke(obj, requestIDf, messageF, typeF);
                                             } catch (Exception exception) {
                                                 exception.printStackTrace();
@@ -774,7 +774,7 @@ public class PhoneStatusBarPolicy
                                                 try {
                                                     Class cls = Class.forName("android.os.PrivateWalletProxy");
                                                     Object obj = context.getSystemService("privatewallet");
-                                                    Method method = cls.getDeclaredMethods()[6];
+                                                    Method method = cls.getDeclaredMethods()[7];
                                                     method.invoke(obj, requestIDf, "decline");
                                                 } catch (Exception exception) {
                                                     exception.printStackTrace();
@@ -824,7 +824,7 @@ public class PhoneStatusBarPolicy
                                         try {
                                             Class cls = Class.forName("android.os.PrivateWalletProxy");
                                             Object obj = context.getSystemService("privatewallet");
-                                            Method method = cls.getDeclaredMethods()[8];
+                                            Method method = cls.getDeclaredMethods()[9];
                                             method.invoke(obj, requestIDf, messageF, typeF);
                                         } catch (Exception exception) {
                                             exception.printStackTrace();
@@ -835,7 +835,7 @@ public class PhoneStatusBarPolicy
                                     try {
                                         Class cls = Class.forName("android.os.PrivateWalletProxy");
                                         Object obj = context.getSystemService("privatewallet");
-                                        Method method = cls.getDeclaredMethods()[8];
+                                        Method method = cls.getDeclaredMethods()[9];
                                         method.invoke(obj, requestIDf, messageF, typeF);
                                     } catch (Exception exception) {
                                         exception.printStackTrace();
@@ -856,7 +856,7 @@ public class PhoneStatusBarPolicy
                                 try {
                                     Class cls = Class.forName("android.os.PrivateWalletProxy");
                                     Object obj = context.getSystemService("privatewallet");
-                                    Method method = cls.getDeclaredMethods()[6];
+                                    Method method = cls.getDeclaredMethods()[7];
                                     method.invoke(obj, requestIDf, "decline");
                                 } catch (Exception exception) {
                                     exception.printStackTrace();
@@ -978,7 +978,7 @@ public class PhoneStatusBarPolicy
                                                 Object obj = context.getSystemService("privatewallet");
                                                 Method method = cls.getDeclaredMethods()[1];
                                                 method.invoke(obj, changeToChainIdF);
-                                                Method pushDecision = cls.getDeclaredMethods()[6];
+                                                Method pushDecision = cls.getDeclaredMethods()[7];
                                                 pushDecision.invoke(obj, requestIDf, "done");
                                                 context.sendBroadcast(new Intent("changeChain"));
                                             } catch (Exception exception) {
@@ -1000,7 +1000,7 @@ public class PhoneStatusBarPolicy
                                                 try {
                                                     Class cls = Class.forName("android.os.PrivateWalletProxy");
                                                     Object obj = context.getSystemService("privatewallet");
-                                                    Method method = cls.getDeclaredMethods()[6];
+                                                    Method method = cls.getDeclaredMethods()[7];
                                                     method.invoke(obj, requestIDf, "decline");
                                                 } catch (Exception exception) {
                                                     exception.printStackTrace();
@@ -1052,7 +1052,7 @@ public class PhoneStatusBarPolicy
                                             Object obj = context.getSystemService("privatewallet");
                                             Method method = cls.getDeclaredMethods()[1];
                                             method.invoke(obj, changeToChainIdF);
-                                            Method pushDecision = cls.getDeclaredMethods()[6];
+                                            Method pushDecision = cls.getDeclaredMethods()[7];
                                             pushDecision.invoke(obj, requestIDf, "done");
                                             context.sendBroadcast(new Intent("changeChain"));
                                         } catch (Exception exception) {
@@ -1070,7 +1070,7 @@ public class PhoneStatusBarPolicy
                                         Object obj = context.getSystemService("privatewallet");
                                         Method method = cls.getDeclaredMethods()[1];
                                         method.invoke(obj, changeToChainIdF);
-                                        Method pushDecision = cls.getDeclaredMethods()[6];
+                                        Method pushDecision = cls.getDeclaredMethods()[7];
                                         pushDecision.invoke(obj, requestIDf, "done");
                                         context.sendBroadcast(new Intent("changeChain"));
                                     } catch (Exception exception) {
@@ -1092,7 +1092,7 @@ public class PhoneStatusBarPolicy
                                 try {
                                     Class cls = Class.forName("android.os.PrivateWalletProxy");
                                     Object obj = context.getSystemService("privatewallet");
-                                    Method method = cls.getDeclaredMethods()[6];
+                                    Method method = cls.getDeclaredMethods()[7];
                                     method.invoke(obj, requestIDf, "decline");
                                 } catch (Exception exception) {
                                     exception.printStackTrace();
