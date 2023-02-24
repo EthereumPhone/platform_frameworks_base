@@ -35,6 +35,7 @@ import android.content.Context;
 import android.ext.settings.ExtSettings;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -198,6 +199,8 @@ public abstract class KeyguardPinBasedInputView extends KeyguardAbsKeyInputView 
         mPasswordEntry.requestFocus();
         super.onFinishInflate();
         reloadColors();
+
+        updateScrambling();
     }
 
     NumPadKey[] getButtons() {
