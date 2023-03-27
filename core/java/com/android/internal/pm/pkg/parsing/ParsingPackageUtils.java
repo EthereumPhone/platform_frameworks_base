@@ -124,6 +124,41 @@ import com.android.internal.pm.split.SplitAssetDependencyLoader;
 import com.android.internal.pm.split.SplitAssetLoader;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.XmlUtils;
+import com.android.server.ext.PackageManagerHooks;
+import com.android.server.pm.SharedUidMigration;
+import com.android.server.pm.parsing.pkg.PackageImpl;
+import com.android.server.pm.parsing.pkg.ParsedPackage;
+import com.android.server.pm.permission.CompatibilityPermissionInfo;
+import com.android.server.pm.pkg.component.ComponentMutateUtils;
+import com.android.server.pm.pkg.component.ComponentParseUtils;
+import com.android.server.pm.pkg.component.InstallConstraintsTagParser;
+import com.android.server.pm.pkg.component.ParsedActivity;
+import com.android.server.pm.pkg.component.ParsedActivityUtils;
+import com.android.server.pm.pkg.component.ParsedApexSystemService;
+import com.android.server.pm.pkg.component.ParsedApexSystemServiceUtils;
+import com.android.server.pm.pkg.component.ParsedAttribution;
+import com.android.server.pm.pkg.component.ParsedAttributionUtils;
+import com.android.server.pm.pkg.component.ParsedComponent;
+import com.android.server.pm.pkg.component.ParsedInstrumentation;
+import com.android.server.pm.pkg.component.ParsedInstrumentationUtils;
+import com.android.server.pm.pkg.component.ParsedIntentInfo;
+import com.android.server.pm.pkg.component.ParsedIntentInfoImpl;
+import com.android.server.pm.pkg.component.ParsedIntentInfoUtils;
+import com.android.server.pm.pkg.component.ParsedMainComponent;
+import com.android.server.pm.pkg.component.ParsedPermission;
+import com.android.server.pm.pkg.component.ParsedPermissionGroup;
+import com.android.server.pm.pkg.component.ParsedPermissionUtils;
+import com.android.server.pm.pkg.component.ParsedProcess;
+import com.android.server.pm.pkg.component.ParsedProcessUtils;
+import com.android.server.pm.pkg.component.ParsedProvider;
+import com.android.server.pm.pkg.component.ParsedProviderUtils;
+import com.android.server.pm.pkg.component.ParsedService;
+import com.android.server.pm.pkg.component.ParsedServiceUtils;
+import com.android.server.pm.pkg.component.ParsedUsesPermission;
+import com.android.server.pm.pkg.component.ParsedUsesPermissionImpl;
+import com.android.server.pm.split.DefaultSplitAssetLoader;
+import com.android.server.pm.split.SplitAssetDependencyLoader;
+import com.android.server.pm.split.SplitAssetLoader;
 
 import libcore.io.IoUtils;
 import libcore.util.EmptyArray;
@@ -2346,6 +2381,8 @@ public class ParsingPackageUtils {
 
             pkg.addActivity(a.getResult());
         }
+
+        PackageManagerHooks.amendParsedPackage(pkg);
 
         if (hasActivityOrder) {
             pkg.sortActivities();
