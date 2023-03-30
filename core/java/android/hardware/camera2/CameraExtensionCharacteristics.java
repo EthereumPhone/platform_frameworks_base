@@ -275,6 +275,10 @@ public final class CameraExtensionCharacteristics {
         }
 
         private static boolean validateVendorCameraExtensionsPackage(Context ctx, String pkgName) {
+            if (PixelCameraServicesUtils.validatePackage(ctx, pkgName)) {
+                return true;
+            }
+
             try {
                 ApplicationInfo ai = ctx.getPackageManager().getApplicationInfo(pkgName, 0);
                 return ai.isSystemApp();

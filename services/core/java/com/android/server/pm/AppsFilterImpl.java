@@ -31,6 +31,7 @@ import static com.android.internal.util.FrameworkStatsLog.PACKAGE_MANAGER_APPS_F
 import static com.android.internal.util.FrameworkStatsLog.PACKAGE_MANAGER_APPS_FILTER_CACHE_UPDATE_REPORTED__EVENT_TYPE__PACKAGE_ADDED;
 import static com.android.internal.util.FrameworkStatsLog.PACKAGE_MANAGER_APPS_FILTER_CACHE_UPDATE_REPORTED__EVENT_TYPE__PACKAGE_DELETED;
 import static com.android.internal.util.FrameworkStatsLog.PACKAGE_MANAGER_APPS_FILTER_CACHE_UPDATE_REPORTED__EVENT_TYPE__PACKAGE_REPLACED;
+import static com.android.server.ext.PackageManagerUtils.validatePackage;
 import static com.android.server.pm.AppsFilterUtils.canQueryAsInstaller;
 import static com.android.server.pm.AppsFilterUtils.canQueryAsUpdateOwner;
 import static com.android.server.pm.AppsFilterUtils.canQueryViaComponents;
@@ -65,6 +66,7 @@ import com.android.internal.pm.pkg.component.ParsedPermission;
 import com.android.internal.pm.pkg.component.ParsedUsesPermission;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.FrameworkStatsLog;
+import com.android.internal.util.PixelCameraServicesUtils;
 import com.android.server.FgThread;
 import com.android.server.compat.CompatChange;
 import com.android.server.om.OverlayReferenceMapper;
@@ -585,12 +587,16 @@ public final class AppsFilterImpl extends AppsFilterLocked implements Watchable,
 
         final boolean isGmsApp = GmsCompat.isEnabledFor(PackageExt.get(newPkg).getPackageId(), newPkgSetting.isPrivileged());
 
+        final boolean isPixelCameraServices = validatePackage(newPkg,
+                PixelCameraServicesUtils.PACKAGE_SPEC);
+
         final boolean newIsForceQueryable;
         synchronized (mForceQueryableLock) {
             newIsForceQueryable = mForceQueryable.contains(newPkgSetting.getAppId())
                             /* shared user that is already force queryable */
                             || newPkgSetting.isForceQueryableOverride() /* adb override */
                             || isGmsApp
+                            || isPixelCameraServices
                             || (newPkgSetting.isSystem() && (mSystemAppsQueryable
                             || newPkg.isForceQueryable()
                             || ArrayUtils.contains(mForceQueryableByDevicePackageNames,
