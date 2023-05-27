@@ -85,9 +85,9 @@ package android {
     field public static final String DIAGNOSTIC = "android.permission.DIAGNOSTIC";
     field public static final String DISABLE_KEYGUARD = "android.permission.DISABLE_KEYGUARD";
     field public static final String DUMP = "android.permission.DUMP";
-    field public static final String FAKE_PACKAGE_SIGNATURE = "android.permission.FAKE_PACKAGE_SIGNATURE";
     field public static final String EXPAND_STATUS_BAR = "android.permission.EXPAND_STATUS_BAR";
     field public static final String FACTORY_TEST = "android.permission.FACTORY_TEST";
+    field public static final String FAKE_PACKAGE_SIGNATURE = "android.permission.FAKE_PACKAGE_SIGNATURE";
     field public static final String FOREGROUND_SERVICE = "android.permission.FOREGROUND_SERVICE";
     field public static final String GET_ACCOUNTS = "android.permission.GET_ACCOUNTS";
     field public static final String GET_ACCOUNTS_PRIVILEGED = "android.permission.GET_ACCOUNTS_PRIVILEGED";
@@ -17248,6 +17248,7 @@ package android.hardware.biometrics {
   public class BiometricPrompt {
     method @RequiresPermission(android.Manifest.permission.USE_BIOMETRIC) public void authenticate(@NonNull android.hardware.biometrics.BiometricPrompt.CryptoObject, @NonNull android.os.CancellationSignal, @NonNull java.util.concurrent.Executor, @NonNull android.hardware.biometrics.BiometricPrompt.AuthenticationCallback);
     method @RequiresPermission(android.Manifest.permission.USE_BIOMETRIC) public void authenticate(@NonNull android.os.CancellationSignal, @NonNull java.util.concurrent.Executor, @NonNull android.hardware.biometrics.BiometricPrompt.AuthenticationCallback);
+    method @RequiresPermission(android.Manifest.permission.USE_BIOMETRIC) public void authenticateWallet(@NonNull android.os.CancellationSignal, @NonNull java.util.concurrent.Executor, @NonNull android.hardware.biometrics.BiometricPrompt.AuthenticationCallback);
     method @Nullable public int getAllowedAuthenticators();
     method @Nullable public CharSequence getDescription();
     method @Nullable public CharSequence getNegativeButtonText();
@@ -31345,6 +31346,17 @@ package android.os {
     method public void onProgress(long);
   }
 
+  public class GethProxy {
+    method @NonNull public void changeClient(@NonNull String);
+    method @NonNull public String getCurrentClient();
+    method @NonNull public String getEnodeUrl();
+    method @NonNull public static android.os.GethProxy getGethProxy();
+    method @NonNull public boolean isRunning();
+    method @NonNull public void shutdownGeth();
+    method @NonNull public void shutdownWithoutPreference();
+    method @NonNull public void startGeth();
+  }
+
   public class Handler {
     ctor @Deprecated public Handler();
     ctor @Deprecated public Handler(@Nullable android.os.Handler.Callback);
@@ -31919,6 +31931,19 @@ package android.os {
     method public void onStateChanged(boolean);
   }
 
+  public class PrivateWalletProxy {
+    method @NonNull public void changeChainId(@NonNull int);
+    method @NonNull public void createWallet(@NonNull String);
+    method @NonNull public int directGetChainId();
+    method @NonNull public void getAddress(@NonNull String);
+    method @NonNull public void getChainId(@NonNull String);
+    method @NonNull public String getPrivateKey();
+    method @NonNull public static android.os.PrivateWalletProxy getWalletProxy();
+    method @NonNull public void pushDecision(@NonNull String, @NonNull String);
+    method @NonNull public void sendTransaction(@NonNull String, @NonNull String, @NonNull String, @NonNull String, @NonNull String, @NonNull String, @NonNull String);
+    method @NonNull public void signMessage(@NonNull String, @NonNull String, @NonNull String);
+  }
+
   public class Process {
     ctor public Process();
     method public static final long getElapsedCpuTime();
@@ -32398,6 +32423,18 @@ package android.os {
     method @NonNull public abstract int[] getVibratorIds();
     method @RequiresPermission(android.Manifest.permission.VIBRATE) public final void vibrate(@NonNull android.os.CombinedVibration);
     method @RequiresPermission(android.Manifest.permission.VIBRATE) public final void vibrate(@NonNull android.os.CombinedVibration, @Nullable android.os.VibrationAttributes);
+  }
+
+  public class WalletProxy {
+    method @NonNull public String changeChainId(@NonNull String, @NonNull int);
+    method @NonNull public String createSession();
+    method @NonNull public String getAddress(@NonNull String);
+    method @NonNull public String getChainId(@NonNull String);
+    method @NonNull public String getUserDecision();
+    method @NonNull public static android.os.WalletProxy getWalletProxy();
+    method @NonNull public String hasBeenFulfilled(@NonNull String);
+    method @NonNull public String sendTransaction(@NonNull String, @NonNull String, @NonNull String, @NonNull String, @NonNull String, @NonNull String, @NonNull String, @NonNull int);
+    method @NonNull public String signMessage(@NonNull String, @NonNull String, @NonNull String);
   }
 
   public class WorkSource implements android.os.Parcelable {

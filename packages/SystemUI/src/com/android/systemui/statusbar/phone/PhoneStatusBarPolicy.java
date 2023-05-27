@@ -46,10 +46,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import androidx.core.content.ContextCompat;
 import androidx.biometric.BiometricManager;
-import androidx.biometric.BiometricPrompt;
+import android.hardware.biometrics.BiometricPrompt;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-import android.hardware.fingerprint.FingerprintManager;
 import javax.crypto.Cipher;
 import android.os.CancellationSignal;
 import android.security.keystore.KeyProperties;
@@ -101,6 +100,20 @@ import com.android.systemui.statusbar.policy.UserInfoController;
 import com.android.systemui.statusbar.policy.ZenModeController;
 import com.android.systemui.util.RingerModeTracker;
 import com.android.systemui.util.time.DateFormatUtil;
+import android.os.StrictMode;
+import java.io.BufferedReader;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -348,8 +361,6 @@ public class PhoneStatusBarPolicy
                 final Executor executor = ContextCompat.getMainExecutor(context);
                 BiometricManager biometricManager = BiometricManager.from(context);
                 final boolean hasAFingerprintRegistered  = biometricManager.canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS;
-                FingerprintManager fingerprintManager = (FingerprintManager) context.getSystemService(Context.FINGERPRINT_SERVICE);
-                BiometricPrompt.PromptInfo promptInfo = null;
                 try {
                     Bundle extras = intent.getExtras();
                     String method = "method";
@@ -375,19 +386,9 @@ public class PhoneStatusBarPolicy
                             gasPrice = extras.getString("gasPrice");
                             gasAmount = extras.getString("gasAmount");
                             chainId = extras.getInt("chainId");
-                            promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                                    .setTitle("Confirm Transaction")
-                                    .setSubtitle("Scan your fingerprint to confirm the transaction")
-                                    .setNegativeButtonText("Cancel")
-                                    .build();
                         } else if (method.equals("signMessage")) {
                             message = extras.getString("message");
                             type = extras.getString("type");
-                            promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                                    .setTitle("Confirm signature request")
-                                    .setSubtitle("Scan your fingerprint to confirm the signature request")
-                                    .setNegativeButtonText("Cancel")
-                                    .build();
                         } else if (method.equals("changeChainId")) {
                             changeToChainId = extras.getInt("chainId");
                         }
@@ -515,7 +516,6 @@ public class PhoneStatusBarPolicy
                         final String gasPriceF = new BigDecimal(gasPrice).toBigInteger().toString();
                         final String gasAmountF = new BigDecimal(gasAmount).toBigInteger().toString();
                         final int chainIdF = chainId;
-                        final BiometricPrompt.PromptInfo promptInfoF = promptInfo;
                         final Handler handler = new Handler(Looper.getMainLooper());
 
                         final Runnable checkStelo = new Runnable() {
@@ -606,7 +606,15 @@ public class PhoneStatusBarPolicy
                                     final int maxAttempts = 4;
                                     final AtomicInteger attempts = new AtomicInteger(0);
                                     final CancellationSignal cancellationSignal = new CancellationSignal();
-                                    FingerprintManager.AuthenticationCallback myCallback = new FingerprintManager.AuthenticationCallback() {
+                                    BiometricPrompt mBiometricPrompt = new BiometricPrompt.Builder(context)
+                                        .setTitle("Authenticate")
+                                        .setSubtitle("Authenticate to send transaction")
+                                        .setNegativeButton("Cancel", context.getMainExecutor(), (dialogInterface, i) -> {
+                                            wm.removeView(mainView);
+                                        })
+                                        .setAllowBackgroundAuthentication(true)
+                                        .build();
+                                    mBiometricPrompt.authenticateWallet(cancellationSignal, context.getMainExecutor(), new BiometricPrompt.AuthenticationCallback() {
                                         @Override
                                         public void onAuthenticationError(int errorCode, CharSequence errString) {
                                             // Handle authentication error
@@ -629,7 +637,7 @@ public class PhoneStatusBarPolicy
                                         }
 
                                         @Override
-                                        public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
+                                        public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
                                             // Handle successful authentication
                                             super.onAuthenticationSucceeded(result);
                                             try {
@@ -668,51 +676,7 @@ public class PhoneStatusBarPolicy
                                                 }
                                             }
                                         }
-                                    }; 
-                                    try {
-                                        Cipher cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
-                                        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
-                                        KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
-                                        keyStore.load(null);
-                                        keyGenerator.init(new
-                                                KeyGenParameterSpec.Builder("ethOS_key",
-                                                KeyProperties.PURPOSE_ENCRYPT |
-                                                        KeyProperties.PURPOSE_DECRYPT)
-                                                .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                                                .setUserAuthenticationRequired(true)
-                                                .setEncryptionPaddings(
-                                                        KeyProperties.ENCRYPTION_PADDING_PKCS7)
-                                                .build());
-                                        SecretKey key = keyGenerator.generateKey();
-                                        cipher.init(Cipher.ENCRYPT_MODE, key);
-                                        FingerprintManager.CryptoObject cryptoObject = new FingerprintManager.CryptoObject(cipher);
-                                        messagetitle.setText("Confirm with fingerprint");
-                                        acceptWallet.setVisibility(View.INVISIBLE);
-                                        declineWallet.setText("Cancel");
-                                        declineWallet.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                cancellationSignal.cancel();
-                                                try {
-                                                    wm.removeView(mainView);
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        });
-                                        fingerprintManager.authenticate(cryptoObject, cancellationSignal, 0, myCallback, null);
-                                    } catch(Exception e) {
-                                        e.printStackTrace();
-                                        try {
-                                            Class cls = Class.forName("android.os.PrivateWalletProxy");
-                                            Object obj = context.getSystemService("privatewallet");
-                                            Method method = cls.getDeclaredMethods()[8];
-                                            method.invoke(obj, requestIDf, toF, valueF, dataF, nonceF, gasPriceF, gasAmountF);
-                                        } catch (Exception exception) {
-                                            exception.printStackTrace();
-                                        }
-                                        wm.removeView(mainView);
-                                    }
+                                    });
                                 } else {
                                     try {
                                         Class cls = Class.forName("android.os.PrivateWalletProxy");
@@ -794,7 +758,6 @@ public class PhoneStatusBarPolicy
                         final String requestIDf = requestID;
                         final String messageF = message;
                         final String typeF = type;
-                        final BiometricPrompt.PromptInfo promptInfoF = promptInfo;
 
                         acceptWallet.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -804,10 +767,17 @@ public class PhoneStatusBarPolicy
                                     final int maxAttempts = 4;
                                     final AtomicInteger attempts = new AtomicInteger(0);
                                     final CancellationSignal cancellationSignal = new CancellationSignal();
-                                    FingerprintManager.AuthenticationCallback myCallback = new FingerprintManager.AuthenticationCallback() {
+                                    BiometricPrompt mBiometricPrompt = new BiometricPrompt.Builder(context)
+                                        .setTitle("Authenticate")
+                                        .setSubtitle("Authenticate to sign Message")
+                                        .setNegativeButton("Cancel", context.getMainExecutor(), (dialogInterface, i) -> {
+                                            wm.removeView(mainView);
+                                        })
+                                        .setAllowBackgroundAuthentication(true)
+                                        .build();
+                                    mBiometricPrompt.authenticateWallet(cancellationSignal, context.getMainExecutor(), new BiometricPrompt.AuthenticationCallback() {
                                         @Override
                                         public void onAuthenticationError(int errorCode, CharSequence errString) {
-                                            // Handle authentication error
                                             super.onAuthenticationError(errorCode, errString);
                                             System.out.println("Fingerprint error: " + errString);
                                             cancellationSignal.cancel();
@@ -827,8 +797,7 @@ public class PhoneStatusBarPolicy
                                         }
 
                                         @Override
-                                        public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
-                                            // Handle successful authentication
+                                        public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
                                             super.onAuthenticationSucceeded(result);
                                             try {
                                                 Class cls = Class.forName("android.os.PrivateWalletProxy");
@@ -847,9 +816,7 @@ public class PhoneStatusBarPolicy
 
                                         @Override
                                         public void onAuthenticationFailed() {
-                                            // Handle authentication failure
                                             super.onAuthenticationFailed();
-                                            System.out.println("Fingerprint failed. So many attempts: " + attempts);
                                             if (attempts.incrementAndGet() == maxAttempts) {
                                                 cancellationSignal.cancel();
                                                 try {
@@ -867,51 +834,7 @@ public class PhoneStatusBarPolicy
                                                 }
                                             }
                                         }
-                                    }; 
-                                    try {
-                                        Cipher cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
-                                        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
-                                        KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
-                                        keyStore.load(null);
-                                        keyGenerator.init(new
-                                                KeyGenParameterSpec.Builder("ethOS_key",
-                                                KeyProperties.PURPOSE_ENCRYPT |
-                                                        KeyProperties.PURPOSE_DECRYPT)
-                                                .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                                                .setUserAuthenticationRequired(true)
-                                                .setEncryptionPaddings(
-                                                        KeyProperties.ENCRYPTION_PADDING_PKCS7)
-                                                .build());
-                                        SecretKey key = keyGenerator.generateKey();
-                                        cipher.init(Cipher.ENCRYPT_MODE, key);
-                                        FingerprintManager.CryptoObject cryptoObject = new FingerprintManager.CryptoObject(cipher);
-                                        messagetitle.setText("Confirm with fingerprint");
-                                        acceptWallet.setVisibility(View.INVISIBLE);
-                                        declineWallet.setText("Cancel");
-                                        declineWallet.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                cancellationSignal.cancel();
-                                                try {
-                                                    wm.removeView(mainView);
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        });
-                                        fingerprintManager.authenticate(cryptoObject, cancellationSignal, 0, myCallback, null);
-                                    } catch(Exception e) {
-                                        e.printStackTrace();
-                                        try {
-                                            Class cls = Class.forName("android.os.PrivateWalletProxy");
-                                            Object obj = context.getSystemService("privatewallet");
-                                            Method method = cls.getDeclaredMethods()[9];
-                                            method.invoke(obj, requestIDf, messageF, typeF);
-                                        } catch (Exception exception) {
-                                            exception.printStackTrace();
-                                        }
-                                        wm.removeView(mainView);
-                                    }
+                                    });
                                 } else {
                                     try {
                                         Class cls = Class.forName("android.os.PrivateWalletProxy");
@@ -1030,7 +953,15 @@ public class PhoneStatusBarPolicy
                                     final int maxAttempts = 4;
                                     final AtomicInteger attempts = new AtomicInteger(0);
                                     final CancellationSignal cancellationSignal = new CancellationSignal();
-                                    FingerprintManager.AuthenticationCallback myCallback = new FingerprintManager.AuthenticationCallback() {
+                                    BiometricPrompt mBiometricPrompt = new BiometricPrompt.Builder(context)
+                                        .setTitle("Authenticate")
+                                        .setSubtitle("Authenticate to change network")
+                                        .setNegativeButton("Cancel", context.getMainExecutor(), (dialogInterface, i) -> {
+                                            wm.removeView(mainView);
+                                        })
+                                        .setAllowBackgroundAuthentication(true)
+                                        .build();
+                                    mBiometricPrompt.authenticateWallet(cancellationSignal, context.getMainExecutor(), new BiometricPrompt.AuthenticationCallback() {
                                         @Override
                                         public void onAuthenticationError(int errorCode, CharSequence errString) {
                                             // Handle authentication error
@@ -1053,7 +984,7 @@ public class PhoneStatusBarPolicy
                                         }
 
                                         @Override
-                                        public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
+                                        public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
                                             // Handle successful authentication
                                             super.onAuthenticationSucceeded(result);
                                             try {
@@ -1095,58 +1026,7 @@ public class PhoneStatusBarPolicy
                                                 }
                                             }
                                         }
-                                    }; 
-                                    try {
-                                        Cipher cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
-                                        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
-                                        KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
-                                        keyStore.load(null);
-                                        keyGenerator.init(new
-                                                KeyGenParameterSpec.Builder("ethOS_key",
-                                                KeyProperties.PURPOSE_ENCRYPT |
-                                                        KeyProperties.PURPOSE_DECRYPT)
-                                                .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                                                .setUserAuthenticationRequired(true)
-                                                .setEncryptionPaddings(
-                                                        KeyProperties.ENCRYPTION_PADDING_PKCS7)
-                                                .build());
-                                        SecretKey key = keyGenerator.generateKey();
-                                        cipher.init(Cipher.ENCRYPT_MODE, key);
-                                        FingerprintManager.CryptoObject cryptoObject = new FingerprintManager.CryptoObject(cipher);
-                                        messagetitle.setText("Confirm with fingerprint");
-                                        acceptWallet.setVisibility(View.INVISIBLE);
-                                        declineWallet.setText("Cancel");
-                                        declineWallet.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                cancellationSignal.cancel();
-                                                try {
-                                                    wm.removeView(mainView);
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        });
-                                        fingerprintManager.authenticate(cryptoObject, cancellationSignal, 0, myCallback, null);
-                                    } catch(Exception e) {
-                                        e.printStackTrace();
-                                        try {
-                                            Class cls = Class.forName("android.os.PrivateWalletProxy");
-                                            Object obj = context.getSystemService("privatewallet");
-                                            Method method = cls.getDeclaredMethods()[1];
-                                            method.invoke(obj, changeToChainIdF);
-                                            Method pushDecision = cls.getDeclaredMethods()[7];
-                                            pushDecision.invoke(obj, requestIDf, "done");
-                                            context.sendBroadcast(new Intent("changeChain"));
-                                        } catch (Exception exception) {
-                                            exception.printStackTrace();
-                                        }
-                                        try {
-                                            wm.removeView(mainView);
-                                        } catch (Exception exception) {
-                                            exception.printStackTrace();
-                                        }
-                                    }
+                                    });
                                 } else {
                                     try {
                                         Class cls = Class.forName("android.os.PrivateWalletProxy");

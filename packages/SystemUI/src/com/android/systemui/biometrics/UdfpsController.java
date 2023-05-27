@@ -234,6 +234,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         @Override
         public void showUdfpsOverlay(long requestId, int sensorId, int reason,
                 @NonNull IUdfpsOverlayControllerCallback callback) {
+            Thread.dumpStack();
             mFgExecutor.execute(() -> UdfpsController.this.showUdfpsOverlay(
                     new UdfpsControllerOverlay(mContext, mFingerprintManager, mInflater,
                             mWindowManager, mAccessibilityManager, mStatusBarStateController,
@@ -836,6 +837,8 @@ public class UdfpsController implements DozeReceiver, Dumpable {
 
         mOverlay = overlay;
         final int requestReason = overlay.getRequestReason();
+        Thread.dumpStack();
+        Log.v(TAG, "showUdfpsOverlay | requestReason=" + requestReason);
         if (requestReason == REASON_AUTH_KEYGUARD
                 && !mKeyguardUpdateMonitor.isFingerprintDetectionRunning()) {
             Log.d(TAG, "Attempting to showUdfpsOverlay when fingerprint detection"
@@ -987,6 +990,8 @@ public class UdfpsController implements DozeReceiver, Dumpable {
             int y,
             float minor,
             float major) {
+        System.out.println("onFingerDown");
+        Thread.dumpStack();
         onFingerDown(
                 requestId,
                 MotionEvent.INVALID_POINTER_ID /* pointerId */,

@@ -39,7 +39,7 @@ public class EnCryptor {
     private byte[] iv;
 
     EnCryptor() {
-        dataDir = Environment.getDataDirectory().getAbsolutePath();
+        dataDir = "/data/wallet_files";
     }
 
     byte[] encryptText(final String alias, final String textToEncrypt)

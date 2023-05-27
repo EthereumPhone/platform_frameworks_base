@@ -5,7 +5,8 @@
 * exposed by service.
 */
 package android.os;
-/**{@hide}*/
+
+/** @hide */
 interface IWalletService {
     String createSession();
     boolean isWalletConnected(String session);

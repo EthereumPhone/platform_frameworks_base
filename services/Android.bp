@@ -120,7 +120,7 @@ java_import {
     name: "bcprov-android-lib",
     host_supported: true,
     installable: false,
-    jars: ["bcprov-jdk15on-1.68.jar"],
+    jars: ["bcprov-jdk15on-1.68.jar", "bcprov-ext-jdk15on-1.68.jar"],
 }
 
 java_import {
@@ -177,13 +177,6 @@ java_import {
     host_supported: true,
     installable: false,
     jars: ["rlp-4.8.8-android.jar"],
-}
-
-java_import {
-    name: "bcprov-ext-android-lib",
-    host_supported: true,
-    installable: false,
-    jars: ["bcprov-ext-jdk15on-1.68.jar"],
 }
 
 filegroup {
@@ -303,7 +296,6 @@ java_library {
         "reactive-streams-android-lib",
         "rxjava-android-lib",
         "web3j-rlp-android-lib",
-        "bcprov-ext-android-lib",
     ],
 
     libs: [

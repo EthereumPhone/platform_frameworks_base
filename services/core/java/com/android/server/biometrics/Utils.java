@@ -60,7 +60,7 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.util.Slog;
-
+import android.app.KeyguardManager;
 import com.android.internal.R;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.server.biometrics.sensors.BaseClientMonitor;
@@ -444,6 +444,15 @@ public class Utils {
                 context.getResources().getString(R.string.config_keyguardComponent));
         final String keyguardPackage = keyguardComponent != null
                 ? keyguardComponent.getPackageName() : null;
+        System.out.println("isKeyguard: " + hasPermission + " " + keyguardPackage + " " + clientPackage + " Result:  " + (hasPermission && keyguardPackage != null && keyguardPackage.equals(clientPackage)));
+        // Check if phone is unlocked
+        if (hasPermission && keyguardPackage != null && keyguardPackage.equals(clientPackage)) {
+            KeyguardManager km = context.getSystemService(KeyguardManager.class);
+            if (km != null && !km.isDeviceLocked()) {
+                System.out.println("isKeyguard: " + "isDeviceLocked: " + km.isDeviceLocked());
+                return false;
+            }
+        }
         return hasPermission && keyguardPackage != null && keyguardPackage.equals(clientPackage);
     }
 

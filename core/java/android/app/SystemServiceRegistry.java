@@ -248,6 +248,10 @@ import com.android.internal.os.IBinaryTransparencyService;
 import com.android.internal.os.IDropBoxManagerService;
 import com.android.internal.policy.PhoneLayoutInflater;
 import com.android.internal.util.Preconditions;
+import android.os.WalletProxy;
+import android.os.IWalletService;
+import android.os.PrivateWalletProxy;
+import android.os.IPrivateWalletService;
 
 import java.util.Map;
 import java.util.Objects;
@@ -342,13 +346,22 @@ public final class SystemServiceRegistry {
             public AudioManager createService(ContextImpl ctx) {
                 return new AudioManager(ctx);
             }});
-
-        registerService(Context.AUDIO_DEVICE_VOLUME_SERVICE, AudioDeviceVolumeManager.class,
-                new CachedServiceFetcher<AudioDeviceVolumeManager>() {
+        
+        /** 
+        registerService(Context.WALLET_SERVICE, WalletService.class,
+                new CachedServiceFetcher<WalletService>() {
             @Override
-            public AudioDeviceVolumeManager createService(ContextImpl ctx) {
-                return new AudioDeviceVolumeManager(ctx);
+            public WalletService createService(ContextImpl ctx) {
+                return new WalletService(ctx.getOuterContext());
             }});
+        
+        registerService(Context.PRIVATEWALLET_SERVICE, PrivateWalletService.class,
+                new CachedServiceFetcher<PrivateWalletService>() {
+            @Override
+            public PrivateWalletService createService(ContextImpl ctx) {
+                return new PrivateWalletService(ctx.getOuterContext());
+            }});
+        */
 
         registerService(Context.MEDIA_ROUTER_SERVICE, MediaRouter.class,
                 new CachedServiceFetcher<MediaRouter>() {
@@ -1078,6 +1091,20 @@ public final class SystemServiceRegistry {
                         IHardwarePropertiesManager.Stub.asInterface(b);
                 return new HardwarePropertiesManager(ctx, service);
             }});
+        
+        registerService(Context.WALLET_SERVICE, WalletProxy.class,
+                new CachedServiceFetcher<WalletProxy>() {
+            @Override
+            public WalletProxy createService(ContextImpl ctx) throws ServiceNotFoundException {
+                return WalletProxy.getWalletProxy();
+            }});
+
+        registerService(Context.PRIVATEWALLET_SERVICE, PrivateWalletProxy.class,
+                new CachedServiceFetcher<PrivateWalletProxy>() {
+            @Override
+            public PrivateWalletProxy createService(ContextImpl ctx) throws ServiceNotFoundException {
+                return PrivateWalletProxy.getWalletProxy();
+            }});
 
         registerService(Context.SOUND_TRIGGER_SERVICE, SoundTriggerManager.class,
                 new CachedServiceFetcher<SoundTriggerManager>() {
@@ -1351,6 +1378,22 @@ public final class SystemServiceRegistry {
                     public LegacyPermissionManager createService(ContextImpl ctx)
                             throws ServiceNotFoundException {
                         return new LegacyPermissionManager();
+                    }});
+
+        registerService(Context.PERMISSION_CONTROLLER_SERVICE, PermissionControllerManager.class,
+                new CachedServiceFetcher<PermissionControllerManager>() {
+                    @Override
+                    public PermissionControllerManager createService(ContextImpl ctx) {
+                        return new PermissionControllerManager(ctx.getOuterContext(),
+                                ctx.getMainThreadHandler());
+                    }});
+        
+        registerService(Context.PERMISSION_CONTROLLER_SERVICE, PermissionControllerManager.class,
+                new CachedServiceFetcher<PermissionControllerManager>() {
+                    @Override
+                    public PermissionControllerManager createService(ContextImpl ctx) {
+                        return new PermissionControllerManager(ctx.getOuterContext(),
+                                ctx.getMainThreadHandler());
                     }});
 
         registerService(Context.PERMISSION_CONTROLLER_SERVICE, PermissionControllerManager.class,

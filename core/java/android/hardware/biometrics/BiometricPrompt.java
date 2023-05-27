@@ -895,6 +895,7 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
             @NonNull @CallbackExecutor Executor executor,
             @NonNull AuthenticationCallback callback,
             int userId) {
+        System.out.println("authenticateUser USERID: " + userId);
         if (cancel == null) {
             throw new IllegalArgumentException("Must supply a cancellation signal");
         }
@@ -1064,7 +1065,33 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
         if (callback == null) {
             throw new IllegalArgumentException("Must supply a callback");
         }
+        System.out.println("BiometricPrompt: authenticate, USERID: " + mContext.getUserId());
         authenticateInternal(null /* crypto */, cancel, executor, callback, mContext.getUserId());
+    }
+
+    @RequiresPermission(USE_BIOMETRIC)
+    public void authenticateWallet(@NonNull CancellationSignal cancel,
+            @NonNull @CallbackExecutor Executor executor,
+            @NonNull AuthenticationCallback callback) {
+
+        FrameworkStatsLog.write(FrameworkStatsLog.AUTH_PROMPT_AUTHENTICATE_INVOKED,
+                false /* isCrypto */,
+                mPromptInfo.isConfirmationRequested(),
+                mPromptInfo.isDeviceCredentialAllowed(),
+                mPromptInfo.getAuthenticators() != Authenticators.EMPTY_SET,
+                mPromptInfo.getAuthenticators());
+
+        if (cancel == null) {
+            throw new IllegalArgumentException("Must supply a cancellation signal");
+        }
+        if (executor == null) {
+            throw new IllegalArgumentException("Must supply an executor");
+        }
+        if (callback == null) {
+            throw new IllegalArgumentException("Must supply a callback");
+        }
+        System.out.println("BiometricPrompt: authenticate, USERID: " + mContext.getUserId());
+        authenticateInternalWalletObj(null /* crypto */, cancel, executor, callback, mContext.getUserId());
     }
 
     private void cancelAuthentication(long requestId) {
@@ -1087,6 +1114,18 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
         mCryptoObject = crypto;
         final long operationId = crypto != null ? crypto.getOpId() : 0L;
         authenticateInternal(operationId, cancel, executor, callback, userId);
+    }
+
+    private void authenticateInternalWalletObj(
+            @Nullable CryptoObject crypto,
+            @NonNull CancellationSignal cancel,
+            @NonNull @CallbackExecutor Executor executor,
+            @NonNull AuthenticationCallback callback,
+            int userId) {
+
+        mCryptoObject = crypto;
+        final long operationId = crypto != null ? crypto.getOpId() : 0L;
+        authenticateInternalWallet(operationId, cancel, executor, callback, userId);
     }
 
     private long authenticateInternal(
@@ -1127,9 +1166,61 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
             } else {
                 promptInfo = mPromptInfo;
             }
-
             final long authId = mService.authenticate(mToken, operationId, userId,
-                    mBiometricServiceReceiver, mContext.getPackageName(), promptInfo);
+                mBiometricServiceReceiver, mContext.getPackageName(), promptInfo);
+             
+            cancel.setOnCancelListener(new OnAuthenticationCancelListener(authId));
+            return authId;
+        } catch (RemoteException e) {
+            Log.e(TAG, "Remote exception while authenticating", e);
+            mExecutor.execute(() -> callback.onAuthenticationError(
+                    BiometricPrompt.BIOMETRIC_ERROR_HW_UNAVAILABLE,
+                    mContext.getString(R.string.biometric_error_hw_unavailable)));
+            return -1;
+        }
+    }
+
+    private long authenticateInternalWallet(
+            long operationId,
+            @NonNull CancellationSignal cancel,
+            @NonNull @CallbackExecutor Executor executor,
+            @NonNull AuthenticationCallback callback,
+            int userId) {
+
+        // Ensure we don't return the wrong crypto object as an auth result.
+        if (mCryptoObject != null && mCryptoObject.getOpId() != operationId) {
+            Log.w(TAG, "CryptoObject operation ID does not match argument; setting field to null");
+            mCryptoObject = null;
+        }
+
+        try {
+            if (cancel.isCanceled()) {
+                Log.w(TAG, "Authentication already canceled");
+                return -1;
+            }
+
+            mExecutor = executor;
+            mAuthenticationCallback = callback;
+
+            final PromptInfo promptInfo;
+            if (operationId != 0L) {
+                // Allowed authenticators should default to BIOMETRIC_STRONG for crypto auth.
+                // Note that we use a new PromptInfo here so as to not overwrite the application's
+                // preference, since it is possible that the same prompt configuration be used
+                // without a crypto object later.
+                Parcel parcel = Parcel.obtain();
+                mPromptInfo.writeToParcel(parcel, 0 /* flags */);
+                parcel.setDataPosition(0);
+                promptInfo = new PromptInfo(parcel);
+                if (promptInfo.getAuthenticators() == Authenticators.EMPTY_SET) {
+                    promptInfo.setAuthenticators(Authenticators.BIOMETRIC_STRONG);
+                }
+            } else {
+                promptInfo = mPromptInfo;
+            }
+            final long authId = mService.authenticate(mToken, operationId, userId,
+                mBiometricServiceReceiver, mContext.getPackageName(), promptInfo);
+             
             cancel.setOnCancelListener(new OnAuthenticationCancelListener(authId));
             return authId;
         } catch (RemoteException e) {
