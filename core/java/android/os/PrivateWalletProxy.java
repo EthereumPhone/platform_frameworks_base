@@ -1,5 +1,7 @@
 package android.os;
 import java.lang.annotation.Native;
+import android.annotation.SystemService;
+import android.content.Context;
 
 /**
  * /framework/base/core/java/android/os/PrivateWalletProxy.java
@@ -8,7 +10,9 @@ import java.lang.annotation.Native;
  * @author mhaas.eth
  */
 import android.annotation.NonNull;
+import android.content.Context;
 import android.util.Log;
+@SystemService(Context.PRIVATEWALLET_SERVICE)
 public class PrivateWalletProxy {
     private static final String TAG = "PrivateWalletProxy";
     private static PrivateWalletProxy myProxy;

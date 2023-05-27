@@ -1,6 +1,5 @@
 package com.android.server;
 
-import com.android.server.SystemService;
 import android.content.Context;
 import android.util.Log;
 import android.os.Environment;
@@ -30,7 +29,9 @@ import java.security.Security;
 import java.nio.ByteBuffer;
 import javax.crypto.SecretKey;
 import java.security.KeyStore;
+import android.annotation.SystemService;
 
+import java.nio.file.Files;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import android.security.keystore.KeyProperties;
@@ -40,7 +41,15 @@ import android.util.Base64;
 import javax.crypto.spec.GCMParameterSpec;
 import com.android.server.EnCryptor;
 import com.android.server.DeCryptor;
+import com.android.server.MyOwnKeyPairGeneratorSpi;
+import org.bouncycastle.crypto.generators.SCrypt;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.ECGenParameterSpec;
+
+@SystemService(Context.PRIVATEWALLET_SERVICE)
 public class PrivateWalletService extends IPrivateWalletService.Stub {
     private static final String TAG = "PrivateWalletService";
     private static WalletService instance;
@@ -59,12 +68,28 @@ public class PrivateWalletService extends IPrivateWalletService.Stub {
         super();
         Log.v(TAG, "PrivateWalletService, onCreate");
         System.out.println("PrivateWalletService, onCreate");
-        dataDir = Environment.getDataDirectory().getAbsolutePath();
+        dataDir = "/data/wallet_files/";
         this.sharedState = sharedState;
         this.mContext = context;
-        Provider provider = setupBouncyCastle();
+        //Provider provider = setupBouncyCastle();
+        Provider provider = new org.bouncycastle.jce.provider.BouncyCastleProvider();
         System.out.println("PrivateWalletService, setupBouncyCastle done");
+        // So that class gets included
+        Class clazz = MyOwnKeyPairGeneratorSpi.ECDSA.class;
+        System.out.println("PrivateWalletService, MyOwnKeyPairGeneratorSpi.ECDSA done: " + clazz.getName());
+
+        Class clazz2 = SCrypt.class;
+        System.out.println("PrivateWalletService, SCrypt done: " + clazz2.getName());
         try {
+            // If folder "wallet_files" in /data doesn't exist yet create it
+            File dir = new File(dataDir);
+            if (!dir.exists()) {
+                try {
+                    Files.createDirectory(dir.toPath());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             enCryptor = new EnCryptor();
             deCryptor = new DeCryptor();
             if (!doesWalletExist()) {
@@ -111,7 +136,7 @@ public class PrivateWalletService extends IPrivateWalletService.Stub {
         }
         web3j = Web3j.build(new HttpService());
 
-        removeBouncyCastle(provider);
+        //removeBouncyCastle(provider);
 
     }
 
