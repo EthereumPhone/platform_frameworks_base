@@ -1110,6 +1110,8 @@ public class AuthController implements CoreStartable,  CommandQueue.Callbacks,
                 mUserManager,
                 mLockPatternUtils);
 
+        Thread.dumpStack();
+
         if (newDialog == null) {
             Log.e(TAG, "Unsupported type configuration");
             return;

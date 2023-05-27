@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Environment;
 import android.os.IWalletService;
 import android.util.Log;
-import com.android.server.SystemService;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -21,7 +20,9 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.FileInputStream;
 import java.io.EOFException;
+import android.annotation.SystemService;
 
+@SystemService(Context.WALLET_SERVICE)
 public class WalletService extends IWalletService.Stub {
 
   private static final String TAG = "WalletService";
@@ -37,6 +38,11 @@ public class WalletService extends IWalletService.Stub {
     dataDir = Environment.getDataDirectory().getAbsolutePath();
     context = con;
     this.sharedState = sharedState;
+    instance = this;
+  }
+
+  public static WalletService getInstance() {
+    return instance;
   }
 
   public String createSession() {

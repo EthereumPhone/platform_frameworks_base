@@ -141,7 +141,7 @@ public class QSFactoryImpl implements QSFactory {
             Provider<OneHandedModeTile> oneHandedModeTileProvider,
             Provider<ColorCorrectionTile> colorCorrectionTileProvider,
             Provider<DreamTile> dreamTileProvider,
-            Provider<ChainTile> mChainTile) {
+            Provider<ChainTile> chainTile) {
         mQsHostLazy = qsHostLazy;
         mCustomTileBuilderProvider = customTileBuilderProvider;
 

@@ -3881,6 +3881,8 @@ public abstract class Context {
             //@hide: SERIAL_SERVICE,
             //@hide: HDMI_CONTROL_SERVICE,
             INPUT_SERVICE,
+            WALLET_SERVICE,
+            PRIVATEWALLET_SERVICE,
             DISPLAY_SERVICE,
             //@hide COLOR_DISPLAY_SERVICE,
             USER_SERVICE,
@@ -5137,6 +5139,24 @@ public abstract class Context {
      */
     @SystemApi
     public static final String PERMISSION_CONTROLLER_SERVICE = "permission_controller";
+
+    /**
+     * Official published name of the wallet.
+     *
+     * @see #getSystemService(String)
+     * @hide
+     */
+    @SystemApi
+    public static final String WALLET_SERVICE = "wallet";
+
+    /**
+     * Official published name of the (internal) private wallet.
+     *
+     * @see #getSystemService(String)
+     * @hide
+     */
+    @SystemApi
+    public static final String PRIVATEWALLET_SERVICE = "privatewallet";
 
     /**
      * Official published name of the (internal) permission checker service.

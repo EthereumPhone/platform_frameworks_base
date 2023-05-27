@@ -2862,7 +2862,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
         }
     }
 
-    private void startListeningForFingerprint() {
+    public void startListeningForFingerprint() {
         final int userId = getCurrentUser();
         final boolean unlockPossible = isUnlockWithFingerprintPossible(userId);
         if (mFingerprintCancelSignal != null) {

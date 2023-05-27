@@ -2992,6 +2992,7 @@ package android.content {
     field public static final String PERMISSION_CONTROLLER_SERVICE = "permission_controller";
     field public static final String PERMISSION_SERVICE = "permission";
     field public static final String PERSISTENT_DATA_BLOCK_SERVICE = "persistent_data_block";
+    field public static final String PRIVATEWALLET_SERVICE = "privatewallet";
     field public static final String REBOOT_READINESS_SERVICE = "reboot_readiness";
     field public static final String ROLLBACK_SERVICE = "rollback";
     field public static final String SAFETY_CENTER_SERVICE = "safety_center";
@@ -3006,6 +3007,7 @@ package android.content {
     field public static final String UI_TRANSLATION_SERVICE = "ui_translation";
     field public static final String UWB_SERVICE = "uwb";
     field public static final String VR_SERVICE = "vrmanager";
+    field public static final String WALLET_SERVICE = "wallet";
     field public static final String WALLPAPER_EFFECTS_GENERATION_SERVICE = "wallpaper_effects_generation";
     field public static final String WIFI_NL80211_SERVICE = "wifinl80211";
     field @Deprecated public static final String WIFI_RTT_SERVICE = "rttmanager";

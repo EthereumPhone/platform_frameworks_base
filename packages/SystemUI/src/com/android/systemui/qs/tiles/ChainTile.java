@@ -9,7 +9,6 @@ import com.android.internal.logging.MetricsLogger;
 import com.android.systemui.R;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.qs.QSHost;
-import com.android.systemui.qs.SecureSetting;
 import com.android.systemui.qs.tiles.dialog.ChainIdDialogFactory;
 import android.os.Handler;
 import com.android.systemui.dagger.qualifiers.Background;

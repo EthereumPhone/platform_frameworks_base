@@ -5,7 +5,8 @@
 * exposed by service.
 */
 package android.os;
-/**{@hide}*/
+
+/** @hide */
 interface IPrivateWalletService {
     void createWallet(String passwordString);
     void pushDecision(String requestId, String response);
