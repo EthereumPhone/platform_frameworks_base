@@ -1235,6 +1235,8 @@ public class AuthController implements
                 mLockPatternUtils,
                 viewModel);
 
+        Thread.dumpStack();
+
         if (newDialog == null) {
             Log.e(TAG, "Unsupported type configuration");
             return;

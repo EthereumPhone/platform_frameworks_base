@@ -8,6 +8,10 @@ package android.os;
 import android.annotation.NonNull;
 import android.util.Log;
 import java.util.Arrays;
+import android.annotation.SystemService;
+import android.content.Context;
+
+@SystemService(Context.WALLET_SERVICE)
 public class WalletProxy {
     private static final String TAG = "WalletProxy";
     private static WalletProxy myProxy;
