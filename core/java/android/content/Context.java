@@ -3883,6 +3883,7 @@ public abstract class Context {
             INPUT_SERVICE,
             WALLET_SERVICE,
             PRIVATEWALLET_SERVICE,
+            LOCALLLM_SERVICE,
             DISPLAY_SERVICE,
             //@hide COLOR_DISPLAY_SERVICE,
             USER_SERVICE,
@@ -5157,6 +5158,15 @@ public abstract class Context {
      */
     @SystemApi
     public static final String PRIVATEWALLET_SERVICE = "privatewallet";
+
+    /**
+     * Official published name of the local llm.
+     *
+     * @see #getSystemService(String)
+     * @hide
+     */
+    @SystemApi
+    public static final String LOCALLLM_SERVICE = "localllm";
 
     /**
      * Official published name of the (internal) permission checker service.
