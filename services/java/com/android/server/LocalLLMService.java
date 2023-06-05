@@ -44,12 +44,6 @@ public class LocalLLMService extends ILLMService.Stub {
 
   public void loadModel() {
     // TODO: Actually implement loading model into ram
-    // Do something for a second
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
   }
 
   public boolean isRunning() {
@@ -58,6 +52,26 @@ public class LocalLLMService extends ILLMService.Stub {
 
   public String executePrompt(String prompt) {
     // TODO: Implement with actual model
-    return "Prompt returned: \"" + prompt + "\"";
+    String[] cmd = {"llama", "-m", "/system/media/ggml-model-q4_0.bin", "-c", "512", "-b", "1024", "-n", "256", "--keep", "48", "--repeat_penalty", "1.0", "--color", "-i", "-r", "User:", "-p", "Transscript of an interactive search engine. The search engine never fails to deliver an answer immediately and with precision.\n\nUser: What is the capital of Russia?\nSearch Engine: The capital of Russia is Moscow.\nUser:" + prompt + "\n"};
+    try {
+        Process process = Runtime.getRuntime().exec(cmd);
+        java.io.InputStream inputStream = process.getInputStream();
+        java.util.Scanner s = new java.util.Scanner(inputStream);
+        String output = "";
+        while (s.hasNextLine()) {
+            String line = s.nextLine();
+            output += line;
+            if (line.contains("Search Engine:") && !line.contains("The capital of Russia is Moscow")) {
+                process.destroy(); // Stop the process if an empty line is encountered
+                // Remove the beginning which is "Search Engine: " from line
+                line = line.substring(19);
+                return line;
+            }
+        }
+        process.waitFor();
+        return output;
+    } catch (Exception e) {
+        return e.getMessage();
+    }
   }
 }
