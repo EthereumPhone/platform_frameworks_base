@@ -252,7 +252,7 @@ import android.os.WalletProxy;
 import android.os.IWalletService;
 import android.os.PrivateWalletProxy;
 import android.os.IPrivateWalletService;
-import android.os.LocalLLMProxy;
+import android.os.LocalLlmProxy;
 import android.os.ILLMService;
 
 import java.util.Map;
@@ -1108,11 +1108,11 @@ public final class SystemServiceRegistry {
                 return PrivateWalletProxy.getWalletProxy();
             }});
 
-        registerService(Context.LOCALLLM_SERVICE, LocalLLMProxy.class,
-                new CachedServiceFetcher<LocalLLMProxy>() {
+        registerService(Context.LOCALLLM_SERVICE, LocalLlmProxy.class,
+                new CachedServiceFetcher<LocalLlmProxy>() {
             @Override
-            public LocalLLMProxy createService(ContextImpl ctx) throws ServiceNotFoundException {
-                return LocalLLMProxy.getLLMProxy();
+            public LocalLlmProxy createService(ContextImpl ctx) throws ServiceNotFoundException {
+                return LocalLlmProxy.getLlmProxy();
             }});
 
         registerService(Context.SOUND_TRIGGER_SERVICE, SoundTriggerManager.class,

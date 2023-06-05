@@ -234,7 +234,7 @@ import com.android.server.GethService;
 import com.android.server.WalletService;
 import com.android.server.PrivateWalletService;
 import com.android.server.SharedState;
-
+import com.android.server.LocalLLMService;
 
 /**
  * Entry point to {@code system_server}.
@@ -1348,6 +1348,18 @@ public final class SystemServer implements Dumpable {
             t.traceEnd();
         } catch (Throwable e) {
             Slog.e("System", "Failed starting PrivateWalletService", e);
+            e.printStackTrace();
+        }
+
+
+	// Starting LocalLLMService
+	try {
+            t.traceBegin("LocalLLMService");
+            LocalLLMService localLLMService = new LocalLLMService(mSystemContext);
+            ServiceManager.addService("localllm", localLLMService);
+            t.traceEnd();
+        } catch (Throwable e) {
+            Slog.e("System", "Failed starting LocalLLMService", e);
             e.printStackTrace();
         }
 
