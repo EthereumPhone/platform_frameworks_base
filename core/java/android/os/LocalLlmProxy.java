@@ -4,23 +4,23 @@ import android.annotation.SystemService;
 import android.content.Context;
 
 /**
- * /framework/base/core/java/android/os/LocalLLMProxy.java
+ * /framework/base/core/java/android/os/LocalLlmProxy.java
  * This will be the proxy for the local llm.
- * Use this Singleton class to call the private functionality of LocalLLMProxy
+ * Use this Singleton class to call the private functionality of LocalLlmProxy
  * @author mhaas.eth
  */
 import android.annotation.NonNull;
 import android.content.Context;
 import android.util.Log;
 @SystemService(Context.LOCALLLM_SERVICE)
-public class LocalLLMProxy {
-    private static final String TAG = "LocalLLMProxy";
-    private static LocalLLMProxy myProxy;
+public class LocalLlmProxy {
+    private static final String TAG = "LocalLlmProxy";
+    private static LocalLlmProxy myProxy;
     private final ILLMService mIMyService;
     /**
      * Use {@link #getmyProxy} to get the myProxy instance.
      */
-    LocalLLMProxy(ILLMService myService) {
+    LocalLlmProxy(ILLMService myService) {
         if (myService == null) {
             throw new IllegalArgumentException("my service is null");
         }
@@ -30,14 +30,14 @@ public class LocalLLMProxy {
      * @return the MyService, or null.
      */
     @NonNull
-    public static LocalLLMProxy getLLMProxy() {
+    public static LocalLlmProxy getLlmProxy() {
         Object mThingLock = new Object();
         synchronized (mThingLock) {
             if (myProxy == null) {
                 IBinder binder = android.os.ServiceManager.getService("localllm");
                 if (binder != null) {
                     ILLMService managerService = ILLMService.Stub.asInterface(binder);
-                    myProxy = new LocalLLMProxy(managerService);
+                    myProxy = new LocalLlmProxy(managerService);
                 } else {
                     Log.e(TAG, "Service binder is null");
                 }
@@ -54,6 +54,7 @@ public class LocalLLMProxy {
         } catch(Exception e) {
             e.printStackTrace();
         }
+	return "failed";
     }
 
     @NonNull
@@ -63,6 +64,7 @@ public class LocalLLMProxy {
         } catch(Exception e) {
             e.printStackTrace();
         }
+	return false;
     }
 
     @NonNull

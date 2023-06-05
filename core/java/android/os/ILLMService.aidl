@@ -12,3 +12,4 @@ interface ILLMService {
     void loadModel();
     String executePrompt(String prompt);
 }
+
