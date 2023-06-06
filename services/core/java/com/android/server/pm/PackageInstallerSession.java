@@ -5991,4 +5991,9 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
     public long getSilentUpdateWaitMillis() {
         return mSilentUpdatePolicy.getSilentUpdateWaitMillis(this);
     }
+
+    @Override
+    public long getSilentUpdateWaitMillis() {
+        return mSilentUpdatePolicy.getSilentUpdateWaitMillis(this);
+    }
 }

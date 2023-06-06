@@ -1127,6 +1127,9 @@ public final class NfcAdapter {
             }
             GmsHooks.enableNfc();
             return false;
+                GmsHooks.enableNfc();
+                return false;
+            }
         }
 
         try {
