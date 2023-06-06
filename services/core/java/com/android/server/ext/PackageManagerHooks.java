@@ -166,5 +166,7 @@ public class PackageManagerHooks {
     // Packages in this array are restricted from interacting with and being interacted by non-system apps
     private static final ArraySet<String> restrictedVisibilityPackages = new ArraySet<>(new String[] {
         GoogleEuicc.EUICC_SUPPORT_PIXEL_PKG_NAME,
+        // prevent it from obtaining carrier config overrides from GmsCore (see CarrierConfig2 README)
+        GCarrierSettingsApp.PKG_NAME,
     });
 }

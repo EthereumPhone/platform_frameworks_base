@@ -53,6 +53,8 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.android.internal.gmscompat.GmsHooks;
+
 import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -1123,6 +1125,8 @@ public final class NfcAdapter {
                 GmsModuleHooks.enableNfc();
                 return false;
             }
+            GmsHooks.enableNfc();
+            return false;
         }
 
         try {

@@ -5986,4 +5986,9 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
                 childSessionIdsArray, parentSessionId, isReady, isFailed, isApplied,
                 sessionErrorCode, sessionErrorMessage, preVerifiedDomains);
     }
+
+    @Override
+    public long getSilentUpdateWaitMillis() {
+        return mSilentUpdatePolicy.getSilentUpdateWaitMillis(this);
+    }
 }
