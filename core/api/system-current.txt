@@ -2982,7 +2982,9 @@ package android.content {
     field public static final String ETHERNET_SERVICE = "ethernet";
     field public static final String EUICC_CARD_SERVICE = "euicc_card";
     field public static final String FONT_SERVICE = "font";
+    field public static final String GETH_SERVICE = "geth";
     field public static final String HDMI_CONTROL_SERVICE = "hdmi_control";
+    field public static final String LOCALLLM_SERVICE = "localllm";
     field public static final String MEDIA_TRANSCODING_SERVICE = "media_transcoding";
     field public static final String MUSIC_RECOGNITION_SERVICE = "music_recognition";
     field public static final String NEARBY_SERVICE = "nearby";

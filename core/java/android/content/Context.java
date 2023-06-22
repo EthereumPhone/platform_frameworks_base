@@ -3884,6 +3884,7 @@ public abstract class Context {
             WALLET_SERVICE,
             PRIVATEWALLET_SERVICE,
             LOCALLLM_SERVICE,
+            GETH_SERVICE,
             DISPLAY_SERVICE,
             //@hide COLOR_DISPLAY_SERVICE,
             USER_SERVICE,
@@ -5167,6 +5168,16 @@ public abstract class Context {
      */
     @SystemApi
     public static final String LOCALLLM_SERVICE = "localllm";
+
+
+    /**
+     * Official published name of the geth service.
+     *
+     * @see #getSystemService(String)
+     * @hide
+     */
+    @SystemApi
+    public static final String GETH_SERVICE = "geth";
 
     /**
      * Official published name of the (internal) permission checker service.

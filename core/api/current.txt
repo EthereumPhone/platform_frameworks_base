@@ -31460,6 +31460,13 @@ package android.os {
     ctor public LimitExceededException(@NonNull String);
   }
 
+  public class LocalLlmProxy {
+    method @NonNull public String executePrompt(@NonNull String, @NonNull android.os.ParcelFileDescriptor);
+    method @NonNull public static android.os.LocalLlmProxy getLlmProxy();
+    method @NonNull public boolean isRunning();
+    method @NonNull public void loadModel();
+  }
+
   public final class LocaleList implements android.os.Parcelable {
     ctor public LocaleList(@NonNull java.util.Locale...);
     method public int describeContents();
