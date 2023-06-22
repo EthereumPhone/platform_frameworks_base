@@ -399,11 +399,13 @@ public class PhoneStatusBarPolicy
                         exception.printStackTrace();
                     }
 
-                    WindowManager.LayoutParams params = new WindowManager.LayoutParams(MATCH_PARENT,
-                            WindowManager.LayoutParams.MATCH_PARENT,
-                            WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-                            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                            PixelFormat.RGBA_8888);
+                    WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                        WindowManager.LayoutParams.MATCH_PARENT,
+                        WindowManager.LayoutParams.WRAP_CONTENT,
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                        PixelFormat.RGBA_8888);
 
                     params.gravity = Gravity.BOTTOM;
 
@@ -434,7 +436,7 @@ public class PhoneStatusBarPolicy
                                     exception.printStackTrace();
                                 }
 
-                                wm.removeView(mainView);
+                                removeMainView(wm, mainView);
                             }
                         });
                         otherWallet.setOnClickListener(new View.OnClickListener() {
@@ -450,34 +452,30 @@ public class PhoneStatusBarPolicy
                                     exception.printStackTrace();
                                 }
 
-                                wm.removeView(mainView);
+                                removeMainView(wm, mainView);
                             }
                         });
-                        mainView.setAlpha(0f);
                         wm.addView(mainView, params);
 
-                        // Calculate the final y position of the view
-                        int finalY = mainView.getHeight() - wm.getDefaultDisplay().getHeight();
+                        // Set the initial y position below the screen
+                        params.y = wm.getDefaultDisplay().getHeight();
+                        wm.updateViewLayout(mainView, params);
 
-                        ValueAnimator yAnimator = ValueAnimator.ofInt(mainView.getHeight(), finalY);
-                        yAnimator.setDuration(500);
-                        yAnimator.addUpdateListener(animation -> {
-                            int tempValue = (int) animation.getAnimatedValue();
-                            params.y = tempValue;
-                            wm.updateViewLayout(mainView, params);
-                        });
+                        // Calculate the final y position of the view (top of the screen)
+                        int finalY = wm.getDefaultDisplay().getHeight() - mainView.getHeight();
 
-                        // Create an alpha animation to fade in the view
-                        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(
-                            mainView,
-                            "alpha",
-                            0f,
-                            1f
+                        // Create a translation animation to move the view from the initial to final y position
+                        ObjectAnimator yAnimator = ObjectAnimator.ofFloat(
+                                mainView,
+                                "translationY",
+                                wm.getDefaultDisplay().getHeight(),
+                                finalY
                         );
-                        alphaAnimator.setDuration(500);
+                        yAnimator.setDuration(900);
+
 
                         AnimatorSet animatorSet = new AnimatorSet();
-                        animatorSet.playTogether(yAnimator, alphaAnimator);
+                        animatorSet.play(yAnimator);
                         animatorSet.start();
 
                     } else if (method.equals("sendTransaction")) {
@@ -613,7 +611,7 @@ public class PhoneStatusBarPolicy
                                         .setTitle("Authenticate")
                                         .setSubtitle("Authenticate to send transaction")
                                         .setNegativeButton("Cancel", context.getMainExecutor(), (dialogInterface, i) -> {
-                                            wm.removeView(mainView);
+                                            removeMainView(wm, mainView);
                                         })
                                         .setAllowBackgroundAuthentication(true)
                                         .build();
@@ -633,7 +631,7 @@ public class PhoneStatusBarPolicy
                                                 exception.printStackTrace();
                                             }
                                             try {
-                                                wm.removeView(mainView);
+                                                removeMainView(wm, mainView);
                                             } catch (Exception exception) {
                                                 exception.printStackTrace();
                                             }
@@ -652,7 +650,7 @@ public class PhoneStatusBarPolicy
                                                 exception.printStackTrace();
                                             }
                                             try {
-                                                wm.removeView(mainView);
+                                                removeMainView(wm, mainView);
                                             } catch (Exception exception) {
                                                 exception.printStackTrace();
                                             }
@@ -673,7 +671,7 @@ public class PhoneStatusBarPolicy
                                                     exception.printStackTrace();
                                                 }
                                                 try {
-                                                    wm.removeView(mainView);
+                                                    removeMainView(wm, mainView);
                                                 } catch (Exception exception) {
                                                     exception.printStackTrace();
                                                 }
@@ -689,7 +687,7 @@ public class PhoneStatusBarPolicy
                                     } catch (Exception exception) {
                                         exception.printStackTrace();
                                     }
-                                    wm.removeView(mainView);
+                                    removeMainView(wm, mainView);
                                 }
                             }
                         });
@@ -706,36 +704,16 @@ public class PhoneStatusBarPolicy
                                 } catch (Exception exception) {
                                     exception.printStackTrace();
                                 }
-                                wm.removeView(mainView);
+                                removeMainView(wm, mainView);
                             }
                         });
 
-                        mainView.setAlpha(0f);
                         wm.addView(mainView, params);
 
-                        // Calculate the final y position of the view
-                        int finalY = mainView.getHeight() - wm.getDefaultDisplay().getHeight();
-
-                        ValueAnimator yAnimator = ValueAnimator.ofInt(mainView.getHeight(), finalY);
-                        yAnimator.setDuration(500);
-                        yAnimator.addUpdateListener(animation -> {
-                            int tempValue = (int) animation.getAnimatedValue();
-                            params.y = tempValue;
-                            wm.updateViewLayout(mainView, params);
-                        });
-
-                        // Create an alpha animation to fade in the view
-                        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(
-                            mainView,
-                            "alpha",
-                            0f,
-                            1f
-                        );
-                        alphaAnimator.setDuration(500);
-
-                        AnimatorSet animatorSet = new AnimatorSet();
-                        animatorSet.playTogether(yAnimator, alphaAnimator);
-                        animatorSet.start();
+                        int screenHeight = wm.getDefaultDisplay().getHeight();
+                        mainView.setTranslationY(screenHeight);
+                        mainView.setVisibility(View.VISIBLE);
+                        mainView.animate().translationY(0).setDuration(900).start();
                     } else if (method.equals("signMessage")) {
                         ConstraintLayout mainView = (ConstraintLayout) inflater.inflate(R.layout.wallet_sign_transaction,
                                 null);
@@ -774,7 +752,7 @@ public class PhoneStatusBarPolicy
                                         .setTitle("Authenticate")
                                         .setSubtitle("Authenticate to sign Message")
                                         .setNegativeButton("Cancel", context.getMainExecutor(), (dialogInterface, i) -> {
-                                            wm.removeView(mainView);
+                                            removeMainView(wm, mainView);
                                         })
                                         .setAllowBackgroundAuthentication(true)
                                         .build();
@@ -793,7 +771,7 @@ public class PhoneStatusBarPolicy
                                                 exception.printStackTrace();
                                             }
                                             try {
-                                                wm.removeView(mainView);
+                                                removeMainView(wm, mainView);
                                             }catch (Exception exception) {
                                                 exception.printStackTrace();
                                             }
@@ -811,7 +789,7 @@ public class PhoneStatusBarPolicy
                                                 exception.printStackTrace();
                                             }
                                             try {
-                                                wm.removeView(mainView);
+                                                removeMainView(wm, mainView);
                                             }catch (Exception exception) {
                                                 exception.printStackTrace();
                                             }
@@ -831,7 +809,7 @@ public class PhoneStatusBarPolicy
                                                     exception.printStackTrace();
                                                 }
                                                 try {
-                                                    wm.removeView(mainView);
+                                                    removeMainView(wm, mainView);
                                                 }catch (Exception exception) {
                                                     exception.printStackTrace();
                                                 }
@@ -848,7 +826,7 @@ public class PhoneStatusBarPolicy
                                         exception.printStackTrace();
                                     }
                                     try {
-                                        wm.removeView(mainView);
+                                        removeMainView(wm, mainView);
                                     }catch (Exception exception) {
                                         exception.printStackTrace();
                                     }
@@ -868,36 +846,16 @@ public class PhoneStatusBarPolicy
                                 } catch (Exception exception) {
                                     exception.printStackTrace();
                                 }
-                                wm.removeView(mainView);
+                                removeMainView(wm, mainView);
                             }
                         });
 
-                        mainView.setAlpha(0f);
                         wm.addView(mainView, params);
 
-                        // Calculate the final y position of the view
-                        int finalY = mainView.getHeight() - wm.getDefaultDisplay().getHeight();
-
-                        ValueAnimator yAnimator = ValueAnimator.ofInt(mainView.getHeight(), finalY);
-                        yAnimator.setDuration(500);
-                        yAnimator.addUpdateListener(animation -> {
-                            int tempValue = (int) animation.getAnimatedValue();
-                            params.y = tempValue;
-                            wm.updateViewLayout(mainView, params);
-                        });
-
-                        // Create an alpha animation to fade in the view
-                        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(
-                            mainView,
-                            "alpha",
-                            0f,
-                            1f
-                        );
-                        alphaAnimator.setDuration(500);
-
-                        AnimatorSet animatorSet = new AnimatorSet();
-                        animatorSet.playTogether(yAnimator, alphaAnimator);
-                        animatorSet.start();
+                        int screenHeight = wm.getDefaultDisplay().getHeight();
+                        mainView.setTranslationY(screenHeight);
+                        mainView.setVisibility(View.VISIBLE);
+                        mainView.animate().translationY(0).setDuration(900).start();
 
                     } else if (method.equals("getAddress")) {
                         final String requestIDf = requestID;
@@ -960,7 +918,7 @@ public class PhoneStatusBarPolicy
                                         .setTitle("Authenticate")
                                         .setSubtitle("Authenticate to change network")
                                         .setNegativeButton("Cancel", context.getMainExecutor(), (dialogInterface, i) -> {
-                                            wm.removeView(mainView);
+                                            removeMainView(wm, mainView);
                                         })
                                         .setAllowBackgroundAuthentication(true)
                                         .build();
@@ -980,7 +938,7 @@ public class PhoneStatusBarPolicy
                                                 exception.printStackTrace();
                                             }
                                             try {
-                                                wm.removeView(mainView);
+                                                removeMainView(wm, mainView);
                                             } catch (Exception exception) {
                                                 exception.printStackTrace();
                                             }
@@ -1002,7 +960,7 @@ public class PhoneStatusBarPolicy
                                                 exception.printStackTrace();
                                             }
                                             try {
-                                                wm.removeView(mainView);
+                                                removeMainView(wm, mainView);
                                             } catch (Exception exception) {
                                                 exception.printStackTrace();
                                             }
@@ -1023,7 +981,7 @@ public class PhoneStatusBarPolicy
                                                     exception.printStackTrace();
                                                 }
                                                 try {
-                                                    wm.removeView(mainView);
+                                                    removeMainView(wm, mainView);
                                                 } catch (Exception exception) {
                                                     exception.printStackTrace();
                                                 }
@@ -1043,7 +1001,7 @@ public class PhoneStatusBarPolicy
                                         exception.printStackTrace();
                                     }
                                     try {
-                                        wm.removeView(mainView);
+                                        removeMainView(wm, mainView);
                                     } catch (Exception exception) {
                                         exception.printStackTrace();
                                     }
@@ -1063,36 +1021,16 @@ public class PhoneStatusBarPolicy
                                 } catch (Exception exception) {
                                     exception.printStackTrace();
                                 }
-                                wm.removeView(mainView);
+                                removeMainView(wm, mainView);
                             }
                         });
 
-                        mainView.setAlpha(0f);
                         wm.addView(mainView, params);
 
-                        // Calculate the final y position of the view
-                        int finalY = mainView.getHeight() - wm.getDefaultDisplay().getHeight();
-
-                        ValueAnimator yAnimator = ValueAnimator.ofInt(mainView.getHeight(), finalY);
-                        yAnimator.setDuration(500);
-                        yAnimator.addUpdateListener(animation -> {
-                            int tempValue = (int) animation.getAnimatedValue();
-                            params.y = tempValue;
-                            wm.updateViewLayout(mainView, params);
-                        });
-
-                        // Create an alpha animation to fade in the view
-                        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(
-                            mainView,
-                            "alpha",
-                            0f,
-                            1f
-                        );
-                        alphaAnimator.setDuration(500);
-
-                        AnimatorSet animatorSet = new AnimatorSet();
-                        animatorSet.playTogether(yAnimator, alphaAnimator);
-                        animatorSet.start();
+                        int screenHeight = wm.getDefaultDisplay().getHeight();
+                        mainView.setTranslationY(screenHeight);
+                        mainView.setVisibility(View.VISIBLE);
+                        mainView.animate().translationY(0).setDuration(900).start();
                     }
                 }catch(Exception e) {
                     e.printStackTrace();
@@ -1279,6 +1217,21 @@ public class PhoneStatusBarPolicy
         return mDevicePolicyManager.getResources().getString(
                 STATUS_BAR_WORK_ICON_ACCESSIBILITY,
                 () -> mResources.getString(R.string.accessibility_managed_profile));
+    }
+
+    private void removeMainView(WindowManager wm, View mainView) {
+        int screenHeight = wm.getDefaultDisplay().getHeight();
+        mainView.animate()
+                .translationY(screenHeight+1)
+                .setDuration(900)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainView.setVisibility(View.GONE);
+                        wm.removeView(mainView);
+                    }
+                })
+                .start();
     }
 
     @Override

@@ -7,6 +7,10 @@ package android.os;
  */
 import android.annotation.NonNull;
 import android.util.Log;
+import android.annotation.SystemService;
+import android.content.Context;
+
+@SystemService(Context.GETH_SERVICE)
 public class GethProxy {
     private static final String TAG = "GethProxy";
     private static GethProxy myProxy;

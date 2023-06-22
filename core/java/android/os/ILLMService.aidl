@@ -6,10 +6,11 @@
 */
 package android.os;
 
+import android.os.ParcelFileDescriptor;
+
 /** @hide */
 interface ILLMService {
     boolean isRunning();
     void loadModel();
-    String executePrompt(String prompt);
+    String executePrompt(String prompt, in ParcelFileDescriptor output);
 }
-
