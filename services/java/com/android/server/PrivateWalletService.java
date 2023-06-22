@@ -48,6 +48,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.ECGenParameterSpec;
+import org.web3j.crypto.transaction.type.Transaction1559;
 
 @SystemService(Context.PRIVATEWALLET_SERVICE)
 public class PrivateWalletService extends IPrivateWalletService.Stub {
@@ -293,14 +294,15 @@ public class PrivateWalletService extends IPrivateWalletService.Stub {
     public void sendTransaction(String requestId, String to, String value, String data, String nonce, String gasPrice,
             String gasAmount) {
         try {
-            RawTransaction rawTransaction = RawTransaction.createTransaction(
-                    new BigInteger(nonce), new BigInteger(gasPrice), new BigInteger(gasAmount), to,
-                    new BigInteger(value), data);
-            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, chainId, credentials);
-            String hexValue = Numeric.toHexString(signedMessage);
-            sharedState.fulfillRequest(requestId, hexValue);
+            RawTransaction transaction1559 = RawTransaction.createTransaction(
+                    (long) chainId, new BigInteger(nonce), new BigInteger(gasAmount), to,
+                    new BigInteger(value), data, new BigInteger("0"), new BigInteger(gasPrice));
+            byte[] signedMessage1559 = TransactionEncoder.signMessage(transaction1559, chainId, credentials);
+            String hexValue1559 = Numeric.toHexString(signedMessage1559);
+            sharedState.fulfillRequest(requestId, hexValue1559);
         } catch (Exception exception) {
             exception.printStackTrace();
+            sharedState.fulfillRequest(requestId, "Error: " + exception.getMessage());
         }
     }
 
