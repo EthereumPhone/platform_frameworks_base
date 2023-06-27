@@ -19,23 +19,24 @@ import android.annotation.SystemService;
 public class GethService extends IGethService.Stub {
     private static final String TAG = "GethService";
     private static GethService instance;
-    private String dataDir;
+    private final String dataDir = "/data/lightclient/";
     private Process mainProcess;
     private ProcessBuilder builder;
-    private final String[] nimbusCommand = {"/system/bin/nimbus_verified_proxy", "--trusted-block-root=0xb2fbee34f6ec8e93d7d1e1be870fe721f99e0bb74e449805b571fdd11d653bc2", "--web3-url=https://eth-mainnet.g.alchemy.com/v2/Ka357dlw4WBBevyJtDENSs2b0ZjKiDia"};
-    private final String heliosCommand = "./system/bin/helios";
-    private String currentCommand = "nimbus";
+    private final String checkPoint = "0xb2fbee34f6ec8e93d7d1e1be870fe721f99e0bb74e449805b571fdd11d653bc2";
+    private final String web3URL = "https://eth-mainnet.g.alchemy.com/v2/Ka357dlw4WBBevyJtDENSs2b0ZjKiDia";
+    private final String[] nimbusCommand = {"/system/bin/nimbus_verified_proxy", "--trusted-block-root="+checkPoint, "--web3-url="+web3URL};
+    private final String[] heliosCommand = {"/system/bin/helios", "--execution-rpc", web3URL, "--data-dir", dataDir, "--checkpoint", checkPoint};
+    private String currentCommand = "helios";
     private Context context;
     private Thread standardOutputThread;
     private Thread errorOutputThread;
 
     public GethService(Context con) {
         super();
-        dataDir = "/data/lightclient/";
-        Log.v(TAG, "GethNode, onCreate" + dataDir);
+        Log.v(TAG, "GethNode, onCreate: " + dataDir);
         this.context = con;
 
-        builder = new ProcessBuilder(nimbusCommand);
+        builder = new ProcessBuilder(heliosCommand);
     }
 
     public void redirectProcessOutput(Process process) {
