@@ -67,13 +67,15 @@ public class ChainIdDialog extends SystemUIDialog implements Window.Callback {
         mDialogView = LayoutInflater.from(mContext).inflate(R.layout.chain_id_dialog,
                 null);
         mSpinner = (Spinner) mDialogView.findViewById(R.id.chain_id_spinner);
-        if(isDarkModeEnabled()) {
+        /*
+	if(isDarkModeEnabled()) {
             mSpinner.setBackgroundResource(R.drawable.layout_dropdown_bg);
         } else {
             mSpinner.setBackgroundResource(R.drawable.layout_dropdown_bg_light);
         }
+	*/
         // Add the chain ids to the spinner
-        List<String> list = Arrays.asList("Ethereum Mainnet", "Optimism", "Arbitrum One", "Base Testnet", "Goerli Testnet");
+        List<String> list = Arrays.asList("Ethereum Mainnet", "Optimism", "Arbitrum One", "Base Testnet", "Goerli Testnet", "Base Mainnet", "Zora L2");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, R.layout.spinner_item, list);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         // Make spinner dropdown background white if dark mode is disabled
@@ -97,6 +99,12 @@ public class ChainIdDialog extends SystemUIDialog implements Window.Callback {
                 break;
             case 5:
                 mSpinner.setSelection(4);
+                break;
+            case 8453:
+                mSpinner.setSelection(5);
+                break;
+            case 7777777:
+                mSpinner.setSelection(6);
                 break;
         }
         // Set OnItemSelectedListener
@@ -123,6 +131,12 @@ public class ChainIdDialog extends SystemUIDialog implements Window.Callback {
                     case "Base Testnet":
                         newChainId = 84531;
                         break;
+                    case "Base Mainnet":
+                        newChainId = 8453;
+                        break;
+                    case "Zora L2":
+                        newChainId = 7777777;
+			break;
                 }
                 try {
                     Class walletProxy = Class.forName("android.os.PrivateWalletProxy");

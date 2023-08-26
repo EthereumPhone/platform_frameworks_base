@@ -21,9 +21,11 @@ public class GethService extends IGethService.Stub {
     private String dataDir;
     private Process mainProcess;
     private ProcessBuilder builder;
-    private final String[] nimbusCommand = {"/system/bin/nimbus_verified_proxy", "--trusted-block-root=0x1bb93b69018fedbd185061dc773c5766a2e20923bf9db4edfef256099c2149c4", "--web3-url=https://eth-mainnet.g.alchemy.com/v2/wZcbHMBl1Gt4HaXho1M_-4ZcBNTEE0zM"};
-    private final String heliosCommand = "./system/bin/helios";
-    private String currentCommand = "nimbus";
+    private final String checkPoint = "0xb2fbee34f6ec8e93d7d1e1be870fe721f99e0bb74e449805b571fdd11d653bc2";
+    private final String web3URL = "https://eth-mainnet.g.alchemy.com/v2/Ka357dlw4WBBevyJtDENSs2b0ZjKiDia";
+    private final String[] nimbusCommand = {"/system/bin/nimbus_verified_proxy", "--trusted-block-root="+checkPoint, "--web3-url="+web3URL};
+    private final String[] heliosCommand = {"/system/bin/helios", "--execution-rpc", web3URL, "--data-dir", dataDir, "--checkpoint", checkPoint};
+    private String currentCommand = "Helios";
     private Context context;
     private Thread standardOutputThread;
     private Thread errorOutputThread;
@@ -34,35 +36,80 @@ public class GethService extends IGethService.Stub {
         Log.v(TAG, "GethNode, onCreate" + dataDir);
         this.context = con;
 
-        builder = new ProcessBuilder(nimbusCommand);
+        builder = getSavedClient();
+    }
 
-        // If file doesnt exist, create it
-        if(!doesFileExist(dataDir+"/currentStatus.txt")) {
-            try {
-                File file = new File(dataDir+"/currentStatus.txt");
+    private ProcessBuilder getSavedClient() {
+        try {
+            File file = new File(dataDir, "savedCurrentClient.txt");
+            if (!file.exists()) {
                 file.createNewFile();
-                FileWriter myWriter = new FileWriter(dataDir+"/currentStatus.txt");
-                myWriter.write("false");
-                myWriter.close();
-            } catch(IOException exception) {
-                exception.printStackTrace();
+                FileWriter writer = new FileWriter(file);
+                writer.write("Helios");
+                writer.close();
+                return new ProcessBuilder(heliosCommand);
             }
-        }
-
-        if (wantToStart(dataDir+"/currentStatus.txt")) {
-            // Setting Verbosity to 4 to see what is happening
-            try {
-                mainProcess = builder.start();
-                redirectProcessOutput(mainProcess);
-            } catch (Exception e) {
-                e.printStackTrace();
+            Scanner scanner = new Scanner(file);
+            String savedStatusBoolean = scanner.useDelimiter("\\Z").next();
+            scanner.close();
+            if (savedStatusBoolean.equals("Helios")) {
+                return new ProcessBuilder(heliosCommand);
+            } else {
+                return new ProcessBuilder(nimbusCommand);
             }
-            Log.v(TAG, "GethNode, successfully started :)");
-        } else {
-            Log.v(TAG, "GethNode, not started :)");
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+        return new ProcessBuilder(heliosCommand);
+    }
 
-        
+    private void updateSavedClient(String newClient) {
+        try {
+            File file = new File(dataDir, "savedCurrentClient.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter writer = new FileWriter(file);
+            writer.write(newClient);
+            writer.close();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void startIfSavedTrue() {
+        try {
+            File file = new File(dataDir, "savedClientStatus.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+                FileWriter writer = new FileWriter(file);
+                writer.write("false");
+                writer.close();
+                return;
+            }
+            Scanner scanner = new Scanner(file);
+            String savedStatusBoolean = scanner.useDelimiter("\\Z").next();
+            scanner.close();
+            if (savedStatusBoolean.equals("true")) {
+                startGeth();
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void saveIFShouldStart(boolean shouldStart) {
+        try {
+            File file = new File(dataDir, "savedClientStatus.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter writer = new FileWriter(file);
+            writer.write(String.valueOf(shouldStart));
+            writer.close();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     public void redirectProcessOutput(Process process) {
@@ -110,6 +157,7 @@ public class GethService extends IGethService.Stub {
             mainProcess.destroy();
             mainProcess = null;
             updateViews();
+            saveIFShouldStart(false);
         }
         Log.v(TAG, "GethNode, successfully stopped :)");
     }
@@ -119,6 +167,7 @@ public class GethService extends IGethService.Stub {
             mainProcess.destroy();
             mainProcess = null;
             updateViews();
+            saveIFShouldStart(false);
         }
         Log.v(TAG, "GethNode, successfully stopped. Without preferences :)");
     }
@@ -129,6 +178,7 @@ public class GethService extends IGethService.Stub {
                 mainProcess = builder.start();
                 redirectProcessOutput(mainProcess);
                 updateViews();
+                saveIFShouldStart(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -187,6 +237,7 @@ public class GethService extends IGethService.Stub {
             builder = new ProcessBuilder(heliosCommand);
             currentCommand = "Helios";
         }
+        updateSavedClient(currentCommand);
     }
 
     public String getCurrentClient() {
