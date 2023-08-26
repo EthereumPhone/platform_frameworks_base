@@ -26,7 +26,7 @@ public class GethService extends IGethService.Stub {
     private final String web3URL = "https://eth-mainnet.g.alchemy.com/v2/Ka357dlw4WBBevyJtDENSs2b0ZjKiDia";
     private final String[] nimbusCommand = {"/system/bin/nimbus_verified_proxy", "--trusted-block-root="+checkPoint, "--web3-url="+web3URL};
     private final String[] heliosCommand = {"/system/bin/helios", "--execution-rpc", web3URL, "--data-dir", dataDir, "--checkpoint", checkPoint};
-    private String currentCommand = "helios";
+    private String currentCommand = "Helios";
     private Context context;
     private Thread standardOutputThread;
     private Thread errorOutputThread;
@@ -36,7 +36,80 @@ public class GethService extends IGethService.Stub {
         Log.v(TAG, "GethNode, onCreate: " + dataDir);
         this.context = con;
 
-        builder = new ProcessBuilder(heliosCommand);
+        builder = getSavedClient();
+    }
+
+    private ProcessBuilder getSavedClient() {
+        try {
+            File file = new File(dataDir, "savedCurrentClient.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+                FileWriter writer = new FileWriter(file);
+                writer.write("Helios");
+                writer.close();
+                return new ProcessBuilder(heliosCommand);
+            }
+            Scanner scanner = new Scanner(file);
+            String savedStatusBoolean = scanner.useDelimiter("\\Z").next();
+            scanner.close();
+            if (savedStatusBoolean.equals("Helios")) {
+                return new ProcessBuilder(heliosCommand);
+            } else {
+                return new ProcessBuilder(nimbusCommand);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return new ProcessBuilder(heliosCommand);
+    }
+
+    private void updateSavedClient(String newClient) {
+        try {
+            File file = new File(dataDir, "savedCurrentClient.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter writer = new FileWriter(file);
+            writer.write(newClient);
+            writer.close();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void startIfSavedTrue() {
+        try {
+            File file = new File(dataDir, "savedClientStatus.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+                FileWriter writer = new FileWriter(file);
+                writer.write("false");
+                writer.close();
+                return;
+            }
+            Scanner scanner = new Scanner(file);
+            String savedStatusBoolean = scanner.useDelimiter("\\Z").next();
+            scanner.close();
+            if (savedStatusBoolean.equals("true")) {
+                startGeth();
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void saveIFShouldStart(boolean shouldStart) {
+        try {
+            File file = new File(dataDir, "savedClientStatus.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter writer = new FileWriter(file);
+            writer.write(String.valueOf(shouldStart));
+            writer.close();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     public void redirectProcessOutput(Process process) {
@@ -83,6 +156,7 @@ public class GethService extends IGethService.Stub {
             mainProcess.destroy();
             mainProcess = null;
             updateViews();
+            saveIFShouldStart(false);
         }
         Log.v(TAG, "GethNode, successfully stopped :)");
     }
@@ -92,6 +166,7 @@ public class GethService extends IGethService.Stub {
             mainProcess.destroy();
             mainProcess = null;
             updateViews();
+            saveIFShouldStart(false);
         }
         Log.v(TAG, "GethNode, successfully stopped. Without preferences :)");
     }
@@ -102,6 +177,7 @@ public class GethService extends IGethService.Stub {
                 mainProcess = builder.start();
                 redirectProcessOutput(mainProcess);
                 updateViews();
+                saveIFShouldStart(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -127,6 +203,7 @@ public class GethService extends IGethService.Stub {
             builder = new ProcessBuilder(heliosCommand);
             currentCommand = "Helios";
         }
+        updateSavedClient(currentCommand);
     }
 
     public String getCurrentClient() {

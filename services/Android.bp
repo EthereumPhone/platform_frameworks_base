@@ -96,6 +96,13 @@ java_import {
 }
 
 java_import {
+    name: "gson-sdk",
+    host_supported: true,
+    installable: false,
+    jars: ["gson-2.10.1.jar"],
+}
+
+java_import {
     name: "jackson-databind-2.13.4.2",
     host_supported: true,
     installable: false,
@@ -296,6 +303,7 @@ java_library {
         "reactive-streams-android-lib",
         "rxjava-android-lib",
         "web3j-rlp-android-lib",
+        "gson-sdk",
     ],
 
     libs: [

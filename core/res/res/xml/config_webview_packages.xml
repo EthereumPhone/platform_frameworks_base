@@ -16,6 +16,8 @@
 
 <webviewproviders>
     <!-- The default WebView implementation -->
-    <webviewprovider description="Vanadium" packageName="app.vanadium.webview" availableByDefault="true">
+    <webviewprovider description="Android WebView" packageName="com.android.webview" availableByDefault="true">
+    </webviewprovider>
+    <webviewprovider description="Vanadium" packageName="app.vanadium.webview">
     </webviewprovider>
 </webviewproviders>

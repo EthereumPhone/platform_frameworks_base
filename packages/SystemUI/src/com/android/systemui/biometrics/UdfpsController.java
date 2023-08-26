@@ -990,8 +990,6 @@ public class UdfpsController implements DozeReceiver, Dumpable {
             int y,
             float minor,
             float major) {
-        System.out.println("onFingerDown");
-        Thread.dumpStack();
         onFingerDown(
                 requestId,
                 MotionEvent.INVALID_POINTER_ID /* pointerId */,

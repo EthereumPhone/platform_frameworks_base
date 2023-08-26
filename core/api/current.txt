@@ -31940,12 +31940,14 @@ package android.os {
 
   public class PrivateWalletProxy {
     method @NonNull public void changeChainId(@NonNull int);
+    method @NonNull public void createNewWallet();
     method @NonNull public void createWallet(@NonNull String);
     method @NonNull public int directGetChainId();
     method @NonNull public void getAddress(@NonNull String);
     method @NonNull public void getChainId(@NonNull String);
     method @NonNull public String getPrivateKey();
     method @NonNull public static android.os.PrivateWalletProxy getWalletProxy();
+    method @NonNull public void importNewWallet(@NonNull String);
     method @NonNull public void pushDecision(@NonNull String, @NonNull String);
     method @NonNull public void sendTransaction(@NonNull String, @NonNull String, @NonNull String, @NonNull String, @NonNull String, @NonNull String, @NonNull String);
     method @NonNull public void signMessage(@NonNull String, @NonNull String, @NonNull String);
@@ -53607,6 +53609,7 @@ package android.view.textclassifier {
     field public static final String TYPE_DATE = "date";
     field public static final String TYPE_DATE_TIME = "datetime";
     field public static final String TYPE_EMAIL = "email";
+    field public static final String TYPE_ETH_ADDRESS = "ethereum_address";
     field public static final String TYPE_FLIGHT_NUMBER = "flight";
     field public static final String TYPE_OTHER = "other";
     field public static final String TYPE_PHONE = "phone";

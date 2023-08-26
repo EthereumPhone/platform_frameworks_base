@@ -129,5 +129,22 @@ public class PrivateWalletProxy {
         }
         return 0;
     }
-   
+
+    @NonNull
+    public void importNewWallet(@NonNull String privateKey) {
+        try {
+            mIMyService.importNewWallet(privateKey);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @NonNull
+    public void createNewWallet() {
+        try {
+            mIMyService.createNewWallet();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

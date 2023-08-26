@@ -24,6 +24,7 @@ import com.android.systemui.qs.tiles.FontScalingTile
 import com.android.systemui.qs.tiles.NightDisplayTile
 import com.android.systemui.qs.tiles.OneHandedModeTile
 import com.android.systemui.qs.tiles.ReduceBrightColorsTile
+import com.android.systemui.qs.tiles.ChainTile
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

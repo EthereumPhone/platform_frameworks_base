@@ -41,7 +41,6 @@
     <!-- Used in Contacts for a field that has no label and in Note Pad
          for a note with no name. -->
     <string name="untitled">&lt;Untitled&gt;</string>
-
     <!-- How to display the lack of a phone number -->
     <string name="emptyPhoneNumber">(No phone number)</string>
 
