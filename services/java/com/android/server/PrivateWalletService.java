@@ -30,6 +30,7 @@ import java.nio.ByteBuffer;
 import javax.crypto.SecretKey;
 import java.security.KeyStore;
 import android.annotation.SystemService;
+import org.web3j.abi.datatypes.Address;
 
 import java.nio.file.Files;
 import javax.crypto.Cipher;
@@ -48,7 +49,6 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.ECGenParameterSpec;
-import org.web3j.crypto.transaction.type.Transaction1559;
 
 @SystemService(Context.PRIVATEWALLET_SERVICE)
 public class PrivateWalletService extends IPrivateWalletService.Stub {
@@ -79,6 +79,9 @@ public class PrivateWalletService extends IPrivateWalletService.Stub {
         Class clazz = MyOwnKeyPairGeneratorSpi.ECDSA.class;
         System.out.println("PrivateWalletService, MyOwnKeyPairGeneratorSpi.ECDSA done: " + clazz.getName());
 
+        Address address = new Address(BigInteger.ZERO);
+
+
         Class clazz2 = SCrypt.class;
         System.out.println("PrivateWalletService, SCrypt done: " + clazz2.getName());
         try {
@@ -93,6 +96,41 @@ public class PrivateWalletService extends IPrivateWalletService.Stub {
             }
             enCryptor = new EnCryptor();
             deCryptor = new DeCryptor();
+
+            if (doesWalletExist()) {
+                String encryptedKey = loadEncryptedKeyFromFile();
+                // Decrypt encrypted key using cipher and secret key
+                String keyString = decrypt(encryptedKey);
+            
+                loadWalletPath();
+                credentials = WalletUtils.loadCredentials(
+                        keyString,
+                        walletPath);
+            }
+            
+        } catch (Exception exception) {
+            System.out.println("PrivateWalletService error: " + exception.getMessage());
+            exception.printStackTrace();
+        }
+        web3j = Web3j.build(new HttpService());
+
+        //removeBouncyCastle(provider);
+
+    }
+
+    private void saveEncryptedKeyToFile(String encryptedKey) throws Exception {
+        // Save encrypted key to file
+        FileWriter myWriter = new FileWriter(new File(dataDir, "/encrypted_key.txt"));
+        myWriter.write(encryptedKey);
+        myWriter.close();
+    }
+
+    private Boolean doesEncryptedKeyFileExist() {
+        return doesFileExist(new File(dataDir, "encrypted_key.txt").getAbsolutePath());
+    }
+
+    public void createNewWallet() {
+        try {
             if (!doesWalletExist()) {
                 // Generate new random key using SecureRandom
                 //SecureRandom secureRandom = new SecureRandom();
@@ -131,25 +169,23 @@ public class PrivateWalletService extends IPrivateWalletService.Stub {
                             walletPath);
                 }
             }
-        } catch (Exception exception) {
-            System.out.println("PrivateWalletService error: " + exception.getMessage());
-            exception.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        web3j = Web3j.build(new HttpService());
-
-        //removeBouncyCastle(provider);
-
     }
 
-    private void saveEncryptedKeyToFile(String encryptedKey) throws Exception {
-        // Save encrypted key to file
-        FileWriter myWriter = new FileWriter(new File(dataDir, "/encrypted_key.txt"));
-        myWriter.write(encryptedKey);
-        myWriter.close();
-    }
-
-    private Boolean doesEncryptedKeyFileExist() {
-        return doesFileExist(new File(dataDir, "encrypted_key.txt").getAbsolutePath());
+    public void importNewWallet(String privateKey) {
+        if (!doesWalletExist()) {
+            try {
+                String randomUnencryptedKey = UUID.randomUUID().toString();
+                credentials = Credentials.create(privateKey);
+                encryptCreateNewWallet(randomUnencryptedKey, credentials);
+                saveEncryptedKeyToFile(encrypt(randomUnencryptedKey));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+        }
     }
 
     private String loadEncryptedKeyFromFile() throws Exception {
@@ -294,9 +330,13 @@ public class PrivateWalletService extends IPrivateWalletService.Stub {
     public void sendTransaction(String requestId, String to, String value, String data, String nonce, String gasPrice,
             String gasAmount) {
         try {
+            // Take of 2% of gas price
+            BigInteger gasPriceBigInteger = new BigInteger(gasPrice);
+            BigInteger maxPrioFee = gasPriceBigInteger.divide(new BigInteger("50"));
+            gasPriceBigInteger = gasPriceBigInteger.subtract(maxPrioFee);
             RawTransaction transaction1559 = RawTransaction.createTransaction(
                     (long) chainId, new BigInteger(nonce), new BigInteger(gasAmount), to,
-                    new BigInteger(value), data, new BigInteger("0"), new BigInteger(gasPrice));
+                    new BigInteger(value), data, maxPrioFee, gasPriceBigInteger);
             byte[] signedMessage1559 = TransactionEncoder.signMessage(transaction1559, chainId, credentials);
             String hexValue1559 = Numeric.toHexString(signedMessage1559);
             sharedState.fulfillRequest(requestId, hexValue1559);
@@ -337,7 +377,7 @@ public class PrivateWalletService extends IPrivateWalletService.Stub {
                 sharedState.fulfillRequest(requestId, signedMessage);
             } else if (type.equals("eth_signTypedData")) {
                 try {
-                    StructuredDataEncoder dataEncoder = new StructuredDataEncoder(message);
+                    StructuredDataEncoder dataEncoder = new com.android.server.StructuredDataEncoder(message);
                     byte[] hashStructuredData = dataEncoder.hashStructuredData();
                     
                     Sign.SignatureData signature = Sign.signMessage(hashStructuredData, credentials.getEcKeyPair(), false);

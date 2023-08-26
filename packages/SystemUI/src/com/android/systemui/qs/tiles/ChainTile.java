@@ -39,6 +39,7 @@ public class ChainTile extends QSTileImpl<BooleanState> {
     };
     private final ChainIdDialogFactory mChainIdDialogFactory;
     private final Handler mHandler;
+    public static final String TILE_SPEC = "chain";
 
     @Inject
     public ChainTile(
@@ -77,6 +78,10 @@ public class ChainTile extends QSTileImpl<BooleanState> {
             state.secondaryLabel = "Goerli Testnet";
         } else if (chainId == 84531){
             state.secondaryLabel = "Base Testnet";
+        } else if (chainId == 8453){
+            state.secondaryLabel = "Base Mainnet";
+	} else if (chainId == 7777777) {
+            state.secondaryLabel = "Zora L2";
         } else {
             state.secondaryLabel = "Chain: " + chainId;
         }
@@ -124,6 +129,10 @@ public class ChainTile extends QSTileImpl<BooleanState> {
             state.secondaryLabel = "Goerli Testnet";
         } else if (chainId == 84531){
             state.secondaryLabel = "Base Testnet";
+        } else if (chainId == 8453){
+            state.secondaryLabel = "Base Mainnet";
+	} else if (chainId == 7777777) {
+            state.secondaryLabel = "Zora L2";
         } else {
             state.secondaryLabel = "Chain: " + chainId;
         }
@@ -149,7 +158,11 @@ public class ChainTile extends QSTileImpl<BooleanState> {
             return "Goerli Testnet";
         } else if (chainId == 84531){
             return "Base Testnet";
-        } else {
+        } else if (chainId == 8453){
+            return "Base Mainnet";
+        } else if (chainId == 7777777){
+	    return "Zora L2";
+	} else {
             return "Chain: " + chainId;
         }
     }

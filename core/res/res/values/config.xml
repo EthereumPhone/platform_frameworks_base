@@ -26,6 +26,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Do not translate. Defines the slots for the right-hand side icons.  That is to say, the
          icons in the status bar that are not notifications. -->
+    <string name="ethereum_address">ETH</string>
     <string-array name="config_statusBarIcons">
         <item><xliff:g id="id">@string/status_bar_no_calling</xliff:g></item>
         <item><xliff:g id="id">@string/status_bar_call_strength</xliff:g></item>

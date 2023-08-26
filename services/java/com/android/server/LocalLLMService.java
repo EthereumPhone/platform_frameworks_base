@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.UUID;
-import org.web3j.crypto.WalletUtils;
 import android.content.Intent;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;

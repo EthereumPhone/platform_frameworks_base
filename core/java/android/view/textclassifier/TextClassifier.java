@@ -114,6 +114,8 @@ public interface TextClassifier {
     /** One-time login codes */
     @FlaggedApi(FLAG_REDACT_SENSITIVE_NOTIFICATIONS_FROM_UNTRUSTED_LISTENERS)
     String TYPE_OTP_CODE = "otp_code";
+
+    String TYPE_ETH_ADDRESS = "ethereum_address";
     /**
      * Word that users may be interested to look up for meaning.
      * @hide
@@ -133,7 +135,8 @@ public interface TextClassifier {
             TYPE_DATE_TIME,
             TYPE_FLIGHT_NUMBER,
             TYPE_DICTIONARY,
-            TYPE_OTP_CODE
+            TYPE_OTP_CODE,
+            TYPE_ETH_ADDRESS
     })
     @interface EntityType {}
 

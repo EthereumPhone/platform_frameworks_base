@@ -43,6 +43,7 @@ import com.android.systemui.qs.tiles.viewmodel.QSTileConfig
 import com.android.systemui.qs.tiles.viewmodel.QSTilePolicy
 import com.android.systemui.qs.tiles.viewmodel.QSTileUIConfig
 import com.android.systemui.qs.tiles.viewmodel.QSTileViewModel
+import com.android.systemui.qs.tiles.ChainTile
 import com.android.systemui.res.R
 import dagger.Binds
 import dagger.Module
@@ -58,6 +59,12 @@ interface ConnectivityModule {
     @IntoMap
     @StringKey(BluetoothTile.TILE_SPEC)
     fun bindBluetoothTile(bluetoothTile: BluetoothTile): QSTileImpl<*>
+
+    /** Inject ChainTile into tileMap in QSModule */
+    @Binds
+    @IntoMap
+    @StringKey(ChainTile.TILE_SPEC)
+    fun bindChainTile(chainTile: ChainTile): QSTileImpl<*>
 
     /** Inject CastTile into tileMap in QSModule */
     @Binds
