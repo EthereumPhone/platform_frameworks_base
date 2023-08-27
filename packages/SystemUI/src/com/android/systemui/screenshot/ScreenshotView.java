@@ -735,8 +735,10 @@ public class ScreenshotView extends FrameLayout implements
                 / SCREENSHOT_ACTIONS_EXPANSION_DURATION_MS;
         mActionsContainer.setAlpha(0f);
         mActionsContainerBackground.setAlpha(0f);
-        mActionsContainer.setVisibility(View.VISIBLE);
-        mActionsContainerBackground.setVisibility(View.VISIBLE);
+        if (!isKeyguardLocked()) {
+            mActionsContainer.setVisibility(View.VISIBLE);
+            mActionsContainerBackground.setVisibility(View.VISIBLE);
+        }
 
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -1026,8 +1028,10 @@ public class ScreenshotView extends FrameLayout implements
         if (mAccessibilityManager.isEnabled()) {
             mDismissButton.setVisibility(View.VISIBLE);
         }
-        mActionsContainer.setVisibility(View.VISIBLE);
-        mActionsContainerBackground.setVisibility(View.VISIBLE);
+        if (!isKeyguardLocked()) {
+            mActionsContainer.setVisibility(View.VISIBLE);
+            mActionsContainerBackground.setVisibility(View.VISIBLE);
+        }
         mScreenshotPreviewBorder.setVisibility(View.VISIBLE);
         mScreenshotPreview.setVisibility(View.VISIBLE);
         // reset the timeout
@@ -1094,6 +1098,13 @@ public class ScreenshotView extends FrameLayout implements
         mPendingSharedTransition = true;
         // fade out non-preview UI
         createScreenshotFadeDismissAnimation().start();
+    }
+
+    private boolean isKeyguardLocked() {
+        if (mKeyguardManager == null) {
+            mKeyguardManager = requireNonNull(mContext.getSystemService(KeyguardManager.class));
+        }
+        return mKeyguardManager.isKeyguardLocked();
     }
 
     ValueAnimator createScreenshotFadeDismissAnimation() {
