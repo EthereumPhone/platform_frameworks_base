@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.android.internal.app.ContactScopes;
 import com.android.internal.app.StorageScopesAppHooks;
+import com.android.internal.gmscompat.GmsHooks;
 
 import java.util.Objects;
 
@@ -70,5 +71,13 @@ class ActivityThreadHooks {
             StorageScopesAppHooks.maybeEnable(state);
             ContactScopes.maybeEnable(ctx, state);
         }
+    }
+
+    static Service instantiateService(String className) {
+        Service res = null;
+        if (res == null) {
+            res = GmsHooks.maybeInstantiateService(className);
+        }
+        return res;
     }
 }

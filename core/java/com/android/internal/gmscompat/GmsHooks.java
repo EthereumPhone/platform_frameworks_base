@@ -42,6 +42,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadSystemRuntimeException;
+import android.os.IBinder;
 import android.os.Parcel;
 import android.os.PowerExemptionManager;
 import android.os.Process;
@@ -59,6 +60,8 @@ import android.webkit.WebView;
 import com.android.internal.gmscompat.client.ClientPriorityManager;
 import com.android.internal.gmscompat.client.GmsCompatClientService;
 import com.android.internal.gmscompat.flags.GmsFlag;
+import com.android.internal.gmscompat.gcarriersettings.GCarrierSettingsApp;
+import com.android.internal.gmscompat.gcarriersettings.TestCarrierConfigService;
 import com.android.internal.gmscompat.sysservice.GmcPackageManager;
 import com.android.internal.gmscompat.util.GmcActivityUtils;
 
@@ -101,6 +104,10 @@ public final class GmsHooks {
 
         if (GmsCompat.isPlayStore()) {
             PlayStoreHooks.init();
+        }
+
+        if (GmsCompat.isGCarrierSettings()) {
+            GCarrierSettingsApp.init();
         }
 
         configUpdateLock = new Object();
@@ -631,8 +638,17 @@ public final class GmsHooks {
             return new GmsCompatClientService();
         }
 
-        if (GmcMediaProjectionService.class.getName().equals(className)) {
-            return new GmcMediaProjectionService();
+        if (GmsCompat.isEnabled()) {
+            if (GmsCompat.isGmsCore()) {
+                if (GmcMediaProjectionService.class.getName().equals(className)) {
+                    return new GmcMediaProjectionService();
+                }
+            }
+            if (GmsCompat.isGCarrierSettings()) {
+                if (TestCarrierConfigService.class.getName().equals(className)) {
+                    return new TestCarrierConfigService();
+                }
+            }
         }
 
         return null;
@@ -702,6 +718,26 @@ public final class GmsHooks {
         tlPermissionsToSpoof.set(null);
         // invalidate the cache of permission state inside GmsCore
         GmcPackageManager.notifyPermissionsChangeListeners();
+    }
+
+    public static IBinder maybeOverrideBinder(IBinder binder) {
+        boolean proceed = GmsCompat.isEnabled() || GmsCompat.isClientOfGmsCore();
+        if (!proceed) {
+            return null;
+        }
+
+        String ifaceName = null;
+        try {
+            ifaceName = binder.getInterfaceDescriptor();
+        } catch (RemoteException e) {
+            Log.d(TAG, "", e);
+        }
+
+        if (ifaceName == null) {
+            return null;
+        }
+
+        return GmcBinderDefs.maybeOverrideBinder(binder, ifaceName);
     }
 
     private GmsHooks() {}

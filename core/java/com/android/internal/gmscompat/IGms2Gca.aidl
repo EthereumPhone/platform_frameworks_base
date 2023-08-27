@@ -3,7 +3,9 @@ package com.android.internal.gmscompat;
 import android.app.ApplicationErrorReport;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.Intent;
 import android.database.IContentObserver;
+import android.os.BinderDef;
 
 import com.android.internal.gmscompat.GmsCompatConfig;
 import com.android.internal.gmscompat.IGca2Gms;
@@ -14,8 +16,10 @@ interface IGms2Gca {
     GmsCompatConfig connectGmsCore(String processName, IGca2Gms iGca2Gms, @nullable IFileProxyService dynamiteFileProxyService);
     GmsCompatConfig connect(String packageName, String processName, IGca2Gms iGca2Gms);
 
-    oneway void showPlayStorePendingUserActionNotification(@nullable String pkgName);
-    oneway void dismissPlayStorePendingUserActionNotification();
+    @nullable BinderDef maybeGetBinderDef(String callerPkg, int processState, String ifaceName);
+
+    oneway void onPlayStorePendingUserAction(in Intent actionIntent, @nullable String pkgName);
+    @nullable Intent maybeGetPlayStorePendingUserActionIntent();
 
     oneway void showPlayStoreMissingObbPermissionNotification();
 
