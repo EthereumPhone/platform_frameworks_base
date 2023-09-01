@@ -48,6 +48,7 @@ import android.util.PackageUtils;
 import com.android.internal.gmscompat.GmsHooks;
 import com.android.internal.gmscompat.GmsInfo;
 import com.android.internal.gmscompat.PlayStoreHooks;
+import com.android.internal.util.GoogleEuicc;
 
 import java.util.ArrayList;
 import java.util.List;
