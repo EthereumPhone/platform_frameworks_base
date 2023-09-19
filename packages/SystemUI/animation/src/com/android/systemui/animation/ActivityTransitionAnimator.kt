@@ -60,6 +60,7 @@ class ActivityTransitionAnimator(
     // TODO(b/218989950): Remove this animator and instead set the duration of the dim fade out to
     // TIMINGS.contentBeforeFadeOutDuration.
     private val dialogToAppAnimator: TransitionAnimator = DEFAULT_DIALOG_TO_APP_ANIMATOR,
+    private val dialogToAppAnimator: LaunchAnimator = DEFAULT_DIALOG_TO_APP_ANIMATOR,
 
     /**
      * Whether we should disable the WindowManager timeout. This should be set to true in tests
@@ -499,6 +500,7 @@ class ActivityTransitionAnimator(
                     transitionAnimator,
                     disableWmTimeout
                 )
+                AnimationDelegate(controller, callback, listener, launchAnimator, disableWmTimeout)
         }
 
         @BinderThread
@@ -548,6 +550,8 @@ class ActivityTransitionAnimator(
         private val listener: Listener? = null,
         /** The animator to use to animate the window transition. */
         private val transitionAnimator: TransitionAnimator = DEFAULT_TRANSITION_ANIMATOR,
+        /** The animator to use to animate the window launch. */
+        private val launchAnimator: LaunchAnimator = DEFAULT_LAUNCH_ANIMATOR,
 
         /**
          * Whether we should disable the WindowManager timeout. This should be set to true in tests
@@ -612,6 +616,13 @@ class ActivityTransitionAnimator(
                 timeoutHandler.removeCallbacks(onTimeout)
                 timeoutHandler.removeCallbacks(onLongTimeout)
             }
+        @UiThread
+        internal fun postTimeout() {
+            timeoutHandler?.postDelayed(onTimeout, LAUNCH_TIMEOUT)
+        }
+
+        private fun removeTimeout() {
+            timeoutHandler?.removeCallbacks(onTimeout)
         }
 
         @UiThread

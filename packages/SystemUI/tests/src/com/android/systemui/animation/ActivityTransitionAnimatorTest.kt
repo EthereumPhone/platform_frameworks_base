@@ -65,6 +65,10 @@ class ActivityTransitionAnimatorTest : SysuiTestCase() {
             )
         activityTransitionAnimator.callback = callback
         activityTransitionAnimator.addListener(listener)
+        activityLaunchAnimator =
+            ActivityLaunchAnimator(testLaunchAnimator, testLaunchAnimator, disableWmTimeout = true)
+        activityLaunchAnimator.callback = callback
+        activityLaunchAnimator.addListener(listener)
     }
 
     @After
