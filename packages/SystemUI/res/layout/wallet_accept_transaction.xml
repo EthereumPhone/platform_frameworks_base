@@ -8,6 +8,19 @@
     android:layout_height="match_parent"
     >
 
+    <!-- Shadow -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.5"
+        android:background="#FF000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Dialog -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
@@ -27,26 +40,11 @@
             android:fontFamily="@font/inter_semibold_font"
             android:text="Transaction"
             android:textColor="@color/ethOS_white"
-            android:textSize="28sp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/stelo_check_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_medium_font"
-            android:inputType="textMultiLine"
-            android:singleLine="false"
-            android:text=""
-            android:textColor="@color/ethOS_white"
-            android:textSize="12sp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/ethamount_sign"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline4" />
 
         <Button
             android:id="@+id/acceptbtn"

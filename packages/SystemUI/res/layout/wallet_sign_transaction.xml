@@ -1,21 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent" android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- Shadow -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.5"
+        android:background="#FF000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <!-- Dialog -->
-    <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/constraintLayout" android:layout_width="match_parent" android:layout_height="432dp" 
-android:background="@drawable/rounded_corners_dialog" android:elevation="10dp" app:layout_constraintBottom_toBottomOf="parent" 
-app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.0" app:layout_constraintStart_toStartOf="parent">
+    <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/constraintLayout" android:layout_width="match_parent" android:layout_height="432dp"
+        android:background="@drawable/rounded_corners_dialog" android:elevation="10dp" app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.0" app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/choose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:fontFamily="@font/inter_semibold_font"
             android:text="Sign message"
             android:textColor="@color/ethOS_white"
-            android:textSize="28sp"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,28 +40,30 @@ app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="
             android:id="@+id/acceptbtn"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/rounded_corners_primary"
-            android:text="Accept"
+            android:fontFamily="@font/inter_semibold_font"
+            android:text="Accept Message"
             android:textColor="#FF24303D"
             app:backgroundTint="@null"
-            android:fontFamily="@font/inter_semibold_font"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintBottom_toTopOf="@+id/declinebtn"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline" />
 
         <Button
             android:id="@+id/declinebtn"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:layout_marginBottom="24dp"
             android:background="@drawable/rounded_corners_secondary"
-            android:text="Decline"
+            android:fontFamily="@font/inter_semibold_font"
+            android:text="Decline Message"
             android:textColor="@color/ethOS_white"
             app:backgroundTint="@null"
-            android:fontFamily="@font/inter_semibold_font"
-            app:layout_constraintBaseline_toBaselineOf="@+id/acceptbtn"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintStart_toStartOf="@+id/guideline4" />
+            app:layout_constraintStart_toStartOf="@+id/guideline" />
+
 
         <TextView
             android:id="@+id/messagetitle"
@@ -54,7 +73,7 @@ app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="
             android:fontFamily="@font/inter_medium_font"
             android:text="Message"
             android:textColor="#FFC8C8C8"
-            android:textSize="16sp"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/choose" />
 
@@ -74,12 +93,12 @@ app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:fontFamily="@font/inter_regular_font"
                 android:paddingBottom="16dp"
-                android:text="fhdfhfhdsofhaofdjiaoh "
+                android:text="Lorem ipsum "
                 android:textAlignment="viewStart"
                 android:textColor="@color/ethOS_white"
-                android:textSize="20sp"
-                android:fontFamily="@font/inter_regular_font"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline2"
                 app:layout_constraintStart_toStartOf="@+id/messagetitle"
                 app:layout_constraintTop_toBottomOf="@+id/messagetitle" />
