@@ -90,6 +90,7 @@ import android.os.Bundle;
 import android.os.Debug;
 import android.os.Environment;
 import android.os.FileUtils;
+import android.os.Flags;
 import android.os.Handler;
 import android.os.HandlerExecutor;
 import android.os.IBinder;
@@ -1839,7 +1840,7 @@ public class UserManagerService extends IUserManager.Stub {
         logQuietModeEnabled(userId, enableQuietMode, callingPackage);
 
         // Broadcast generic intents for all profiles
-        if (android.os.Flags.allowPrivateProfile()) {
+        if (Flags.allowPrivateProfile()) {
             broadcastProfileAvailabilityChanges(profile, parent.getUserHandle(),
                     enableQuietMode, false);
         }
@@ -4123,8 +4124,6 @@ public class UserManagerService extends IUserManager.Stub {
 
     @GuardedBy({"mPackagesLock"})
     private void readUserListLP() {
-        // Whether guest restrictions are present on userlist.xml
-        boolean guestRestrictionsArePresentOnUserListXml = false;
         try (ResilientAtomicFile file = getUserListFile()) {
             FileInputStream fin = null;
             try {
@@ -4175,7 +4174,6 @@ public class UserManagerService extends IUserManager.Stub {
                                 }
                             }
                         } else if (name.equals(TAG_GUEST_RESTRICTIONS)) {
-                            guestRestrictionsArePresentOnUserListXml = true;
                             while ((type = parser.next()) != XmlPullParser.END_DOCUMENT
                                     && type != XmlPullParser.END_TAG) {
                                 if (type == XmlPullParser.START_TAG) {
@@ -4194,7 +4192,6 @@ public class UserManagerService extends IUserManager.Stub {
 
                 updateUserIds();
                 upgradeIfNecessaryLP();
-                updateUsersWithFeatureFlags(guestRestrictionsArePresentOnUserListXml);
             } catch (Exception e) {
                 // Remove corrupted file and retry.
                 file.failRead(fin, e);
@@ -4858,6 +4855,7 @@ public class UserManagerService extends IUserManager.Stub {
                     }
                     serializer.endTag(null, TAG_GUEST_RESTRICTIONS);
                 }
+                serializer.endTag(null, TAG_GUEST_RESTRICTIONS);
                 int[] userIdsToWrite;
                 synchronized (mUsersLock) {
                     userIdsToWrite = new int[mUsers.size()];

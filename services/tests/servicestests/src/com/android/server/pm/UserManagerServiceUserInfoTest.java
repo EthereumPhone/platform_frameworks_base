@@ -134,8 +134,7 @@ public class UserManagerServiceUserInfoTest {
 
         mUserManagerService.putUserInfo(data.info);
 
-        //Local restrictions are written to the user specific files and global restrictions
-        // are written to the SYSTEM user file.
+        // Set a global and user restriction so they get written out to the user file.
         setUserRestrictions(data.info.id, globalRestriction, localRestriction, true);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
