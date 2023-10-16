@@ -53,7 +53,6 @@ import android.app.usage.AppStandbyInfo;
 import android.app.usage.BroadcastResponseStatsList;
 import android.app.usage.ConfigurationStats;
 import android.app.usage.EventStats;
-import android.app.usage.Flags;
 import android.app.usage.IUsageStatsManager;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageEvents.Event;
