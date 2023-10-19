@@ -139,7 +139,6 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.FloatProperty;
 import android.util.LayoutDirection;
 import android.util.Log;

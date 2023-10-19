@@ -761,7 +761,6 @@ public final class ViewRootImpl implements ViewParent,
     private SurfaceControl mBoundsLayer;
     private final SurfaceSession mSurfaceSession = new SurfaceSession();
     private final Transaction mTransaction = new Transaction();
-    private final Transaction mFrameRateTransaction = new Transaction();
 
     @UnsupportedAppUsage
     boolean mAdded;
@@ -7545,7 +7544,6 @@ public final class ViewRootImpl implements ViewParent,
 
         private int processPointerEvent(QueuedInputEvent q) {
             final MotionEvent event = (MotionEvent)q.mEvent;
-            final int action = event.getAction();
             boolean handled = mHandwritingInitiator.onTouchEvent(event);
             if (handled) {
                 // If handwriting is started, toolkit doesn't receive ACTION_UP.
@@ -12337,9 +12335,9 @@ public final class ViewRootImpl implements ViewParent,
         EventLog.writeEvent(LOGTAG_VIEWROOT_DRAW_EVENT, mTag, msg);
     }
 
-    private void setPreferredFrameRateCategory(int preferredFrameRateCategory) {
-        if (!shouldSetFrameRateCategory()) {
-            return;
+    private void logAndTrace(String msg) {
+        if (Trace.isTagEnabled(Trace.TRACE_TAG_VIEW)) {
+            Trace.instant(Trace.TRACE_TAG_VIEW, mTag + "-" + msg);
         }
         int categoryFromConflictedFrameRates = FRAME_RATE_CATEGORY_NO_PREFERENCE;
         if (mIsFrameRateConflicted) {
