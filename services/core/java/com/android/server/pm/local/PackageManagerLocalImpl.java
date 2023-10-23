@@ -29,16 +29,10 @@ import android.os.UserHandle;
 import android.util.ArrayMap;
 import android.util.Slog;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 import com.android.internal.net.VpnConfig;
 import com.android.internal.pm.pkg.component.ParsedIntentInfo;
 import com.android.internal.pm.pkg.component.ParsedService;
-=======
->>>>>>> 44b44f74c412 (infrastructure for per-package dex2oat compiler filter overrides)
-=======
 import com.android.internal.net.VpnConfig;
->>>>>>> 89b97f4a0a4a (always use speed dex2oat compiler filter for VPN service packages)
 import com.android.server.art.model.DexoptParams;
 import com.android.server.art.model.DexoptResult;
 import com.android.server.ext.BgDexoptUi;
@@ -47,12 +41,7 @@ import com.android.server.pm.PackageManagerLocal;
 import com.android.server.pm.PackageManagerService;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.PackageState;
-<<<<<<< HEAD
 import com.android.server.pm.pkg.SharedUserApi;
-=======
-import com.android.server.pm.pkg.component.ParsedIntentInfo;
-import com.android.server.pm.pkg.component.ParsedService;
->>>>>>> 89b97f4a0a4a (always use speed dex2oat compiler filter for VPN service packages)
 import com.android.server.pm.snapshot.PackageDataSnapshot;
 
 import java.io.IOException;
