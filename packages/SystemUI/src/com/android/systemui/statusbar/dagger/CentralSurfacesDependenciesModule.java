@@ -63,8 +63,6 @@ import dagger.Binds;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
-import dagger.multibindings.ClassKey;
-import dagger.multibindings.IntoMap;
 
 /**
  * This module provides instances needed to construct {@link CentralSurfacesImpl}. These are moved to
@@ -74,12 +72,6 @@ import dagger.multibindings.IntoMap;
  */
 @Module
 public interface CentralSurfacesDependenciesModule {
-
-    /** */
-    @Binds
-    @IntoMap
-    @ClassKey(NotificationRemoteInputManager.class)
-    CoreStartable bindsStartNotificationRemoteInputManager(NotificationRemoteInputManager nrim);
 
     /** */
     @SysUISingleton
@@ -136,23 +128,20 @@ public interface CentralSurfacesDependenciesModule {
         return new CommandQueue(context, displayTracker, registry, dumpHandler, powerInteractor);
     }
 
-    /** */
+    /**
+     */
     @Binds
     ManagedProfileController provideManagedProfileController(
             ManagedProfileControllerImpl controllerImpl);
 
-    /** */
+    /**
+     */
     @Binds
     SysuiStatusBarStateController providesSysuiStatusBarStateController(
             StatusBarStateControllerImpl statusBarStateControllerImpl);
 
-    /** */
-    @Binds
-    @IntoMap
-    @ClassKey(SysuiStatusBarStateController.class)
-    CoreStartable bindsStartStatusBarStateController(StatusBarStateControllerImpl sbsc);
-
-    /** */
+    /**
+     */
     @Binds
     StatusBarIconController provideStatusBarIconController(
             StatusBarIconControllerImpl controllerImpl);
@@ -187,14 +176,16 @@ public interface CentralSurfacesDependenciesModule {
     ShadeCarrierGroupController.SlotIndexResolver provideSlotIndexResolver(
             ShadeCarrierGroupController.SubscriptionManagerSlotIndexResolver impl);
 
-    /** */
+    /**
+     */
     @Provides
     @SysUISingleton
     static ActivityTransitionAnimator provideActivityTransitionAnimator() {
         return new ActivityTransitionAnimator();
     }
 
-    /** */
+    /**
+     */
     @Provides
     @SysUISingleton
     static DialogTransitionAnimator provideDialogTransitionAnimator(IDreamManager dreamManager,
@@ -227,7 +218,8 @@ public interface CentralSurfacesDependenciesModule {
                 callback, interactionJankMonitor, animationFeatureFlags);
     }
 
-    /** */
+    /**
+     */
     @Provides
     @SysUISingleton
     static AnimationFeatureFlags provideAnimationFeatureFlags() {

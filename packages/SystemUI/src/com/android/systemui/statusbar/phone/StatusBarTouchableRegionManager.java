@@ -39,7 +39,6 @@ import com.android.systemui.res.R;
 import com.android.systemui.scene.domain.interactor.SceneInteractor;
 import com.android.systemui.scene.shared.flag.SceneContainerFlags;
 import com.android.systemui.shade.ShadeExpansionStateManager;
-import com.android.systemui.shade.domain.interactor.ShadeInteractor;
 import com.android.systemui.statusbar.NotificationShadeWindowController;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.ConfigurationController.ConfigurationListener;
@@ -88,9 +87,8 @@ public final class StatusBarTouchableRegionManager implements Dumpable {
             ConfigurationController configurationController,
             HeadsUpManager headsUpManager,
             ShadeExpansionStateManager shadeExpansionStateManager,
-            ShadeInteractor shadeInteractor,
             Provider<SceneInteractor> sceneInteractor,
-            JavaAdapter javaAdapter,
+            Provider<JavaAdapter> javaAdapter,
             SceneContainerFlags sceneContainerFlags,
             UnlockedScreenOffAnimationController unlockedScreenOffAnimationController,
             PrimaryBouncerInteractor primaryBouncerInteractor,
@@ -131,7 +129,7 @@ public final class StatusBarTouchableRegionManager implements Dumpable {
         mUnlockedScreenOffAnimationController = unlockedScreenOffAnimationController;
 
         if (sceneContainerFlags.isEnabled()) {
-            javaAdapter.alwaysCollectFlow(
+            javaAdapter.get().alwaysCollectFlow(
                     sceneInteractor.get().isVisible(),
                     this::onSceneContainerVisibilityChanged);
         } else {
@@ -157,7 +155,7 @@ public final class StatusBarTouchableRegionManager implements Dumpable {
         pw.println(mTouchableRegion);
     }
 
-    private void onShadeOrQsExpanded(Boolean isExpanded) {
+    private void onShadeExpansionFullyChanged(Boolean isExpanded) {
         if (isExpanded != mIsStatusBarExpanded) {
             mIsStatusBarExpanded = isExpanded;
             if (isExpanded) {

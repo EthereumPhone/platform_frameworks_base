@@ -74,7 +74,8 @@ import javax.inject.Inject;
 @SysUISingleton
 public class StatusBarStateControllerImpl implements
         SysuiStatusBarStateController,
-        CallbackController<StateListener> {
+        CallbackController<StateListener>,
+        Dumpable {
     private static final String TAG = "SbStateController";
     private static final boolean DEBUG_IMMERSIVE_APPS =
             SystemProperties.getBoolean("persist.debug.immersive_apps", false);
@@ -169,6 +170,7 @@ public class StatusBarStateControllerImpl implements
     @Inject
     public StatusBarStateControllerImpl(
             UiEventLogger uiEventLogger,
+            DumpManager dumpManager,
             InteractionJankMonitor interactionJankMonitor,
             JavaAdapter javaAdapter,
             Lazy<ShadeInteractor> shadeInteractorLazy,
@@ -183,7 +185,7 @@ public class StatusBarStateControllerImpl implements
         for (int i = 0; i < HISTORY_SIZE; i++) {
             mHistoricalRecords[i] = new HistoricalState();
         }
-    }
+        shadeExpansionStateManager.addFullExpansionListener(this::onShadeExpansionFullyChanged);
 
     @Override
     public void start() {
@@ -388,7 +390,7 @@ public class StatusBarStateControllerImpl implements
         }
     }
 
-    private void onShadeOrQsExpanded(Boolean isExpanded) {
+    private void onShadeExpansionFullyChanged(Boolean isExpanded) {
         if (mIsExpanded != isExpanded) {
             mIsExpanded = isExpanded;
             String tag = getClass().getSimpleName() + "#setIsExpanded";

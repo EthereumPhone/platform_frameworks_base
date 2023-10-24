@@ -35,6 +35,9 @@ import com.android.internal.logging.UiEventLogger;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.res.R;
 import com.android.systemui.shade.domain.interactor.ShadeInteractor;
+import com.android.systemui.shade.ShadeExpansionStateManager;
+import com.android.systemui.statusbar.AlertingNotificationManager;
+import com.android.systemui.statusbar.AlertingNotificationManagerTest;
 import com.android.systemui.statusbar.NotificationShadeWindowController;
 import com.android.systemui.statusbar.notification.collection.NotificationEntry;
 import com.android.systemui.statusbar.notification.collection.provider.VisualStabilityProvider;
@@ -47,6 +50,10 @@ import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.kotlin.JavaAdapter;
 import com.android.systemui.util.settings.GlobalSettings;
 import com.android.systemui.util.time.SystemClock;
+import com.android.systemui.statusbar.policy.AccessibilityManagerWrapper;
+import com.android.systemui.statusbar.policy.ConfigurationController;
+import com.android.systemui.statusbar.policy.HeadsUpManager;
+import com.android.systemui.statusbar.policy.HeadsUpManagerLogger;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -56,8 +63,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-
-import kotlinx.coroutines.flow.StateFlowKt;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -73,9 +78,8 @@ public class HeadsUpManagerPhoneTest extends BaseHeadsUpManagerTest {
     @Mock private KeyguardBypassController mBypassController;
     @Mock private ConfigurationControllerImpl mConfigurationController;
     @Mock private AccessibilityManagerWrapper mAccessibilityManagerWrapper;
+    @Mock private ShadeExpansionStateManager mShadeExpansionStateManager;
     @Mock private UiEventLogger mUiEventLogger;
-    @Mock private JavaAdapter mJavaAdapter;
-    @Mock private ShadeInteractor mShadeInteractor;
 
     private static final class TestableHeadsUpManagerPhone extends HeadsUpManagerPhone {
         TestableHeadsUpManagerPhone(
@@ -91,8 +95,7 @@ public class HeadsUpManagerPhoneTest extends BaseHeadsUpManagerTest {
                 DelayableExecutor executor,
                 AccessibilityManagerWrapper accessibilityManagerWrapper,
                 UiEventLogger uiEventLogger,
-                JavaAdapter javaAdapter,
-                ShadeInteractor shadeInteractor
+                ShadeExpansionStateManager shadeExpansionStateManager
         ) {
             super(
                     context,
@@ -108,8 +111,7 @@ public class HeadsUpManagerPhoneTest extends BaseHeadsUpManagerTest {
                     executor,
                     accessibilityManagerWrapper,
                     uiEventLogger,
-                    javaAdapter,
-                    shadeInteractor
+                    shadeExpansionStateManager
             );
             mMinimumDisplayTime = TEST_MINIMUM_DISPLAY_TIME;
             mAutoDismissTime = TEST_AUTO_DISMISS_TIME;
@@ -130,8 +132,7 @@ public class HeadsUpManagerPhoneTest extends BaseHeadsUpManagerTest {
                 mExecutor,
                 mAccessibilityManagerWrapper,
                 mUiEventLogger,
-                mJavaAdapter,
-                mShadeInteractor
+                mShadeExpansionStateManager
         );
     }
 
