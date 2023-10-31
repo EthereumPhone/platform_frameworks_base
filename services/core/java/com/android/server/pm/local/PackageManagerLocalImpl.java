@@ -29,9 +29,12 @@ import android.os.UserHandle;
 import android.util.ArrayMap;
 import android.util.Slog;
 
+<<<<<<< HEAD
 import com.android.internal.net.VpnConfig;
 import com.android.internal.pm.pkg.component.ParsedIntentInfo;
 import com.android.internal.pm.pkg.component.ParsedService;
+=======
+>>>>>>> 44b44f74c412 (infrastructure for per-package dex2oat compiler filter overrides)
 import com.android.server.art.model.DexoptParams;
 import com.android.server.art.model.DexoptResult;
 import com.android.server.ext.BgDexoptUi;
@@ -306,5 +309,21 @@ public class PackageManagerLocalImpl implements PackageManagerLocal {
             }
         }
         return false;
+    }
+
+    @Nullable
+    @Override
+    public String maybeOverrideCompilerFilter(@NonNull String origFilter, @NonNull AndroidPackage pkg,
+                                              @NonNull Object dexoptParamsR) {
+        final String TAG = "maybeOverrideCompilerFilter";
+        final String speedFilter = "speed";
+
+        if (speedFilter.equals(origFilter)) {
+            return null;
+        }
+
+        var dexoptParams = (DexoptParams) dexoptParamsR;
+
+        return null;
     }
 }
