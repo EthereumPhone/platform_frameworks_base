@@ -344,4 +344,20 @@ public class PackageManagerLocalImpl implements PackageManagerLocal {
         }
         return false;
     }
+
+    @Nullable
+    @Override
+    public String maybeOverrideCompilerFilter(@NonNull String origFilter, @NonNull AndroidPackage pkg,
+                                              @NonNull Object dexoptParamsR) {
+        final String TAG = "maybeOverrideCompilerFilter";
+        final String speedFilter = "speed";
+
+        if (speedFilter.equals(origFilter)) {
+            return null;
+        }
+
+        var dexoptParams = (DexoptParams) dexoptParamsR;
+
+        return null;
+    }
 }
