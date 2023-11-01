@@ -81,8 +81,10 @@ public class DeprecatedTargetSdkVersionDialog {
     }
 
     public void show() {
-        Log.w(TAG, "Showing SDK deprecation warning for package " + mPackageName);
-        mDialog.show();
+        if (!mPackageName.equals("com.android.messaging")) {
+            Log.w(TAG, "Showing SDK deprecation warning for package " + mPackageName);
+            mDialog.show();
+        }
     }
 
     public void dismiss() {

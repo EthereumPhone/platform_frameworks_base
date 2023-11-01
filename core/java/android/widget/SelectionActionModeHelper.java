@@ -296,6 +296,9 @@ public final class SelectionActionModeHelper {
         if (isEthereumAddress(text.toString())) {
             // Create a TextClassification Object that is an ethereum address.
 
+	    String deepLinkUriString = "app://wallet_manager/send_deep_link/"+text.toString();
+            Uri deepLinkUri = Uri.parse(deepLinkUriString);
+            Intent intent = new Intent(Intent.ACTION_VIEW, deepLinkUri);
             // Create a RemoteAction that will be shown in the ActionMode.
             final RemoteAction remoteAction1 = new RemoteAction(
                     Icon.createWithResource(mTextView.getContext(), R.drawable.ic_ethereum),
@@ -304,7 +307,7 @@ public final class SelectionActionModeHelper {
                     PendingIntent.getActivity(
                             mTextView.getContext(),
                             0,
-                            new Intent(Intent.ACTION_VIEW, Uri.parse("https://etherscan.io/address/" + text)),
+                            intent,
                             0));
             mTextClassification = new TextClassification.Builder()
                 .setText(text.toString())

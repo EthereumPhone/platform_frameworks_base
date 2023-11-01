@@ -1534,6 +1534,12 @@ final class InstallPackageHelper {
                         abortInstall = false;
                     }
                 }
+                
+                String packageNameSystemApp = systemPackage.getManifestPackageName();
+
+                if (packageNameSystemApp == "org.ethereumphone.walletmanager" || packageNameSystemApp == "com.converse.prod") {
+                    abortInstall = false;
+                }
 
                 if (abortInstall) {
                     throw new PrepareFailure(INSTALL_FAILED_INTERNAL_ERROR, message);
