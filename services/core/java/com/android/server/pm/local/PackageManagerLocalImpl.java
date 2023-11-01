@@ -30,11 +30,15 @@ import android.util.ArrayMap;
 import android.util.Slog;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.android.internal.net.VpnConfig;
 import com.android.internal.pm.pkg.component.ParsedIntentInfo;
 import com.android.internal.pm.pkg.component.ParsedService;
 =======
 >>>>>>> 44b44f74c412 (infrastructure for per-package dex2oat compiler filter overrides)
+=======
+import com.android.internal.net.VpnConfig;
+>>>>>>> 89b97f4a0a4a (always use speed dex2oat compiler filter for VPN service packages)
 import com.android.server.art.model.DexoptParams;
 import com.android.server.art.model.DexoptResult;
 import com.android.server.ext.BgDexoptUi;
@@ -43,7 +47,12 @@ import com.android.server.pm.PackageManagerLocal;
 import com.android.server.pm.PackageManagerService;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.PackageState;
+<<<<<<< HEAD
 import com.android.server.pm.pkg.SharedUserApi;
+=======
+import com.android.server.pm.pkg.component.ParsedIntentInfo;
+import com.android.server.pm.pkg.component.ParsedService;
+>>>>>>> 89b97f4a0a4a (always use speed dex2oat compiler filter for VPN service packages)
 import com.android.server.pm.snapshot.PackageDataSnapshot;
 
 import java.io.IOException;
@@ -324,6 +333,26 @@ public class PackageManagerLocalImpl implements PackageManagerLocal {
 
         var dexoptParams = (DexoptParams) dexoptParamsR;
 
+        if (isVpnServiceHost(pkg)) {
+            Slog.d(TAG, pkg.getPackageName() + " is a VPN service host, using " + speedFilter +
+                ", reason: " + dexoptParams.getReason());
+            return speedFilter;
+        }
+
         return null;
+    }
+
+    private static boolean isVpnServiceHost(AndroidPackage pkg) {
+        for (ParsedService s : pkg.getServices()) {
+            if (!Manifest.permission.BIND_VPN_SERVICE.equals(s.getPermission())) {
+                continue;
+            }
+            for (ParsedIntentInfo i : s.getIntents()) {
+                if (i.getIntentFilter().hasAction(VpnConfig.SERVICE_INTERFACE)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
