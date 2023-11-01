@@ -54,6 +54,9 @@ import javax.crypto.Cipher;
 import android.os.CancellationSignal;
 import android.security.keystore.KeyProperties;
 import java.security.KeyStore;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
 import android.security.keystore.KeyGenParameterSpec;
 import javax.crypto.SecretKey;
 import javax.crypto.KeyGenerator;
@@ -507,6 +510,15 @@ public class PhoneStatusBarPolicy
                         
                         // Change to actual chainId
                         chainId = getChainId();
+                        if (chainId == 137) {
+                            // Change eth to matic
+                            TextView amountEthextension = (TextView) mainView.findViewById(R.id.amountethextension);
+                            TextView gasEthextention = (TextView) mainView.findViewById(R.id.gasethextention);
+                            TextView totalAmountExtension = (TextView) mainView.findViewById(R.id.textView13);
+                            amountEthextension.setText("MATIC");
+                            gasEthextention.setText("MATIC");
+                            totalAmountExtension.setText("MATIC");
+                        }
                         chainIdTextView.setText(chainIdToChainName(chainId));
 
                         toAddrView.setText(toAddr);
@@ -517,10 +529,10 @@ public class PhoneStatusBarPolicy
                         BigDecimal gasAmountB = new BigDecimal(gasPrice).multiply(new BigDecimal(gasAmount));
                         gasAmountB = gasAmountB.divide(BigDecimal.TEN.pow(18));
 
-                        ethAmount.setText(amountB.setScale(6, BigDecimal.ROUND_HALF_EVEN).toPlainString());
-                        gasAmountView.setText(gasAmountB.setScale(6, BigDecimal.ROUND_HALF_EVEN).toPlainString());
+                        ethAmount.setText(beautifyDouble(amountB.doubleValue()));
+                        gasAmountView.setText(beautifyDouble(gasAmountB.doubleValue()));
 
-                        totalAmount.setText(amountB.add(gasAmountB).setScale(6, BigDecimal.ROUND_HALF_EVEN).toPlainString());
+                        totalAmount.setText(beautifyDouble(amountB.add(gasAmountB).doubleValue()));
 
                         final String requestIDf = requestID;
                         final String toF = toAddr;
@@ -537,6 +549,7 @@ public class PhoneStatusBarPolicy
                             public void run() {
                                 final TextView steloCheckText = (TextView) mainView.findViewById(R.id.stelo_check_text);
                                 final ProgressBar progressBar = (ProgressBar) mainView.findViewById(R.id.progressBar);
+                                final TextView steloTitle = (TextView) mainView.findViewById(R.id.textView2);
                                 try {
                                     Class cls = Class.forName("android.os.PrivateWalletProxy");
                                     Object obj = context.getSystemService("privatewallet");
@@ -601,9 +614,8 @@ public class PhoneStatusBarPolicy
                                     handler.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            steloCheckText.setText("Stelo could not be reached.");
                                             progressBar.setVisibility(View.GONE);
-                                            steloCheckText.setVisibility(View.VISIBLE);
+                                            steloTitle.setVisibility(View.INVISIBLE);
                                         }
                                     });
                                 }
@@ -1302,6 +1314,13 @@ public class PhoneStatusBarPolicy
             e.printStackTrace();
             return 0;
         }
+    }
+
+    public String beautifyDouble(double input) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat("#.######", symbols);
+        return decimalFormat.format(input);
     }
 
     public void updateLightClientLogo() {
