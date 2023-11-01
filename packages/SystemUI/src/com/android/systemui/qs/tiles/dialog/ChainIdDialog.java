@@ -75,7 +75,7 @@ public class ChainIdDialog extends SystemUIDialog implements Window.Callback {
         }
 	*/
         // Add the chain ids to the spinner
-        List<String> list = Arrays.asList("Ethereum Mainnet", "Optimism", "Arbitrum One", "Base Testnet", "Goerli Testnet", "Base Mainnet", "Zora L2");
+        List<String> list = Arrays.asList("Ethereum Mainnet", "Optimism", "Arbitrum One", "Base Mainnet", "Zora L2", "Base Testnet", "Goerli Testnet");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, R.layout.spinner_item, list);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         // Make spinner dropdown background white if dark mode is disabled
@@ -95,16 +95,16 @@ public class ChainIdDialog extends SystemUIDialog implements Window.Callback {
                 mSpinner.setSelection(2);
                 break;
             case 84531:
-                mSpinner.setSelection(3);
-                break;
-            case 5:
-                mSpinner.setSelection(4);
-                break;
-            case 8453:
                 mSpinner.setSelection(5);
                 break;
-            case 7777777:
+            case 5:
                 mSpinner.setSelection(6);
+                break;
+            case 8453:
+                mSpinner.setSelection(3);
+                break;
+            case 7777777:
+                mSpinner.setSelection(4);
                 break;
         }
         // Set OnItemSelectedListener
