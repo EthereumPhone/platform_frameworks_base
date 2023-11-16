@@ -176,6 +176,15 @@ public class PackageManagerHooks {
     @Nullable
     public static AppInfoExt getAppInfoExt(PackageImpl pkg) {
         int flags = 0;
-        return null;
+        long compatChanges = 0L;
+
+        AppCompatProtos.CompatConfig c = AppCompatConf.get(pkg);
+        if (c == null) {
+            return null;
+        }
+
+        compatChanges = c.compatChanges | AppInfoExt.HAS_COMPAT_CHANGES;
+
+        return new AppInfoExt(flags, compatChanges);
     }
 }
