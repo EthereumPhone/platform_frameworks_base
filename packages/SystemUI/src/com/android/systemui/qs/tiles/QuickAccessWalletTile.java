@@ -139,6 +139,7 @@ public class QuickAccessWalletTile extends QSTileImpl<QSTile.State> {
         mUiHandler.post(
                 () -> mController.startQuickAccessUiIntent(
                         mActivityStarter, animationController, mSelectedCard != null));
+        
     }
 
     @Override

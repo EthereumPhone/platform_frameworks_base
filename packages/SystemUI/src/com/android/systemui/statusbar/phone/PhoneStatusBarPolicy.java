@@ -1381,7 +1381,7 @@ public class PhoneStatusBarPolicy
     public String beautifyDouble(double input) {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat("#.######", symbols);
+        DecimalFormat decimalFormat = new DecimalFormat("#.##########", symbols);
         return decimalFormat.format(input);
     }
 
