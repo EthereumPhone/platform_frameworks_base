@@ -127,6 +127,7 @@ public class QuickAccessWalletTile extends QSTileImpl<QSTile.State> {
 
     @Override
     protected void handleClick(@Nullable View view) {
+        
         ActivityLaunchAnimator.Controller animationController =
                 view == null ? null : ActivityLaunchAnimator.Controller.fromView(view,
                         InteractionJankMonitor.CUJ_SHADE_APP_LAUNCH_FROM_QS_TILE);
@@ -134,6 +135,7 @@ public class QuickAccessWalletTile extends QSTileImpl<QSTile.State> {
         mUiHandler.post(
                 () -> mController.startQuickAccessUiIntent(
                         mActivityStarter, animationController, mSelectedCard != null));
+        
     }
 
     @Override
