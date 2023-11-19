@@ -217,17 +217,25 @@ public class LogdNotableMessage {
             return;
         }
 
-        int notifTitleRes;
-        int gosPsFlagSuppressNotif;
-        String intentAction;
-        if (true) {
-            Slog.w(TAG, "unknown flag " + msg);
-            return;
-        }
-
         ApplicationInfo appInfo = prs.appInfo;
         int processPackageUid = appInfo.uid;
         String firstPackageName = appInfo.packageName;
+
+        int notifTitleRes;
+        int gosPsFlagSuppressNotif;
+        String intentAction;
+        if (flagValue == SELinuxFlags.DENY_PROCESS_PTRACE) {
+            notifTitleRes = R.string.notif_native_debug_title;
+            gosPsFlagSuppressNotif = GosPackageState.FLAG_BLOCK_NATIVE_DEBUGGING_SUPPRESS_NOTIF;
+            intentAction = SettingsIntents.APP_NATIVE_DEBUGGING;
+            if (appInfo.ext().hasCompatChange(AppCompatProtos.SUPPRESS_NATIVE_DEBUGGING_NOTIFICATION)) {
+                Slog.d(TAG, "ptrace notification is disabled by compat change for " + firstPackageName);
+                return;
+            }
+        } else {
+            Slog.w(TAG, "unknown flag " + msg);
+            return;
+        }
 
         var pm = LocalServices.getService(PackageManagerInternal.class);
         GosPackageStatePm gosPs = pm.getGosPackageState(firstPackageName, UserHandle.getUserId(processPackageUid));
