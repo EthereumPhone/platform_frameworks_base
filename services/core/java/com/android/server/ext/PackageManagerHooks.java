@@ -172,4 +172,10 @@ public class PackageManagerHooks {
         // prevent it from obtaining carrier config overrides from GmsCore (see CarrierConfig2 README)
         GCarrierSettingsApp.PKG_NAME,
     });
+
+    @Nullable
+    public static AppInfoExt getAppInfoExt(PackageImpl pkg) {
+        int flags = 0;
+        return null;
+    }
 }
