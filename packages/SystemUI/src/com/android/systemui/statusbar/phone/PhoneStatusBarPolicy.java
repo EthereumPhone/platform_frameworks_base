@@ -1381,9 +1381,16 @@ public class PhoneStatusBarPolicy
     public String beautifyDouble(double input) {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat("#.##########", symbols);
+        DecimalFormat decimalFormat = new DecimalFormat("#.######", symbols);
+    
+        double threshold = 0.000001;
+        if (input > 0 && input < threshold) {
+            return decimalFormat.format(threshold);
+        }
+    
         return decimalFormat.format(input);
     }
+    
 
     public void updateLightClientLogo() {
         String out = executeCommand(
