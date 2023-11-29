@@ -248,6 +248,7 @@ public class TombstoneHandler {
 
             if (!isSystem) {
                 if (!isHistorical) {
+<<<<<<< HEAD
                     int aswNotifType = -1;
                     if (isMemtagError(tombstone)) {
                         aswNotifType = ASW_NOTIF_TYPE_MEMTAG;
@@ -257,6 +258,10 @@ public class TombstoneHandler {
                     if (aswNotifType != -1) {
                         maybeShowAswNotification(aswNotifType, ctx, tombstone, msg,
                                 packageUid, firstPackageName);
+=======
+                    if (isMemtagError(tombstone)) {
+                        maybeShowMemtagNotification(ctx, tombstone, msg, packageUid, firstPackageName);
+>>>>>>> becb1cf1a2f3 (never skip crash notification for MTE crashes of system processes)
                     }
                 }
                 // rely on the standard crash dialog for non-memtag crashes
@@ -273,6 +278,7 @@ public class TombstoneHandler {
             }
         }
 
+<<<<<<< HEAD
         final boolean showReportButton;
 
         if ("system_server".equals(progName)) {
@@ -280,6 +286,10 @@ public class TombstoneHandler {
         } else {
             boolean ignoreSetting = !isHistorical && isMemtagError(tombstone);
             showReportButton = ignoreSetting && !shouldSkip;
+=======
+        if (!"system_server".equals(progName)) {
+            boolean ignoreSetting = !isHistorical && isMemtagError(tombstone);
+>>>>>>> becb1cf1a2f3 (never skip crash notification for MTE crashes of system processes)
 
             if (shouldSkip || (!ignoreSetting && !ExtSettings.SHOW_SYSTEM_PROCESS_CRASH_NOTIFICATIONS.get(ctx))) {
                 Slog.d(TAG, "skipped crash notification for " + progName + "; msg: " + msg);
@@ -336,21 +346,16 @@ public class TombstoneHandler {
         n.maybeShow();
     }
 
+    private static boolean isMemtagError(TombstoneProtos.Tombstone t) {
+        TombstoneProtos.Signal s = t.signalInfo;
+
+        return isMemoryTaggingSupported && s != null && s.number == SIGSEGV
+                && (s.code == SEGV_MTEAERR || s.code == SEGV_MTESERR);
+    }
+
     private static void maybeShowMemtagNotification(Context ctx, TombstoneProtos.Tombstone tombstone,
                                                     String errorReport,
                                                     int packageUid, String firstPackageName) {
-        TombstoneProtos.Signal signal = tombstone.signalInfo;
-        if (signal == null) {
-            return;
-        }
-
-        boolean proceed = isMemoryTaggingSupported && signal.number == SIGSEGV
-                && (signal.code == SEGV_MTEAERR || signal.code == SEGV_MTESERR);
-
-        if (!proceed) {
-            return;
-        }
-
         Consumer<Notification.Builder> notifCustomizer = nb -> {
             Intent i = ErrorReportUi.createBaseIntent(ErrorReportUi.ACTION_CUSTOM_REPORT, errorReport);
             i.putExtra(ErrorReportUi.EXTRA_SOURCE_PACKAGE, firstPackageName);
