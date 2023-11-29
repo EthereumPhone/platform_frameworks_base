@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,8 +12,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.6"
-        android:background="#FF1E2730"
+        android:alpha="0.5"
+        android:background="#FF000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +41,8 @@
             android:fontFamily="@font/inter_semibold_font"
             android:text="Change Network"
             android:textColor="@color/ethOS_white"
-            android:textSize="28sp"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,8 +54,9 @@
             android:layout_marginBottom="32dp"
             android:fontFamily="@font/inter_regular_font"
             android:text="Do you want to change network to NETWORK?"
-            android:textColor="#FFC8C8C8"
-            android:textSize="20sp"
+            android:textAlignment="center"
+            android:textColor="@color/ethOS_white"
+            android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/acceptbtn"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline"
@@ -62,28 +66,29 @@
             android:id="@+id/acceptbtn"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/rounded_corners_primary"
-            android:text="Accept"
-            android:textColor="#FF24303D"
-            app:backgroundTint="@null"
             android:fontFamily="@font/inter_semibold_font"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            android:text="Change Network"
+            android:textColor="@color/ethOS_primary_button_text"
+            app:backgroundTint="@null"
+            app:layout_constraintBottom_toTopOf="@+id/declinebtn"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline" />
 
         <Button
             android:id="@+id/declinebtn"
             android:layout_width="0dp"
             android:layout_height="50dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/rounded_corners_secondary"
-            android:text="Decline"
-            android:textColor="@color/ethOS_white"
-            app:backgroundTint="@null"
             android:fontFamily="@font/inter_semibold_font"
-            app:layout_constraintBaseline_toBaselineOf="@+id/acceptbtn"
+            android:text="Stay in Network"
+            android:textColor="@color/ethOS_secondary_button_text"
+            app:backgroundTint="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintStart_toStartOf="@+id/guideline4" />
+            app:layout_constraintStart_toStartOf="@+id/guideline" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -114,6 +119,4 @@
             app:layout_constraintGuide_percent="0.9292035" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
