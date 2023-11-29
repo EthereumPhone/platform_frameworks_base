@@ -19,7 +19,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <!-- Dialog -->
-    <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/constraintLayout" android:layout_width="match_parent" android:layout_height="514dp"
+    <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/constraintLayout" android:layout_width="match_parent" android:layout_height="432dp"
         android:background="@drawable/rounded_corners_dialog" android:elevation="10dp" app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.0" app:layout_constraintStart_toStartOf="parent">
 
@@ -40,11 +40,11 @@
             android:id="@+id/acceptbtn"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/rounded_corners_primary"
             android:fontFamily="@font/inter_semibold_font"
             android:text="Accept Message"
-            android:textColor="@color/ethOS_primary_button_text"
+            android:textColor="#FF24303D"
             app:backgroundTint="@null"
             app:layout_constraintBottom_toTopOf="@+id/declinebtn"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
@@ -69,10 +69,10 @@
             android:id="@+id/messagetitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:fontFamily="@font/inter_medium_font"
             android:text="Message"
-            android:textColor="@color/ethOS_gray"
+            android:textColor="#FFC8C8C8"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/choose" />
@@ -80,25 +80,22 @@
         <ScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:fillViewport="true"
-            android:requiresFadingEdge="vertical"
-            android:fadingEdgeLength="32dp"
             app:layout_constraintBottom_toTopOf="@+id/acceptbtn"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/messagetitle">
 
-
             <TextView
                 android:id="@+id/message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:layout_marginTop="8dp"
                 android:fontFamily="@font/inter_regular_font"
                 android:paddingBottom="16dp"
-                android:text="Lorem ipsumbgehirengjfnkjgngkngfsognisgnu sgjisgcwgnhuewihnrwhrutnwhvtnhwthuihtihtowrtheoiutnvtruvntuihnwtuihiwuthiuwhtruiwhtuhwitnuwivuwt i iwhtu ui  bg 2 vjfjw vw v w jw vjk jw vj2 jr wjinrwtijwnfnwhgwrtniwtnuhwuingnw gwnwngwnignwiugnwingiwnigbowebgiwebgurwbgnjfnwjibirbgonw rg wuwoegniwniwe rwunwenrjwng wegnwerghwrrhgw gnwoepnguowhgu wngj whgwngjrwjpjoipwhriuwngijrwnigbihwbo "
+                android:text="Lorem ipsum "
                 android:textAlignment="viewStart"
                 android:textColor="@color/ethOS_white"
                 android:textSize="16sp"
