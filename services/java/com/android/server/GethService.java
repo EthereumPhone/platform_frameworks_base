@@ -22,8 +22,8 @@ public class GethService extends IGethService.Stub {
     private final String dataDir = "/data/lightclient/";
     private Process mainProcess;
     private ProcessBuilder builder;
-    private final String checkPoint = "0xb2fbee34f6ec8e93d7d1e1be870fe721f99e0bb74e449805b571fdd11d653bc2";
-    private final String web3URL = "https://eth-mainnet.g.alchemy.com/v2/Ka357dlw4WBBevyJtDENSs2b0ZjKiDia";
+    private final String checkPoint = "0x5efaf02858a7f8cc3854fc435cedf5174f620e44221f1c9ed0530a4485c1de7e";
+    private final String web3URL = "https://eth-mainnet.g.alchemy.com/v2/45vSstAIv2oWtLm3jfBPj6fi4C-3s7Mj";
     private final String[] nimbusCommand = {"/system/bin/nimbus_verified_proxy", "--trusted-block-root="+checkPoint, "--web3-url="+web3URL};
     private final String[] heliosCommand = {"/system/bin/helios", "--execution-rpc", web3URL, "--data-dir", dataDir, "--checkpoint", checkPoint};
     private String currentCommand = "Helios";
