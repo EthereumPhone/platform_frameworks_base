@@ -38,7 +38,6 @@ import com.android.systemui.authentication.AuthenticationModule;
 import com.android.systemui.biometrics.FingerprintInteractiveToAuthProvider;
 import com.android.systemui.biometrics.FingerprintReEnrollNotification;
 import com.android.systemui.biometrics.UdfpsDisplayModeProvider;
-import com.android.systemui.biometrics.UdfpsTouchProvider;
 import com.android.systemui.biometrics.dagger.BiometricsModule;
 import com.android.systemui.biometrics.domain.BiometricsDomainLayerModule;
 import com.android.systemui.bouncer.data.repository.BouncerRepositoryModule;
@@ -339,10 +338,6 @@ public abstract class SystemUIModule {
 
     @BindsOptionalOf
     abstract FingerprintReEnrollNotification optionalFingerprintReEnrollNotification();
-
-    @SysUISingleton
-    @Binds
-    abstract AlternateUdfpsTouchProvider bindUdfpsTouchProvider(UdfpsTouchProvider provider);
 
     @SysUISingleton
     @Binds
