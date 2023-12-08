@@ -191,6 +191,9 @@ public class EventResultPersister {
             Intent intentToStart = intent.getParcelableExtra(Intent.EXTRA_INTENT);
             intentToStart.addFlags(FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intentToStart);
+            Intent pendingAction = intent.getParcelableExtra(Intent.EXTRA_INTENT, Intent.class);
+            pendingAction.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(pendingAction);
 
             return;
         }
