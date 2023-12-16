@@ -56,12 +56,12 @@ system_optimized_java_defaults {
     soong_config_variables: {
         SYSTEM_OPTIMIZE_JAVA: {
             optimize: {
-                enabled: true,
+                enabled: false,
                 // TODO(b/210510433): Enable optimizations after improving
                 // retracing infra.
                 // See also FULL_SYSTEM_OPTIMIZE_JAVA.
                 optimize: false,
-                shrink: true,
+                shrink: false,
                 ignore_warnings: false,
                 proguard_compatibility: false,
                 proguard_flags_files: [

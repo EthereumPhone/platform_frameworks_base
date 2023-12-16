@@ -19,6 +19,7 @@ import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.qs.logging.QSLogger;
+import com.android.systemui.qs.QsEventLogger;
 import android.view.View;
 import androidx.annotation.Nullable;
 import java.lang.reflect.*;
@@ -44,6 +45,7 @@ public class ChainTile extends QSTileImpl<BooleanState> {
     @Inject
     public ChainTile(
         QSHost host, 
+        QsEventLogger uiEventLogger,
         @Background Looper backgroundLooper,
         @Main Handler mainHandler,
         FalsingManager falsingManager,
@@ -52,11 +54,12 @@ public class ChainTile extends QSTileImpl<BooleanState> {
         ActivityStarter activityStarter,
         QSLogger qsLogger,
         ChainIdDialogFactory chainIdDialogFactory) {
-        super(host, backgroundLooper, mainHandler, falsingManager, metricsLogger,
+        super(host, uiEventLogger, backgroundLooper, mainHandler, falsingManager, metricsLogger,
             statusBarStateController, activityStarter, qsLogger);
         mHandler = mainHandler;
         mChainIdDialogFactory = chainIdDialogFactory;
-        mContext.registerReceiver(mBroadcastReceiver, new IntentFilter("changeChain"));
+        // RECEIVER_EXPORTED = 2
+        mContext.registerReceiver(mBroadcastReceiver, new IntentFilter("changeChain"), 2);
     }
 
     @Override

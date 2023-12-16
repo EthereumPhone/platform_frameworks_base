@@ -146,7 +146,8 @@ public class ChainIdDialog extends SystemUIDialog implements Window.Callback {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                
+
+                mChainIdDialogFactory.destroyDialog();
             }
 
             @Override
@@ -157,13 +158,15 @@ public class ChainIdDialog extends SystemUIDialog implements Window.Callback {
         window.setContentView(mDialogView);
     }
 
+    /*
+
     @Override
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop");
         mChainIdDialogFactory.destroyDialog();
     }
-    /** 
+
 
     @Override
     public void dismissDialog() {

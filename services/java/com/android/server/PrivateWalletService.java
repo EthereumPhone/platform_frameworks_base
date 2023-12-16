@@ -130,18 +130,27 @@ public class PrivateWalletService extends IPrivateWalletService.Stub {
     }
 
     public void createNewWallet() {
+        long startTime = System.currentTimeMillis();
+        System.out.println(TAG + ": Got request to create a new wallet");
         try {
             if (!doesWalletExist()) {
                 // Generate new random key using SecureRandom
                 //SecureRandom secureRandom = new SecureRandom();
                 //byte[] randomBytes = new byte[64];
                 //secureRandom.nextBytes(randomBytes);
+                System.out.println(TAG + ": Starting to create a very new wallet");
                 String randomUnencryptedKey = UUID.randomUUID().toString();
+                System.out.println(TAG + ": Created a random UUID");
+                long beforeWalletCreate = System.currentTimeMillis();
                 createWallet(randomUnencryptedKey);
+                System.out.println(TAG + ": Created a new wallet and it took: "+(System.currentTimeMillis() - beforeWalletCreate) + "ms");
+                long beforeLoadCred = System.currentTimeMillis();
                 credentials = WalletUtils.loadCredentials(
                     randomUnencryptedKey,
                         walletPath);
+                System.out.println(TAG + ": Loaded the new Wallet and it took: "+(System.currentTimeMillis() - beforeLoadCred) + "ms");
                 saveEncryptedKeyToFile(encrypt(randomUnencryptedKey));
+                System.out.println(TAG + ": Saved the encrypted key.");
             } else {
                 if (!doesEncryptedKeyFileExist()) {
                     // Old wallet with password "password", change it to new random key
@@ -172,6 +181,8 @@ public class PrivateWalletService extends IPrivateWalletService.Stub {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        long entireTime = System.currentTimeMillis() - startTime;
+        Log.d(TAG, "Took "+entireTime+"ms to execute");
     }
 
     public void importNewWallet(String privateKey) {
@@ -282,11 +293,13 @@ public class PrivateWalletService extends IPrivateWalletService.Stub {
             String fileName = WalletUtils.generateNewWalletFile(
                     passwordString,
                     new File(dataDir));
+            Log.d(TAG, "Created the wallet");
             System.out.println(fileName);
             File file = new File(dataDir, "wallet_path.txt");
             FileWriter myWriter = new FileWriter(file);
             myWriter.write(new File(dataDir, fileName).getAbsolutePath());
             myWriter.close();
+            Log.d(TAG, "Wrote the walletPath to file");
             walletPath = new File(dataDir, fileName).getAbsolutePath();
         } catch (Exception e) {
             e.printStackTrace();
