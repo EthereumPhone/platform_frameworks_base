@@ -26,9 +26,21 @@
         android:background="@drawable/rounded_corners_dialog"
         android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/declinebtn"
+            android:layout_width="72dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/rounded_corners_secondary"
+            android:drawableEnd="@drawable/round_close_24"
+            android:fontFamily="@font/inter_semibold_font"
+            android:text=""
+            android:textColor="@color/ethOS_white"
+            app:backgroundTint="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/choose"
@@ -38,8 +50,7 @@
             android:fontFamily="@font/inter_semibold_font"
             android:text="Sign message"
             android:textColor="@color/ethOS_white"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            android:textSize="32sp"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,25 +58,11 @@
             android:id="@+id/acceptbtn"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/rounded_corners_primary"
             android:fontFamily="@font/inter_semibold_font"
             android:text="Accept Message"
             android:textColor="@color/ethOS_primary_button_text"
-            app:backgroundTint="@null"
-            app:layout_constraintBottom_toTopOf="@+id/declinebtn"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintStart_toStartOf="@+id/guideline" />
-
-        <Button
-            android:id="@+id/declinebtn"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="32dp"
-            android:background="@drawable/rounded_corners_secondary"
-            android:fontFamily="@font/inter_semibold_font"
-            android:text="Decline Message"
-            android:textColor="@color/ethOS_white"
             app:backgroundTint="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
@@ -81,7 +78,6 @@
             android:text="Message"
             android:textColor="@color/ethOS_gray"
             android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/choose" />
 
@@ -107,7 +103,7 @@
                 android:fontFamily="@font/inter_regular_font"
                 android:paddingBottom="16dp"
                 android:text="Lorem ipsumbgehirengjfnkjgngkngfsognisgnu sgjisgcwgnhuewihnrwhrutnwhvtnhwthuihtihtowrtheoiutnvtruvntuihnwtuihiwuthiuwhtruiwhtuhwitnuwivuwt i iwhtu ui  bg 2 vjfjw vw v w jw vjk jw vj2 jr wjinrwtijwnfnwhgwrtniwtnuhwuingnw gwnwngwnignwiugnwingiwnigbowebgiwebgurwbgnjfnwjibirbgonw rg wuwoegniwniwe rwunwenrjwng wegnwerghwrrhgw gnwoepnguowhgu wngj whgwngjrwjpjoipwhriuwngijrwnigbihwbo "
-                android:textAlignment="center"
+                android:textAlignment="textStart"
                 android:textColor="@color/ethOS_white"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline2"

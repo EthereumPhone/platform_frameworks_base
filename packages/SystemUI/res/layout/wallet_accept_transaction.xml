@@ -33,6 +33,20 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent">
 
+        <Button
+            android:id="@+id/declinebtn"
+            android:layout_width="72dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/rounded_corners_secondary"
+            android:drawableEnd="@drawable/round_close_24"
+            android:fontFamily="@font/inter_semibold_font"
+            android:text=""
+            android:textColor="@color/ethOS_white"
+            app:backgroundTint="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/choose"
             android:layout_width="wrap_content"
@@ -41,8 +55,7 @@
             android:fontFamily="@font/inter_semibold_font"
             android:text="Transaction"
             android:textColor="@color/ethOS_white"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            android:textSize="32sp"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,41 +65,26 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginTop="32dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/rounded_corners_primary"
             android:fontFamily="@font/inter_semibold_font"
             android:text="Accept Transaction"
             android:textColor="@color/ethOS_primary_button_text"
             app:backgroundTint="@null"
-            app:layout_constraintBottom_toTopOf="@+id/declinebtn"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/ethamount_sign" />
-
-        <Button
-            android:id="@+id/declinebtn"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="32dp"
-            android:background="@drawable/rounded_corners_secondary"
-            android:fontFamily="@font/inter_semibold_font"
-            android:text="Decline Transaction"
-            android:textColor="@color/ethOS_white"
-            app:backgroundTint="@null"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintStart_toStartOf="@+id/guideline" />
 
         <TextView
             android:id="@+id/message"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginTop="8dp"
             android:fontFamily="@font/inter_medium_font"
             android:text="0x95abDa53Bc5E9fBBDce34603614018d32CED219e "
             android:textAlignment="viewStart"
             android:textColor="@color/ethOS_white"
-            android:textSize="18sp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/messagetitle" />
@@ -107,11 +105,10 @@
             android:id="@+id/ethamount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:fontFamily="@font/inter_medium_font"
             android:text="0.25"
             android:textColor="@color/ethOS_white"
-            android:textSize="18sp"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/amounttitle" />
 
@@ -123,7 +120,7 @@
             android:fontFamily="@font/inter_medium_font"
             android:text="ETH"
             android:textColor="@color/ethOS_white"
-            android:textSize="18sp"
+            android:textSize="20sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/ethamount"
             app:layout_constraintStart_toEndOf="@+id/ethamount" />
 
@@ -171,11 +168,10 @@
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:fontFamily="@font/inter_medium_font"
             android:text="0.00002"
             android:textColor="@color/ethOS_white"
-            android:textSize="18sp"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/gastitle" />
 
@@ -187,7 +183,7 @@
             android:fontFamily="@font/inter_medium_font"
             android:text="ETH"
             android:textColor="@color/ethOS_white"
-            android:textSize="18sp"
+            android:textSize="20sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/textView9"
             app:layout_constraintStart_toEndOf="@+id/textView9" />
 
@@ -208,11 +204,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="8dp"
             android:fontFamily="@font/inter_semibold_font"
             android:text="0.07534701"
             android:textColor="@color/ethOS_white"
-            android:textSize="24sp"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/totaltitle" />
 
@@ -224,7 +219,7 @@
             android:fontFamily="@font/inter_semibold_font"
             android:text="ETH"
             android:textColor="@color/ethOS_white"
-            android:textSize="24sp"
+            android:textSize="20sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/ethamount_sign"
             app:layout_constraintStart_toEndOf="@+id/ethamount_sign" />
 
@@ -243,12 +238,11 @@
             android:id="@+id/chainIdTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:fontFamily="@font/inter_medium_font"
             android:text="Ethereum"
             android:textAlignment="viewStart"
             android:textColor="@color/ethOS_white"
-            android:textSize="18sp"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
