@@ -790,6 +790,7 @@ public class ParsingPackageUtils {
                     "coreApp", false);
             final ParsingPackage pkg = mCallback.startParsingPackage(
                     pkgName, apkPath, codePath, manifestArray, isCoreApp);
+            pkg.initPackageParsingHooks();
             final ParseResult<ParsingPackage> result =
                     parseBaseApkTags(input, pkg, manifestArray, res, parser, flags,
                             shouldSkipComponents);
