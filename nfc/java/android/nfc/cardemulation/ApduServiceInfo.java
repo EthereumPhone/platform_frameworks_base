@@ -419,6 +419,7 @@ public final class ApduServiceInfo implements Parcelable {
         mUid = si.applicationInfo.uid;
 
         mCategoryOtherServiceEnabled = true;    // support other category
+        mOtherServiceEnabled = true;    // support other category
 
     }
 
