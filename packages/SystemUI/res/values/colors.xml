@@ -257,8 +257,9 @@
 
     <!-- ethOS colors -->
     <color name="ethOS_black">#FF000000</color>
-    <color name="ethOS_bg">#FF262626</color>
+    <color name="ethOS_bg">@color/ethOS_black</color>
     <color name="ethOS_gray">#FFC8C8C8</color>
+    <color name="ethOS_darkgray">#FF262626</color>
     <color name="ethOS_white">#FFFAFBFF</color>
 
 

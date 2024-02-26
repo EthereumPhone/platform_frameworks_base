@@ -33,19 +33,22 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent">
 
-        <Button
+        <ImageButton
             android:id="@+id/declinebtn"
-            android:layout_width="72dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/rounded_corners_secondary"
-            android:drawableEnd="@drawable/round_close_24"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="36dp"
+            android:src = "@drawable/round_close_24"
+            android:background="@drawable/rounded_corners_tertiary"
             android:fontFamily="@font/inter_semibold_font"
             android:text=""
             android:textColor="@color/ethOS_white"
             app:backgroundTint="@null"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="parent" />
+
+
+
 
         <TextView
             android:id="@+id/choose"
