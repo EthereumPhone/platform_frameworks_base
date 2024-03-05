@@ -3498,8 +3498,6 @@ public class PackageImpl implements ParsedPackage, AndroidPackageInternal,
         assignDerivedFields();
         assignDerivedFields2();
 
-        this.ext = com.android.server.pm.ext.PackageExt.createFromParcel(this, in);
-
         // Do not call makeImmutable here as cached parsing will need
         // to mutate this instance before it's finalized.
     }
