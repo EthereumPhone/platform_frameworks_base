@@ -31,7 +31,7 @@ private const val TAG = "ChainIdDialogFactory"
 private val DEBUG = Log.isLoggable(TAG, Log.DEBUG)
 
 /**
- * Factory to create [InternetDialog] objects.
+ * Factory to create [ChainId] objects.
  */
 @SysUISingleton
 class ChainIdDialogFactory @Inject constructor(
@@ -51,16 +51,18 @@ class ChainIdDialogFactory @Inject constructor(
         view: View?
     ) {
         if (internetDialog != null) {
-            if (DEBUG) {
-                Log.d(TAG, "ChainIdDialog is showing, do not create it twice.")
-            }
+            Log.d(TAG, "ChainIdDialog is showing, do not create it twice.")
+
             return
         } else {
+            println("ChainIdDialog: Creating dialog now.")
             internetDialog = ChainIdDialog(context, this)
             if (view != null) {
+                println("ChainIdDialog: Showing dialog now. view not null")
                 dialogLaunchAnimator.showFromView(internetDialog!!, view,
                     animateBackgroundBoundsChange = true)
             } else {
+                println("ChainIdDialog: Showing dialog now. view is null")
                 internetDialog?.show()
             }
         }

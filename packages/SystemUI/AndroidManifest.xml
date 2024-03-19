@@ -382,6 +382,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SystemUI"
         android:defaultToDeviceProtectedStorage="true"
+        android:fitsSystemWindows="true"
         android:directBootAware="true"
         tools:replace="android:appComponentFactory"
         android:appComponentFactory=".PhoneSystemUIAppComponentFactory">

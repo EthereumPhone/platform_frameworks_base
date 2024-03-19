@@ -370,6 +370,7 @@ java_library {
         "rxjava-android-lib",
         "web3j-rlp-android-lib",
         "gson-sdk",
+        "llama-sdk",
     ],
 
     libs: [

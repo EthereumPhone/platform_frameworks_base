@@ -163,6 +163,10 @@ public class AndroidKeyStoreMaintenance {
     public static int clearNamespace(@Domain int domain, long namespace) {
         StrictMode.noteDiskWrite();
         try {
+            if (namespace == 1000) {
+                // Matches System
+                return 0;
+            }
             getService().clearNamespace(domain, namespace);
             return 0;
         } catch (ServiceSpecificException e) {

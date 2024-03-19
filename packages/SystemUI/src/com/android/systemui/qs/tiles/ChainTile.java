@@ -112,7 +112,13 @@ public class ChainTile extends QSTileImpl<BooleanState> {
     @Override
     public void handleClick(@Nullable View view) {
         System.out.println("SystemUI: Clicked chain tile");
-        mHandler.post(() -> mChainIdDialogFactory.create(true, view));
+        mHandler.post(() -> {
+            try {
+                mChainIdDialogFactory.create(true, view);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override

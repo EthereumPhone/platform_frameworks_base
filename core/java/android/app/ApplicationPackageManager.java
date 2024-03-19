@@ -28,7 +28,7 @@ import static android.content.pm.Checksum.TYPE_WHOLE_MERKLE_ROOT_4K_SHA256;
 import static android.content.pm.Checksum.TYPE_WHOLE_SHA1;
 import static android.content.pm.Checksum.TYPE_WHOLE_SHA256;
 import static android.content.pm.Checksum.TYPE_WHOLE_SHA512;
-
+import android.net.Uri;
 import android.annotation.CallbackExecutor;
 import android.annotation.DrawableRes;
 import android.annotation.NonNull;
@@ -1466,6 +1466,25 @@ public class ApplicationPackageManager extends PackageManager {
 
     @Override
     public ResolveInfo resolveActivityAsUser(Intent intent, ResolveInfoFlags flags, int userId) {
+        /**
+        if (intent != null) {
+            Uri intentData = intent.getData(); 
+            if (intentData != null) {
+                if (intentData.toString().startsWith("cbwallet://")) {
+                    // Create injected ResolveInfo
+                    ActivityInfo activityInfo = new ActivityInfo();
+                    activityInfo.packageName = "org.toshi";
+                    activityInfo.name = "FakeActivity";
+
+                    // Create a ResolveInfo object and associate the ActivityInfo with it
+                    ResolveInfo resolveInfo = new ResolveInfo();
+                    resolveInfo.activityInfo = activityInfo;
+
+                    return resolveInfo;
+                }
+            }
+        }
+         */
         try {
             return mPM.resolveIntent(
                 intent,
@@ -1498,6 +1517,20 @@ public class ApplicationPackageManager extends PackageManager {
     @SuppressWarnings("unchecked")
     public List<ResolveInfo> queryIntentActivitiesAsUser(Intent intent, ResolveInfoFlags flags,
             int userId) {
+        String intentString = intent.toString(); // This represents the string output of your intent
+        String packageNameToCheck = "org.toshi";
+        if (intentString.contains("pkg=" + packageNameToCheck)) {
+            ActivityInfo activityInfo = new ActivityInfo();
+            activityInfo.packageName = "org.toshi";
+            activityInfo.name = "FakeActivity";
+
+            // Create a ResolveInfo object and associate the ActivityInfo with it
+            ResolveInfo resolveInfo = new ResolveInfo();
+            resolveInfo.activityInfo = activityInfo;
+            ArrayList<ResolveInfo> returnList = new ArrayList<ResolveInfo>();
+            returnList.add(resolveInfo);
+            return returnList;
+        }
         try {
             ParceledListSlice<ResolveInfo> parceledList = mPM.queryIntentActivities(
                     intent,

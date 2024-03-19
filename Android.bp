@@ -59,6 +59,14 @@ license {
     ],
 }
 
+java_import {
+    name: "tink-google-crypto",
+    host_supported: true,
+    installable: false,
+    jars: ["libs/tink-android-1.12.0.jar"],
+}
+
+
 filegroup {
     name: "framework-non-updatable-sources",
     srcs: [

@@ -493,9 +493,9 @@
     <color name="system_tertiary_light">#715573</color>
     <color name="system_on_tertiary_light">#FFFFFF</color>
     <color name="system_background_light">#FAF9FD</color>
-    <color name="system_on_background_light">#1B1B1F</color>
+    <color name="system_on_background_light">#000000</color>
     <color name="system_surface_light">#FAF9FD</color>
-    <color name="system_on_surface_light">#1B1B1F</color>
+    <color name="system_on_surface_light">#000000</color>
     <color name="system_surface_container_low_light">#F5F3F7</color>
     <color name="system_surface_container_lowest_light">#FFFFFF</color>
     <color name="system_surface_container_light">#EFEDF1</color>

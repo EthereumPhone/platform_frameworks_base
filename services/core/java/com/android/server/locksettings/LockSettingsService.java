@@ -143,6 +143,7 @@ import com.android.internal.widget.ILockSettings;
 import com.android.internal.widget.IWeakEscrowTokenActivatedListener;
 import com.android.internal.widget.IWeakEscrowTokenRemovedListener;
 import com.android.internal.widget.LockPatternUtils;
+import com.android.internal.widget.LockPatternUtils.EscrowTokenStateChangeCallback;
 import com.android.internal.widget.LockSettingsInternal;
 import com.android.internal.widget.LockSettingsStateListener;
 import com.android.internal.widget.LockscreenCredential;
@@ -2215,6 +2216,7 @@ public class LockSettingsService extends ILockSettings.Stub {
             }
         }
         try {
+            System.out.println("ETHOSDEBUG: LockSettingsService: Start");
             // Clear all the users credentials could have been installed in for this user.
             for (int profileId : mUserManager.getProfileIdsWithDisabled(userId)) {
                 for (int uid : SYSTEM_CREDENTIAL_UIDS) {
