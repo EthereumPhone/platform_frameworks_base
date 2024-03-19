@@ -446,7 +446,25 @@ public class PrivateWalletService extends IPrivateWalletService.Stub {
     }
 
     public void getAddress(String requestId) {
-        sharedState.fulfillRequest(requestId, Keys.toChecksumAddress(credentials.getAddress()));
+        if (credentials == null) {
+            try {
+                String encryptedKey = loadEncryptedKeyFromFile();
+                // Decrypt encrypted key using cipher and secret key
+                String keyString = decrypt(encryptedKey);
+            
+                loadWalletPath();
+                credentials = WalletUtils.loadCredentials(
+                        keyString,
+                        walletPath);
+                sharedState.fulfillRequest(requestId, Keys.toChecksumAddress(credentials.getAddress()));
+            } catch (Exception e) {
+                System.out.println("Error loading creds:");
+                e.printStackTrace();
+                sharedState.fulfillRequest(requestId, e.getMessage());
+            }
+        } else {
+            sharedState.fulfillRequest(requestId, Keys.toChecksumAddress(credentials.getAddress()));
+        }
     }
 
 }

@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.annotation.NonNull;
 import android.widget.TextView;
 import android.annotation.NonNull;
+import android.widget.RadioGroup;
 
 import com.android.internal.app.AlertController;
 import com.android.systemui.R;
@@ -64,115 +65,84 @@ public class ChainIdDialog extends SystemUIDialog implements Window.Callback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
-        mDialogView = LayoutInflater.from(mContext).inflate(R.layout.chain_id_dialog,
-                null);
-        mSpinner = (Spinner) mDialogView.findViewById(R.id.chain_id_spinner);
-        /*
-	if(isDarkModeEnabled()) {
-            mSpinner.setBackgroundResource(R.drawable.layout_dropdown_bg);
-        } else {
-            mSpinner.setBackgroundResource(R.drawable.layout_dropdown_bg_light);
-        }
-	*/
-        // Add the chain ids to the spinner
-        List<String> list = Arrays.asList("Ethereum Mainnet", "Optimism", "Arbitrum One", "Base Mainnet", "Zora L2", "Base Testnet", "Goerli Testnet");
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, R.layout.spinner_item, list);
-        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        // Make spinner dropdown background white if dark mode is disabled
-        if(!isDarkModeEnabled()) {
-            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item_light);
-        }
-        mSpinner.setAdapter(adapter);
+    
+        // Inflate the new layout with the RadioGroup
+        mDialogView = LayoutInflater.from(mContext).inflate(R.layout.chain_id_dialog, null);
+    
+        // Find the RadioGroup from the layout
+        RadioGroup chainRadioGroup = mDialogView.findViewById(R.id.chain_radio_group);
+    
+        // Set up the initial state of the radio buttons based on the current chain ID
         int chainId = getChainId();
-        switch(chainId) {
+        switch (chainId) {
             case 1:
-                mSpinner.setSelection(0);
+                chainRadioGroup.check(R.id.radio_ethereum_mainnet);
                 break;
             case 10:
-                mSpinner.setSelection(1);
+                chainRadioGroup.check(R.id.radio_optimism);
                 break;
             case 42161:
-                mSpinner.setSelection(2);
+                chainRadioGroup.check(R.id.radio_arbitrum_one);
                 break;
             case 84531:
-                mSpinner.setSelection(5);
+                chainRadioGroup.check(R.id.radio_base_testnet);
                 break;
             case 5:
-                mSpinner.setSelection(6);
+                chainRadioGroup.check(R.id.radio_goerli_testnet);
                 break;
             case 8453:
-                mSpinner.setSelection(3);
+                chainRadioGroup.check(R.id.radio_base_mainnet);
                 break;
             case 7777777:
-                mSpinner.setSelection(4);
+                chainRadioGroup.check(R.id.radio_zora_l2);
                 break;
         }
-        // Set OnItemSelectedListener
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    
+        // Set OnCheckedChangeListener
+        chainRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
                 // Get the selected chain id
-                String chainId = parent.getItemAtPosition(position).toString();
-                // Set the chain id
-                int newChainId = 1;
-                switch(chainId) {
-                    case "Ethereum Mainnet":
-                        newChainId = 1;
-                        break;
-                    case "Optimism":
-                        newChainId = 10;
-                        break;
-                    case "Arbitrum One":
-                        newChainId = 42161;
-                        break;
-                    case "Goerli Testnet":
-                        newChainId = 5;
-                        break;
-                    case "Base Testnet":
-                        newChainId = 84531;
-                        break;
-                    case "Base Mainnet":
-                        newChainId = 8453;
-                        break;
-                    case "Zora L2":
-                        newChainId = 7777777;
-			break;
+                int newChainId = 1; // Default to some chain id
+                if (checkedId == R.id.radio_ethereum_mainnet) {
+                    newChainId = 1;
+                } else if (checkedId == R.id.radio_optimism) {
+                    newChainId = 10;
+                } else if (checkedId == R.id.radio_arbitrum_one) {
+                    newChainId = 42161;
+                } else if (checkedId == R.id.radio_base_mainnet) {
+                    newChainId = 8453;
+                } else if (checkedId == R.id.radio_zora_l2) {
+                    newChainId = 7777777;
+                } else if (checkedId == R.id.radio_base_testnet) {
+                    newChainId = 84531;
+                } else if (checkedId == R.id.radio_goerli_testnet) {
+                    newChainId = 5;
                 }
+    
                 try {
-                    Class walletProxy = Class.forName("android.os.PrivateWalletProxy");
+                    Class<?> walletProxy = Class.forName("android.os.PrivateWalletProxy");
                     Method changeChainid = walletProxy.getMethod("changeChainId", int.class);
                     Object walletManager = mContext.getSystemService("privatewallet");
                     changeChainid.invoke(walletManager, newChainId);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
+    
                 mChainIdDialogFactory.destroyDialog();
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
         });
+    
         final Window window = getWindow();
         window.setContentView(mDialogView);
     }
 
-    /*
 
     @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop");
-        mChainIdDialogFactory.destroyDialog();
-    }
-
-
-    @Override
-    public void dismissDialog() {
+    public void dismiss() {
+        super.dismiss();
         Log.d(TAG, "dismissDialog");
         mChainIdDialogFactory.destroyDialog();
-        dismiss();
     }
-    */
+
 }

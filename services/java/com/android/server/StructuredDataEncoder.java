@@ -12,15 +12,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.Arrays;
-import org.web3j.abi.datatypes.Address;
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import com.google.gson.Gson;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,10 +29,6 @@ import org.web3j.utils.Numeric;
 import static org.web3j.abi.datatypes.Type.MAX_BYTE_LENGTH;
 import static org.web3j.crypto.Hash.sha3;
 import static org.web3j.crypto.Hash.sha3String;
-
-import org.json.JSONObject;
-import org.json.JSONException;
-import org.json.JSONArray;
 
 public class StructuredDataEncoder {
     public static ObjectMapper mapper =
@@ -71,7 +63,7 @@ public class StructuredDataEncoder {
         this.jsonMessageObject = jsonMessageObject;
     }
 
-    public StructuredDataEncoder(String jsonMessageInString) throws IOException, RuntimeException, JSONException {
+    public StructuredDataEncoder(String jsonMessageInString) throws IOException, RuntimeException {
         // Parse String Message into object and validate
         this.jsonMessageObject = parseJSONMessage(jsonMessageInString);
     }
@@ -117,14 +109,10 @@ public class StructuredDataEncoder {
     public String encodeStruct(String structName) {
         HashMap<String, List<StructuredData.Entry>> types = jsonMessageObject.getTypes();
 
-        StringBuilder structRepresentation = new StringBuilder(structName + "(");
+        StringJoiner structRepresentation = new StringJoiner(",", structName + "(", ")");
         for (StructuredData.Entry entry : types.get(structName)) {
-            structRepresentation.append(String.format("%s %s,", entry.getType(), entry.getName()));
+            structRepresentation.add(String.format("%s %s", entry.getType(), entry.getName()));
         }
-        structRepresentation =
-                new StringBuilder(
-                        structRepresentation.substring(0, structRepresentation.length() - 1));
-        structRepresentation.append(")");
 
         return structRepresentation.toString();
     }
@@ -257,9 +245,9 @@ public class StructuredDataEncoder {
                             rawValue.length);
                 }
             } else if (baseType.equals("string")) {
-                hashBytes = ((String) data).getBytes();
+                hashBytes = Numeric.hexStringToByteArray(sha3String((String) data));
             } else if (baseType.equals("bytes")) {
-                hashBytes = Numeric.hexStringToByteArray((String) data);
+                hashBytes = sha3(Numeric.hexStringToByteArray((String) data));
             } else {
                 byte[] b = convertArgToBytes((String) data);
                 BigInteger bi = new BigInteger(1, b);
@@ -300,30 +288,6 @@ public class StructuredDataEncoder {
         return flattenMultidimensionalArray(value);
     }
 
-    public static HashMap<String, Object> convertJSONObjectToHashMap(JSONObject jsonObject) {
-        HashMap<String, Object> hashMap = new HashMap<>();
-        
-        // Iterate over the keys of the JSONObject
-        for (String key : jsonObject.keySet()) {
-            Object value = null;
-            try {
-                value = jsonObject.get(key);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            
-            // Recursively convert nested JSONObjects to HashMaps
-            if (value instanceof JSONObject) {
-                value = convertJSONObjectToHashMap((JSONObject) value);
-            }
-            
-            // Add the key-value pair to the HashMap
-            hashMap.put(key, value);
-        }
-        
-        return hashMap;
-    }
-
     @SuppressWarnings("unchecked")
     public byte[] encodeData(String primaryType, HashMap<String, Object> data)
             throws RuntimeException {
@@ -351,9 +315,8 @@ public class StructuredDataEncoder {
                 encValues.add(sha3(Numeric.hexStringToByteArray((String) value)));
             } else if (types.containsKey(field.getType())) {
                 // User Defined Type
-                HashMap<String, Object> valueHashMap = convertJSONObjectToHashMap((JSONObject) value);
                 byte[] hashedValue =
-                        sha3(encodeData(field.getType(), valueHashMap));
+                        sha3(encodeData(field.getType(), (HashMap<String, Object>) value));
                 encTypes.add("bytes32");
                 encValues.add(hashedValue);
             } else if (bytesTypePattern.matcher(field.getType()).find()) {
@@ -416,17 +379,6 @@ public class StructuredDataEncoder {
                 // Check which constructor matches
                 try {
                     Class[] parameterTypes = constructor.getParameterTypes();
-                    System.out.println("Constructor: " + constructor.getName());
-                    System.out.println("Parameters: " + Arrays.toString(parameterTypes));
-                    if (encValues.get(i).getClass().getSimpleName() == "String" && typeClazz.getSimpleName() == "Address") {
-                        byte[] temp =
-                            Numeric.hexStringToByteArray(
-                                    TypeEncoder.encode(
-                                            new Address((String) encValues.get(i))));
-                        baos.write(temp, 0, temp.length);
-                        atleastOneConstructorExistsForGivenParametersType = true;
-                        break;
-                    }
                     byte[] temp =
                             Numeric.hexStringToByteArray(
                                     TypeEncoder.encode(
@@ -446,8 +398,10 @@ public class StructuredDataEncoder {
 
             if (!atleastOneConstructorExistsForGivenParametersType) {
                 throw new RuntimeException(
-                    String.format("Received an invalid argument '%s' for which no constructor exists for the ABI Class %s, and the value type is: %s", encValues.get(i), typeClazz.getSimpleName(), encValues.get(i).getClass().getSimpleName()));
-
+                        String.format(
+                                "Received an invalid argument for which no constructor"
+                                        + " exists for the ABI Class %s",
+                                typeClazz.getSimpleName()));
             }
         }
 
@@ -495,78 +449,15 @@ public class StructuredDataEncoder {
         }
     }
 
-
     public StructuredData.EIP712Message parseJSONMessage(String jsonMessageInString)
-            throws JSONException {
-        
-                // Parse JSON string to JSONObject
-        JSONObject jsonMessageObject = new JSONObject(jsonMessageInString);
+            throws IOException, RuntimeException {
+        // convert JSON string to EIP712Message object
+        StructuredData.EIP712Message tempJSONMessageObject =
+                mapper.readValue(jsonMessageInString, StructuredData.EIP712Message.class);
+        validateStructuredData(tempJSONMessageObject);
 
-        // Extract types object from JSON
-        JSONObject typesObject = jsonMessageObject.getJSONObject("types");
-        HashMap<String, List<StructuredData.Entry>> types = new HashMap<>();
-
-        // Iterate over types object
-        for (String key : typesObject.keySet()) {
-            JSONArray entryArray = typesObject.getJSONArray(key);
-            List<StructuredData.Entry> entries = new ArrayList<>();
-
-            // Iterate over entries array for each type
-            for (int i = 0; i < entryArray.length(); i++) {
-                JSONObject entryObject = entryArray.getJSONObject(i);
-                String name = entryObject.getString("name");
-                String type = entryObject.getString("type");
-                StructuredData.Entry entry = new StructuredData.Entry(name, type);
-                entries.add(entry);
-            }
-
-            types.put(key, entries);
-        }
-
-        // Extract other properties from JSON
-        String primaryType = null;
-        if (jsonMessageObject.has("primaryType")) {
-            primaryType = jsonMessageObject.getString("primaryType");
-        }
-        JSONObject messageJSON = new JSONObject();
-        if (jsonMessageObject.has("message")) {
-            messageJSON = jsonMessageObject.getJSONObject("message");
-        }
-
-        HashMap<String, Object> message = new HashMap<>();
-        for (String key : messageJSON.keySet()) {
-            message.put(key, messageJSON.get(key));
-        }
-
-        // Extract domain object from JSON
-        JSONObject domainObject = jsonMessageObject.getJSONObject("domain");
-        String name = null;
-        if (domainObject.has("name")) {
-            name = domainObject.getString("name");
-        }
-        String version = null;
-        if (domainObject.has("version")) {
-            version = domainObject.getString("version");
-        }
-        String chainId = null;
-        if (domainObject.has("chainId")) {
-            chainId = domainObject.getString("chainId");
-        }
-        String verifyingContract = null;
-        if (domainObject.has("verifyingContract")) {
-            verifyingContract = domainObject.getString("verifyingContract");
-        }
-        String salt = null;
-        if (domainObject.has("salt")) {
-            salt = domainObject.getString("salt");
-        }
-        StructuredData.EIP712Domain domain = new StructuredData.EIP712Domain(name, version, chainId, verifyingContract, salt);
-
-        // Create and return EIP712Message object
-        StructuredData.EIP712Message eip712Message = new StructuredData.EIP712Message(types, primaryType, message, domain);
-        return eip712Message;
+        return tempJSONMessageObject;
     }
-
 
     @SuppressWarnings("unchecked")
     public byte[] getStructuredData() throws RuntimeException {
@@ -612,23 +503,5 @@ public class StructuredDataEncoder {
         }
 
         return Numeric.hexStringToByteArray(hexValue);
-    }
-
-    class Pair {
-        private final Object first;
-        private final Object second;
-
-        public Object getFirst() {
-            return first;
-        }
-
-        public Object getSecond() {
-            return second;
-        }
-
-        public Pair(Object first, Object second) {
-            this.first = first;
-            this.second = second;
-        }
     }
 }
