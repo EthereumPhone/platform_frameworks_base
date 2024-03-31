@@ -15,13 +15,20 @@ import org.web3j.crypto.*;
 import android.content.Intent;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
+import org.bouncycastle.asn1.x9.X9ECParameters;
 import java.io.ObjectOutputStream;
+import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
 import java.math.BigInteger;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import java.nio.charset.StandardCharsets;
+import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
 import org.web3j.protocol.Web3j;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.web3j.protocol.http.HttpService;
+import org.bouncycastle.util.encoders.Hex;
 import org.web3j.utils.Numeric;
 import java.security.Provider;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -106,6 +113,9 @@ public class PrivateWalletService extends IPrivateWalletService.Stub {
                 credentials = WalletUtils.loadCredentials(
                         keyString,
                         walletPath);
+            } else {
+                // Generate wallet on first boot
+                importNewWallet(createEthereumPrivateKey());
             }
             
         } catch (Exception exception) {
@@ -116,6 +126,27 @@ public class PrivateWalletService extends IPrivateWalletService.Stub {
 
         //removeBouncyCastle(provider);
 
+    }
+
+    private String createEthereumPrivateKey() {
+        // Ensure BouncyCastle is initialized
+        Security.addProvider(new BouncyCastleProvider());
+
+        // Create a secure random number generator
+        SecureRandom secureRandom = new SecureRandom();
+
+        // Specify the curve parameters for Ethereum (secp256k1)
+        X9ECParameters curveParams = org.bouncycastle.asn1.sec.SECNamedCurves.getByName("secp256k1");
+        ECDomainParameters domainParameters = new ECDomainParameters(curveParams.getCurve(), curveParams.getG(), curveParams.getN(), curveParams.getH());
+
+        // Generate the key pair
+        ECKeyPairGenerator keyGen = new ECKeyPairGenerator();
+        keyGen.init(new ECKeyGenerationParameters(domainParameters, secureRandom));
+        AsymmetricCipherKeyPair keyPair = keyGen.generateKeyPair();
+
+        // Extract the private key and return it as a hex string
+        ECPrivateKeyParameters privateKeyParams = (ECPrivateKeyParameters) keyPair.getPrivate();
+        return Hex.toHexString(privateKeyParams.getD().toByteArray());
     }
 
     private void saveEncryptedKeyToFile(String encryptedKey) throws Exception {
