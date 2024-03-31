@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.content.pm;
+ package android.content.pm;
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;

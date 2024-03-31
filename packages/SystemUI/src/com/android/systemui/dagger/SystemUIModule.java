@@ -49,6 +49,7 @@ import com.android.systemui.common.data.CommonDataLayerModule;
 import com.android.systemui.communal.dagger.CommunalModule;
 import com.android.systemui.complication.dagger.ComplicationComponent;
 import com.android.systemui.controls.dagger.ControlsModule;
+import com.android.systemui.controls.dagger.ChainModule;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dagger.qualifiers.SystemUser;
 import com.android.systemui.dagger.qualifiers.UiBackground;

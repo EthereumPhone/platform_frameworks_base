@@ -17308,8 +17308,6 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
 
         text = PolicySizeVerifier.truncateIfLonger(text, MAX_ORG_NAME_LENGTH);
 
-        text = truncateIfLonger(text, MAX_ORG_NAME_LENGTH);
-
         synchronized (getLockObject()) {
             if (!isPermissionCheckFlagEnabled()) {
                 admin = getProfileOwnerOrDeviceOwnerLocked(caller.getUserId());

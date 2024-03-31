@@ -2005,8 +2005,16 @@ UnflaggedApi: android.app.compat.gms.GmsUtils#createAppPlayStoreIntent(String):
     New API must be flagged with @FlaggedApi: method android.app.compat.gms.GmsUtils.createAppPlayStoreIntent(String)
 UnflaggedApi: android.companion.virtual.VirtualDeviceManager.VirtualDevice#getPersistentDeviceId():
     New API must be flagged with @FlaggedApi: method android.companion.virtual.VirtualDeviceManager.VirtualDevice.getPersistentDeviceId()
+UnflaggedApi: android.content.Context#GETH_SERVICE:
+    New API must be flagged with @FlaggedApi: field android.content.Context.GETH_SERVICE
+UnflaggedApi: android.content.Context#LOCALLLM_SERVICE:
+    New API must be flagged with @FlaggedApi: field android.content.Context.LOCALLLM_SERVICE
+UnflaggedApi: android.content.Context#PRIVATEWALLET_SERVICE:
+    New API must be flagged with @FlaggedApi: field android.content.Context.PRIVATEWALLET_SERVICE
 UnflaggedApi: android.content.Context#THREAD_NETWORK_SERVICE:
     New API must be flagged with @FlaggedApi: field android.content.Context.THREAD_NETWORK_SERVICE
+UnflaggedApi: android.content.Context#WALLET_SERVICE:
+    New API must be flagged with @FlaggedApi: field android.content.Context.WALLET_SERVICE
 UnflaggedApi: android.content.Intent#ACTION_UNARCHIVE_PACKAGE:
     New API must be flagged with @FlaggedApi: field android.content.Intent.ACTION_UNARCHIVE_PACKAGE
 UnflaggedApi: android.content.pm.AppPermissionUtils:

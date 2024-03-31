@@ -1487,6 +1487,7 @@
   <java-symbol type="drawable" name="stat_notify_mmcc_indication_icn" />
   <java-symbol type="drawable" name="autofilled_highlight"/>
   <java-symbol type="drawable" name="ic_camera" />
+  <java-symbol type="drawable" name="ic_ethereum" />
   <java-symbol type="drawable" name="ic_mic" />
   <java-symbol type="drawable" name="ic_alert_window_layer" />
   <java-symbol type="drawable" name="ic_feedback_indicator" />
@@ -1618,6 +1619,8 @@
   <java-symbol type="layout" name="resolver_empty_states" />
   <java-symbol type="id" name="open_cross_profile" />
   <java-symbol type="string" name="miniresolver_open_in_personal" />
+  <java-symbol type="string" name="chain_tile_label" />
+  <java-symbol type="string" name="ethereum_address" />
   <java-symbol type="string" name="miniresolver_open_in_work" />
   <java-symbol type="string" name="miniresolver_open_work" />
   <java-symbol type="string" name="miniresolver_use_personal_browser" />

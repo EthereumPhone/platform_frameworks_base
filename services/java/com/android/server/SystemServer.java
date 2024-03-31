@@ -3047,9 +3047,9 @@ public final class SystemServer implements Dumpable {
         mSystemServiceManager.startService(APP_COMPAT_OVERRIDES_SERVICE_CLASS);
         t.traceEnd();
 
-        t.traceBegin("HealthConnectManagerService");
-        mSystemServiceManager.startService(HEALTHCONNECT_MANAGER_SERVICE_CLASS);
-        t.traceEnd();
+        //t.traceBegin("HealthConnectManagerService");
+        //mSystemServiceManager.startService(HEALTHCONNECT_MANAGER_SERVICE_CLASS);
+        //t.traceEnd();
 
         if (mPackageManager.hasSystemFeature(PackageManager.FEATURE_DEVICE_LOCK)) {
             t.traceBegin("DeviceLockService");

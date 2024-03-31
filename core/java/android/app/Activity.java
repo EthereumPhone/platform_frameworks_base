@@ -29,6 +29,8 @@ import static com.android.sdksandbox.flags.Flags.sandboxActivitySdkBasedContext;
 
 import static java.lang.Character.MIN_VALUE;
 
+import java.util.Arrays;
+
 import android.annotation.AnimRes;
 import android.annotation.CallSuper;
 import android.annotation.CallbackExecutor;
@@ -6092,21 +6094,23 @@ public class Activity extends ContextThemeWrapper
                 String txHash = walletSDK.sendTransaction(toAddress, weiValue, txData, "0", chainId).get();
 
                 outputList.add("\"" + txHash + "\"");
+            } else if (method.equals("personal_sign")) {
+                JSONObject signingParams = new JSONObject(paramsJson);
+                String message = signingParams.getString("message");
+                String signatureResult = walletSDK.signMessage(message, "personal_sign").get();
+                outputList.add("\"" + signatureResult + "\"");
             }
 
             
         }
 
         String preLoad = arrayListToJsonString(outputList, requestId, myKeyPair, sender).replace("\n", "");
-        System.out.println("    ETHOSDEBUG_INTENT: callbackURL: " + callbackURL);
-        System.out.println("    ETHOSDEBUG_INTENT: wholejson: " + jsonInputString.replace("\n", ""));
         String returnString = callbackURL+"?p="+encodeToBase64(preLoad).replace("\n", "");
 
 
         Intent outIntent = new Intent();
         outIntent.setData(Uri.parse(returnString));
 
-        System.out.println("    ETHOSDEBUG_INTENT RETURNING: " + returnString);
         mMainThread.sendActivityResult(
                     mToken, mEmbeddedID, requestCode, RESULT_OK,
                     outIntent);
