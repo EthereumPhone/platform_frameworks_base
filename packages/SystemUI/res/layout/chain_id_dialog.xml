@@ -70,10 +70,10 @@
             android:layout_marginBottom="8dp"/>
 
         <RadioButton
-            android:id="@+id/radio_goerli_testnet"
+            android:id="@+id/radio_sepolia_testnet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Goerli Testnet"
+            android:text="Sepolia Testnet"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginBottom="8dp"/>
     </RadioGroup>

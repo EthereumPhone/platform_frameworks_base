@@ -843,8 +843,8 @@ public class PhoneStatusBarPolicy
                             networkName = "Optimism";
                         } else if (changeToChainId == 42161) {
                             networkName = "Arbitrum";
-                        } else if (changeToChainId == 5) {
-                            networkName = "Goerli Testnet";
+                        } else if (changeToChainId == 11155111) {
+                            networkName = "Sepolia Testnet";
                         } else if (chainId == 84531){
                             networkName = "Base Testnet";
                         } else {
@@ -1021,6 +1021,7 @@ public class PhoneStatusBarPolicy
 
         IntentFilter requestFilter2 = new IntentFilter("NODE_UPDATE");
         mBroadcastDispatcher.registerReceiverWithHandler(mNodeReceiver, requestFilter2, new Handler());
+
 
         try {
             int chainId = getChainId();

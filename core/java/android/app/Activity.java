@@ -115,10 +115,8 @@ import android.service.voice.VoiceInteractionSession;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import java.security.spec.X509EncodedKeySpec;
-import java.security.PublicKey;
 import java.security.spec.ECGenParameterSpec;
-import java.security.PrivateKey;
-import java.security.KeyPairGenerator;
+
 import android.text.TextUtils;
 import javax.crypto.KeyAgreement;
 import android.text.method.TextKeyListener;
@@ -126,7 +124,7 @@ import android.transition.Scene;
 import android.transition.TransitionManager;
 import android.util.ArrayMap;
 import java.security.*;
-import java.security.KeyFactory;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import android.util.AttributeSet;
@@ -141,6 +139,7 @@ import android.util.SparseArray;
 import android.util.SuperNotCalledException;
 import android.view.ActionMode;
 import javax.crypto.spec.SecretKeySpec;
+
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.ContextThemeWrapper;
@@ -207,6 +206,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.security.Provider.Service;
 import java.util.ArrayList;
 import android.util.Base64;
@@ -217,7 +217,6 @@ import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
-import java.security.KeyPair;
 import javax.crypto.spec.GCMParameterSpec;
 
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -6096,8 +6095,17 @@ public class Activity extends ContextThemeWrapper
                 outputList.add("\"" + txHash + "\"");
             } else if (method.equals("personal_sign")) {
                 JSONObject signingParams = new JSONObject(paramsJson);
-                String message = signingParams.getString("message");
-                String signatureResult = walletSDK.signMessage(message, "personal_sign").get();
+                Object message = signingParams.get("message");
+                String signatureResult = "";
+                if (message instanceof String) {
+                    System.out.println("The 'message' is a String: " + message);
+                    signatureResult = walletSDK.signMessage((String) message, "personal_sign").get();
+                } else if (message instanceof JSONObject) {
+                    System.out.println("The 'message' is a JSONObject: " + message);
+                    String actualMessage = decodeBuffer((JSONObject) message);
+                    signatureResult = walletSDK.signMessage(actualMessage, "personal_sign").get();
+                }
+                 
                 outputList.add("\"" + signatureResult + "\"");
             }
 
@@ -6116,6 +6124,28 @@ public class Activity extends ContextThemeWrapper
                     outIntent);
         
         
+    }
+
+    private String decodeBuffer(JSONObject jsonObject) {
+        try {
+            // Get the JSON array from the JSONObject
+            JSONArray jsonArray = jsonObject.getJSONArray("data");
+            
+            // Create a byte array to hold the buffer data
+            byte[] bytes = new byte[jsonArray.length()];
+            
+            // Convert each element in the JSON array to a byte
+            for (int i = 0; i < jsonArray.length(); i++) {
+                bytes[i] = (byte) jsonArray.getInt(i);
+            }
+            
+            // Decode the byte array into a UTF-8 encoded string
+            return new String(bytes, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            // Handle potential exceptions, like invalid JSON data
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**

@@ -301,6 +301,10 @@ public class ApplicationPackageManager extends PackageManager {
         intentToResolve.setPackage(packageName);
         List<ResolveInfo> ris = queryIntentActivities(intentToResolve, 0);
 
+        if (packageName.equals("org.toshi")) {
+            return new Intent();
+        }
+
         // Otherwise, try to find a main launcher activity.
         if (ris == null || ris.size() <= 0) {
             // reuse the intent instance
@@ -1517,20 +1521,6 @@ public class ApplicationPackageManager extends PackageManager {
     @SuppressWarnings("unchecked")
     public List<ResolveInfo> queryIntentActivitiesAsUser(Intent intent, ResolveInfoFlags flags,
             int userId) {
-        String intentString = intent.toString(); // This represents the string output of your intent
-        String packageNameToCheck = "org.toshi";
-        if (intentString.contains("pkg=" + packageNameToCheck)) {
-            ActivityInfo activityInfo = new ActivityInfo();
-            activityInfo.packageName = "org.toshi";
-            activityInfo.name = "FakeActivity";
-
-            // Create a ResolveInfo object and associate the ActivityInfo with it
-            ResolveInfo resolveInfo = new ResolveInfo();
-            resolveInfo.activityInfo = activityInfo;
-            ArrayList<ResolveInfo> returnList = new ArrayList<ResolveInfo>();
-            returnList.add(resolveInfo);
-            return returnList;
-        }
         try {
             ParceledListSlice<ResolveInfo> parceledList = mPM.queryIntentActivities(
                     intent,

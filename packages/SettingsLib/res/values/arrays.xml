@@ -94,7 +94,7 @@
         <item>Base Mainnet</item>
         <item>Zora L2</item>
         <item>Base Testnet</item>
-        <item>Goerli Testnet</item>
+        <item>Sepolia Testnet</item>
     </string-array>
 
     <string-array name="eth_chain_array_summaries">
@@ -104,7 +104,7 @@
         <item>Base Mainnet</item>
         <item>Zora L2</item>
         <item>Base Testnet</item>
-        <item>Goerli Testnet</item>
+        <item>Sepolia Testnet</item>
     </string-array>
 
     <string-array name="eth_chain_array_values">
@@ -114,7 +114,7 @@
         <item>base_mainnet</item>
         <item>zora</item>
         <item>base_testnet</item>
-        <item>goerli</item>
+        <item>sepolia</item>
     </string-array>
 
     <!-- Values for HDCP checking preference. -->
