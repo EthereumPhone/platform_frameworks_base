@@ -77,8 +77,8 @@ public class ChainTile extends QSTileImpl<BooleanState> {
             state.secondaryLabel = "Optimism";
         } else if (chainId == 42161){
             state.secondaryLabel = "Arbitrum One";
-        } else if (chainId == 5){
-            state.secondaryLabel = "Goerli Testnet";
+        } else if (chainId == 11155111){
+            state.secondaryLabel = "Sepolia Testnet";
         } else if (chainId == 84531){
             state.secondaryLabel = "Base Testnet";
         } else if (chainId == 8453){
@@ -134,8 +134,8 @@ public class ChainTile extends QSTileImpl<BooleanState> {
             state.secondaryLabel = "Optimism";
         } else if (chainId == 42161){
             state.secondaryLabel = "Arbitrum One";
-        } else if (chainId == 5){
-            state.secondaryLabel = "Goerli Testnet";
+        } else if (chainId == 11155111){
+            state.secondaryLabel = "Sepolia Testnet";
         } else if (chainId == 84531){
             state.secondaryLabel = "Base Testnet";
         } else if (chainId == 8453){
@@ -163,8 +163,8 @@ public class ChainTile extends QSTileImpl<BooleanState> {
             return "Optimism";
         } else if (chainId == 42161){
             return "Arbitrum One";
-        } else if (chainId == 5){
-            return "Goerli Testnet";
+        } else if (chainId == 11155111){
+            return "Sepolia Testnet";
         } else if (chainId == 84531){
             return "Base Testnet";
         } else if (chainId == 8453){

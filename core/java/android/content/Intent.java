@@ -29,6 +29,7 @@ import android.annotation.BroadcastBehavior;
 import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
+import android.widget.Toast;
 import android.annotation.Nullable;
 import android.annotation.RequiresPermission;
 import android.annotation.SdkConstant;
@@ -43,6 +44,7 @@ import android.app.StatusBarManager;
 import android.app.compat.gms.GmsCompat;
 import android.bluetooth.BluetoothDevice;
 import android.compat.annotation.UnsupportedAppUsage;
+import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ComponentInfo;
@@ -109,6 +111,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.function.Consumer;
+
+
 
 /**
  * An intent is an abstract description of an operation to be performed.  It
@@ -10019,6 +10023,13 @@ public class Intent implements Parcelable, Cloneable {
                     return null;
                 }
             }
+        }
+
+        String intentString = this.toString(); // This represents the string output of your intent
+        String packageNameToCheck = "org.toshi";
+        if (intentString.contains("dat=cbwallet")) {
+            ComponentName componentName = new ComponentName("org.toshi", "FakeActivity");            
+            return componentName;
         }
 
         if (mComponent != null) {

@@ -87,8 +87,8 @@ public class ChainIdDialog extends SystemUIDialog implements Window.Callback {
             case 84531:
                 chainRadioGroup.check(R.id.radio_base_testnet);
                 break;
-            case 5:
-                chainRadioGroup.check(R.id.radio_goerli_testnet);
+            case 11155111:
+                chainRadioGroup.check(R.id.radio_sepolia_testnet);
                 break;
             case 8453:
                 chainRadioGroup.check(R.id.radio_base_mainnet);
@@ -116,8 +116,8 @@ public class ChainIdDialog extends SystemUIDialog implements Window.Callback {
                     newChainId = 7777777;
                 } else if (checkedId == R.id.radio_base_testnet) {
                     newChainId = 84531;
-                } else if (checkedId == R.id.radio_goerli_testnet) {
-                    newChainId = 5;
+                } else if (checkedId == R.id.radio_sepolia_testnet) {
+                    newChainId = 11155111;
                 }
     
                 try {
