@@ -76,6 +76,7 @@ public class LocalLLMService extends ILLMService.Stub {
     }
 
     private String executeCommand(String[] command) {
+        /**
         StringBuffer output = new StringBuffer();
         StringBuffer errorOutput = new StringBuffer();
         long startTime = System.nanoTime();
@@ -133,7 +134,8 @@ public class LocalLLMService extends ILLMService.Stub {
             result += "Error Output:\n" + errorOutput.toString();
         }
         result += "Time taken: " + duration + " ms\n";
-        return result;
+         */
+        return "";
     }
 
 
@@ -211,3 +213,4 @@ public class LocalLLMService extends ILLMService.Stub {
         }
     }
 }
+
