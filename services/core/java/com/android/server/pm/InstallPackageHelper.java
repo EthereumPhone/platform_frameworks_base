@@ -1673,17 +1673,23 @@ final class InstallPackageHelper {
 
         if (systemPackage != null) {
             // this is an update to a system package
-
-            try {
-                PackageVerityExt.checkFsVerity(parsedPackage);
-            } catch (PackageManagerException e) {
-                String message = "fs-verity not set up for system package update " + e;
-                boolean abortInstall = true;
-
-                if (Build.IS_DEBUGGABLE) {
-                    if (SystemProperties.getBoolean("persist.disable_install_time_fsverity_check", false)) {
-                        Slog.d(TAG, message);
-                        abortInstall = false;
+            String systemPackageName = systemPackage.getPackageName();
+            if (!systemPackageName.equals("org.ethereumphone.walletmanager") && !systemPackageName.equals("org.ethereumhpone.messenger")) {
+                try {
+                    PackageVerityExt.checkFsVerity(parsedPackage);
+                } catch (PackageManagerException e) {
+                    String message = "fs-verity not set up for system package update " + e;
+                    boolean abortInstall = true;
+    
+                    if (Build.IS_DEBUGGABLE) {
+                        if (SystemProperties.getBoolean("persist.disable_install_time_fsverity_check", false)) {
+                            Slog.d(TAG, message);
+                            abortInstall = false;
+                        }
+                    }
+    
+                    if (abortInstall) {
+                        throw new PrepareFailure(PackageManager.INSTALL_FAILED_INTERNAL_ERROR, message);
                     }
                 }
                 
@@ -1697,7 +1703,7 @@ final class InstallPackageHelper {
                     throw new PrepareFailure(PackageManager.INSTALL_FAILED_INTERNAL_ERROR, message);
                 }
             }
-
+            
             if (parsedPackage.getLongVersionCode() == systemPackage.getLongVersionCode()) {
                 String message = "Not allowed to update system package to the same versionCode";
                 boolean abortInstall = true;
