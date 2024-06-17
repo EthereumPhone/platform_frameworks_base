@@ -2329,7 +2329,7 @@
          the platform will search for an SMS app and use that (if there is one)
 
          Note: This config is deprecated, please use config_defaultSms instead. -->
-    <string name="default_sms_application" translatable="false">com.android.messaging</string>
+    <string name="default_sms_application" translatable="false">org.ethereumhpone.messenger</string>
 
     <!-- Flag indicating whether the current device supports "Ask every time" for sms-->
     <bool name="config_sms_ask_every_time_support">true</bool>
