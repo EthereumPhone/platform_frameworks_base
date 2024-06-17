@@ -124,6 +124,7 @@ import android.transition.Scene;
 import android.transition.TransitionManager;
 import android.util.ArrayMap;
 import java.security.*;
+import java.math.BigInteger;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -6089,6 +6090,11 @@ public class Activity extends ContextThemeWrapper
                 }
 
                 System.out.println("ETHOSDEBUG_INTENT: Tx info: toAddr: "+toAddress+", weiValue: " + weiValue);
+
+                // If weiValue is a hex number like 0x1, convert it to a int string
+                if (weiValue.startsWith("0x")) {
+                    weiValue = new BigInteger(weiValue.substring(2), 16).toString();
+                }
 
                 String txHash = walletSDK.sendTransaction(toAddress, weiValue, txData, "0", chainId).get();
 
