@@ -35,7 +35,6 @@ prebuilt_font {
     required: [
         // Roboto-Regular.ttf provides DroidSans.ttf as a symlink to itself
         // Roboto-Regular.ttf provides DroidSans-Bold.ttf as a symlink to itself
-        "Roboto-Regular.ttf",
         "Inter-Regular.ttf",
     ],
 }
