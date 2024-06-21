@@ -36,10 +36,12 @@ import android.os.ParcelFileDescriptor;
 public class LocalLLMService extends ILLMService.Stub {
 
     private static final String TAG = "LocalLLMService";
+    private static LocalLLMService instance;
 
     public LocalLLMService(Context con) {
         super();
         Log.v(TAG, "LocalLLMService, onCreate");
+        instance = this;
     }
 
     private String executeCommand(String[] command) {
