@@ -42,9 +42,6 @@ public class PackageManagerHooks {
                     // one of the previous OS versions enabled EuiccSupportPixel in all users
                     return PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
                 }
-            case GoogleEuicc.LPA_PKG_NAME:
-                // Google's LPA should be always disabled after reboot
-                return PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
             default:
                 return null;
         }
@@ -168,23 +165,5 @@ public class PackageManagerHooks {
 
     // Packages in this array are restricted from interacting with and being interacted by non-system apps
     private static final ArraySet<String> restrictedVisibilityPackages = new ArraySet<>(new String[] {
-        GoogleEuicc.EUICC_SUPPORT_PIXEL_PKG_NAME,
-        // prevent it from obtaining carrier config overrides from GmsCore (see CarrierConfig2 README)
-        GCarrierSettingsApp.PKG_NAME,
     });
-
-    @Nullable
-    public static AppInfoExt getAppInfoExt(PackageImpl pkg) {
-        int flags = 0;
-        long compatChanges = 0L;
-
-        AppCompatProtos.CompatConfig c = AppCompatConf.get(pkg);
-        if (c == null) {
-            return null;
-        }
-
-        compatChanges = c.compatChanges | AppInfoExt.HAS_COMPAT_CHANGES;
-
-        return new AppInfoExt(flags, compatChanges);
-    }
 }
