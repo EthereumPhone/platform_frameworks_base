@@ -17,13 +17,15 @@ package com.android.systemui.qs.tiles.dialog
 
 import android.content.Context
 import android.os.Handler
+import com.android.internal.jank.InteractionJankMonitor
 import android.util.Log
 import android.view.View
 import com.android.internal.logging.UiEventLogger
-import com.android.systemui.animation.DialogLaunchAnimator
+import com.android.systemui.animation.DialogCuj
 import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.dagger.qualifiers.Background
 import com.android.systemui.dagger.qualifiers.Main
+import com.android.systemui.animation.DialogTransitionAnimator
 import java.util.concurrent.Executor
 import javax.inject.Inject
 
@@ -38,8 +40,8 @@ class ChainIdDialogFactory @Inject constructor(
     @Main private val handler: Handler,
     @Background private val executor: Executor,
     private val context: Context,
+    private val dialogTransitionAnimator: DialogTransitionAnimator,
     private val uiEventLogger: UiEventLogger,
-    private val dialogLaunchAnimator: DialogLaunchAnimator
 ) {
     companion object {
         var internetDialog: ChainIdDialog? = null
@@ -58,11 +60,15 @@ class ChainIdDialogFactory @Inject constructor(
             println("ChainIdDialog: Creating dialog now.")
             internetDialog = ChainIdDialog(context, this)
             if (view != null) {
-                println("ChainIdDialog: Showing dialog now. view not null")
-                dialogLaunchAnimator.showFromView(internetDialog!!, view,
-                    animateBackgroundBoundsChange = true)
+                dialogTransitionAnimator.showFromView(
+                    internetDialog!!, view,
+                    animateBackgroundBoundsChange = true,
+                    cuj = DialogCuj(
+                        InteractionJankMonitor.CUJ_SHADE_DIALOG_OPEN,
+                        "ChainIDDialog"
+                    )
+                )
             } else {
-                println("ChainIdDialog: Showing dialog now. view is null")
                 internetDialog?.show()
             }
         }
