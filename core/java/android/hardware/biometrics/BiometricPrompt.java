@@ -32,6 +32,8 @@ import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.hardware.biometrics.BiometricPrompt.AuthenticationCallback;
+import android.hardware.biometrics.BiometricPrompt.CryptoObject;
 import android.annotation.RequiresPermission;
 import android.annotation.TestApi;
 import android.content.Context;
@@ -1151,7 +1153,6 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
             @NonNull @CallbackExecutor Executor executor,
             @NonNull AuthenticationCallback callback,
             int userId) {
-        System.out.println("authenticateUser USERID: " + userId);
         if (cancel == null) {
             throw new IllegalArgumentException("Must supply a cancellation signal");
         }
@@ -1273,6 +1274,31 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
         authenticateInternal(crypto, cancel, executor, callback, mContext.getUserId());
     }
 
+    @RequiresPermission(USE_BIOMETRIC)
+    public void authenticateWallet(@NonNull CancellationSignal cancel,
+            @NonNull @CallbackExecutor Executor executor,
+            @NonNull AuthenticationCallback callback) {
+
+        FrameworkStatsLog.write(FrameworkStatsLog.AUTH_PROMPT_AUTHENTICATE_INVOKED,
+                false /* isCrypto */,
+                mPromptInfo.isConfirmationRequested(),
+                mPromptInfo.isDeviceCredentialAllowed(),
+                mPromptInfo.getAuthenticators() != Authenticators.EMPTY_SET,
+                mPromptInfo.getAuthenticators());
+
+        if (cancel == null) {
+            throw new IllegalArgumentException("Must supply a cancellation signal");
+        }
+        if (executor == null) {
+            throw new IllegalArgumentException("Must supply an executor");
+        }
+        if (callback == null) {
+            throw new IllegalArgumentException("Must supply a callback");
+        }
+        System.out.println("BiometricPrompt: authenticate, USERID: " + mContext.getUserId());
+        authenticateInternalWalletObj(null /* crypto */, cancel, executor, callback, mContext.getUserId());
+    }
+
     /**
      * This call warms up the biometric hardware, displays a system-provided dialog, and starts
      * scanning for a biometric. It terminates when {@link
@@ -1321,33 +1347,7 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
         if (callback == null) {
             throw new IllegalArgumentException("Must supply a callback");
         }
-        System.out.println("BiometricPrompt: authenticate, USERID: " + mContext.getUserId());
         authenticateInternal(null /* crypto */, cancel, executor, callback, mContext.getUserId());
-    }
-
-    @RequiresPermission(USE_BIOMETRIC)
-    public void authenticateWallet(@NonNull CancellationSignal cancel,
-            @NonNull @CallbackExecutor Executor executor,
-            @NonNull AuthenticationCallback callback) {
-
-        FrameworkStatsLog.write(FrameworkStatsLog.AUTH_PROMPT_AUTHENTICATE_INVOKED,
-                false /* isCrypto */,
-                mPromptInfo.isConfirmationRequested(),
-                mPromptInfo.isDeviceCredentialAllowed(),
-                mPromptInfo.getAuthenticators() != Authenticators.EMPTY_SET,
-                mPromptInfo.getAuthenticators());
-
-        if (cancel == null) {
-            throw new IllegalArgumentException("Must supply a cancellation signal");
-        }
-        if (executor == null) {
-            throw new IllegalArgumentException("Must supply an executor");
-        }
-        if (callback == null) {
-            throw new IllegalArgumentException("Must supply a callback");
-        }
-        System.out.println("BiometricPrompt: authenticate, USERID: " + mContext.getUserId());
-        authenticateInternalWalletObj(null /* crypto */, cancel, executor, callback, mContext.getUserId());
     }
 
     private void cancelAuthentication(long requestId) {
@@ -1429,10 +1429,12 @@ public class BiometricPrompt implements BiometricAuthenticator, BiometricConstan
             } else {
                 promptInfo = mPromptInfo;
             }
+
             final long authId = mService.authenticate(mToken, operationId, userId,
-                mBiometricServiceReceiver, mContext.getPackageName(), promptInfo);
-             
+                    mBiometricServiceReceiver, mContext.getPackageName(), promptInfo);
             cancel.setOnCancelListener(new OnAuthenticationCancelListener(authId));
+            mIsPromptShowing = true;
+
             return authId;
         } catch (RemoteException e) {
             Log.e(TAG, "Remote exception while authenticating", e);
