@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,10 +11,11 @@
 
     <!-- Shadow -->
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.6"
-        android:background="#FF1E2730"
+        android:alpha="0.5"
+        android:background="#FF000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,23 +25,28 @@
     <!-- Dialog -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_corners_dialog"
         android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        <Button
+            android:id="@+id/declinebtn"
+            android:layout_width="72dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/rounded_corners_secondary"
+            android:drawableEnd="@drawable/round_close_24"
+            android:fontFamily="@font/inter_semibold_font"
+            android:text=""
+            android:textColor="@color/ethOS_white"
+            app:backgroundTint="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/choose"
@@ -48,130 +56,61 @@
             android:fontFamily="@font/inter_semibold_font"
             android:text="Transaction"
             android:textColor="@color/ethOS_white"
-            android:textSize="28sp"
+            android:textSize="32sp"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/stelo_check_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/inter_medium_font"
-            android:inputType="textMultiLine"
-            android:singleLine="false"
-            android:text=""
-            android:textColor="@color/ethOS_white"
-            android:textSize="12sp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/ethamount_sign"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
         <Button
             android:id="@+id/acceptbtn"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/rounded_corners_primary"
-            android:text="Accept"
             android:fontFamily="@font/inter_semibold_font"
-            android:textColor="#FF24303D"
+            android:text="Accept Transaction"
+            android:textColor="@color/ethOS_primary_button_text"
             app:backgroundTint="@null"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/ethamount_sign" />
-
-        <Button
-            android:id="@+id/declinebtn"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:background="@drawable/rounded_corners_secondary"
-            android:text="Decline"
-            android:textColor="@color/ethOS_white"
-            app:backgroundTint="@null"
-            android:fontFamily="@font/inter_semibold_font"
-            app:layout_constraintBaseline_toBaselineOf="@+id/acceptbtn"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintStart_toStartOf="@+id/guideline4" />
-
-        <TextView
-            android:id="@+id/messagetitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:fontFamily="@font/inter_regular_font"
-            android:text="To"
-            android:textColor="#FFC8C8C8"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/choose" />
-
-        <TextView
-            android:id="@+id/messagetitle2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_regular_font"
-            android:text="Chain-ID"
-            android:textColor="#FFC8C8C8"
-            android:textSize="14sp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/messagetitle"
-            app:layout_constraintStart_toStartOf="@+id/guideline4" />
 
         <TextView
             android:id="@+id/message"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_height="50dp"
             android:fontFamily="@font/inter_medium_font"
             android:text="0x95abDa53Bc5E9fBBDce34603614018d32CED219e "
             android:textAlignment="viewStart"
             android:textColor="@color/ethOS_white"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/messagetitle" />
-
-        <TextView
-            android:id="@+id/chainIdTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/inter_medium_font"
-            android:text="0 "
-            android:textAlignment="viewStart"
-            android:textColor="@color/ethOS_white"
             android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toBottomOf="@+id/messagetitle2" />
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/messagetitle" />
 
         <TextView
             android:id="@+id/amounttitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:fontFamily="@font/inter_regular_font"
             android:text="Amount"
-            android:textColor="#FFC8C8C8"
-            android:textSize="14sp"
+            android:textColor="@color/ethOS_gray"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/message" />
+            app:layout_constraintTop_toBottomOf="@+id/chainIdTextView" />
 
         <TextView
             android:id="@+id/ethamount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:fontFamily="@font/inter_medium_font"
             android:text="0.25"
             android:textColor="@color/ethOS_white"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/amounttitle"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/amounttitle" />
 
         <TextView
@@ -182,7 +121,7 @@
             android:fontFamily="@font/inter_medium_font"
             android:text="ETH"
             android:textColor="@color/ethOS_white"
-            android:textSize="12sp"
+            android:textSize="20sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/ethamount"
             app:layout_constraintStart_toEndOf="@+id/ethamount" />
 
@@ -190,12 +129,13 @@
             android:id="@+id/gastitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:fontFamily="@font/inter_regular_font"
             android:text="Gas"
-            android:textColor="#FFC8C8C8"
-            android:textSize="14sp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/amounttitle"
-            app:layout_constraintStart_toStartOf="@+id/guideline4" />
+            android:textColor="@color/ethOS_gray"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/ethamount" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -232,9 +172,9 @@
             android:fontFamily="@font/inter_medium_font"
             android:text="0.00002"
             android:textColor="@color/ethOS_white"
-            android:textSize="24sp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/ethamount"
-            app:layout_constraintStart_toStartOf="@+id/guideline4" />
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/gastitle" />
 
         <TextView
             android:id="@+id/gasethextention"
@@ -244,32 +184,31 @@
             android:fontFamily="@font/inter_medium_font"
             android:text="ETH"
             android:textColor="@color/ethOS_white"
-            android:textSize="12sp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/amountethextension"
+            android:textSize="20sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView9"
             app:layout_constraintStart_toEndOf="@+id/textView9" />
 
         <TextView
             android:id="@+id/totaltitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:fontFamily="@font/inter_regular_font"
             android:text="Total"
-            android:textColor="#FFC8C8C8"
-            android:textSize="14sp"
+            android:textColor="@color/ethOS_gray"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/ethamount" />
+            app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
         <TextView
             android:id="@+id/ethamount_sign"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/inter_medium_font"
 
-            android:text="0.25002"
+            android:fontFamily="@font/inter_semibold_font"
+            android:text="0.07534701"
             android:textColor="@color/ethOS_white"
-            android:textSize="32sp"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/totaltitle" />
 
@@ -278,23 +217,63 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
+            android:fontFamily="@font/inter_semibold_font"
             android:text="ETH"
-            android:fontFamily="@font/inter_medium_font"
             android:textColor="@color/ethOS_white"
+            android:textSize="20sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/ethamount_sign"
             app:layout_constraintStart_toEndOf="@+id/ethamount_sign" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Chain"
+            android:textColor="@color/ethOS_gray"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/message" />
+
+        <TextView
+            android:id="@+id/chainIdTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_medium_font"
+            android:text="Ethereum"
+            android:textAlignment="viewStart"
+            android:textColor="@color/ethOS_white"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="Max Mustermann"
+            android:textColor="#FFFFFF"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/message"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/messagetitle" />
+
+
+        <TextView
+            android:id="@+id/messagetitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
             android:fontFamily="@font/inter_regular_font"
-            android:text="Stelo"
-            android:textColor="#FFC8C8C8"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@+id/totaltitle"
-            app:layout_constraintStart_toStartOf="@+id/guideline4" />
+            android:text="To"
+            android:textColor="@color/ethOS_gray"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/choose" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
