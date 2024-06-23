@@ -10,8 +10,12 @@ import android.content.Context;
  * @author mhaas.eth
  */
 import android.annotation.NonNull;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
+import android.os.ParcelFileDescriptor;
+
+
 @SystemService(Context.LOCALLLM_SERVICE)
 public class LocalLlmProxy {
     private static final String TAG = "LocalLlmProxy";
@@ -48,13 +52,14 @@ public class LocalLlmProxy {
     }
 
     @NonNull
-    public String executePrompt(@NonNull String prompt) {
+    @SuppressLint("ExecutorRegistration")
+    public String executePrompt(@NonNull String prompt, @NonNull ParcelFileDescriptor output) {
         try {
-            return mIMyService.executePrompt(prompt);
+            return mIMyService.executePrompt(prompt, output);
         } catch(Exception e) {
             e.printStackTrace();
         }
-	return "failed";
+	    return "failed";
     }
 
     @NonNull
